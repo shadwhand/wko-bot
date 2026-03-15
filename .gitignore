@@ -1,3 +1,11 @@
 .DS_Store
 .claude/
 Exercise Physiology Docs/
+fit-files/
+wko5/cycling_power.db
+wko5/cycling_power.db-shm
+wko5/cycling_power.db-wal
+notebooks/.ipynb_checkpoints/
+__pycache__/
+*.pyc
+.pytest_cache/
