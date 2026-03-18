@@ -210,7 +210,7 @@ def rolling_ftp(window_days=90, step_days=7):
     if activities.empty:
         return pd.DataFrame()
 
-    activities["start_time"] = pd.to_datetime(activities["start_time"])
+    activities["start_time"] = pd.to_datetime(activities["start_time"], format="ISO8601", utc=True)
     min_date = activities["start_time"].min()
     max_date = activities["start_time"].max()
 
