@@ -7,3 +7,7 @@ from wko5.training_load import build_pmc, current_fitness, compute_np
 from wko5.zones import coggan_zones, ilevels, time_in_zones
 from wko5.ride import ride_summary, detect_intervals
 from wko5.profile import power_profile, strengths_limiters, phenotype
+from wko5.physics import power_required, speed_from_power
+from wko5.segments import analyze_ride_segments, analyze_gpx
+from wko5.durability import fit_durability_model, effective_capacity, frc_budget_simulate
+from wko5.demand_profile import build_demand_profile
