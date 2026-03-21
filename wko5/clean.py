@@ -5,25 +5,28 @@ import logging
 import numpy as np
 import pandas as pd
 
+from wko5.config import get_config
+
 logger = logging.getLogger(__name__)
 
-SPIKE_THRESHOLD = 2000  # watts
 MAX_FFILL_GAP = 5  # samples
 
 
 def clean_power(power_series):
     """Clean a power series: remove spikes, handle dropouts.
 
-    - Readings >2000W replaced with interpolated neighbors
+    - Readings above spike_threshold_watts replaced with interpolated neighbors
     - NaN gaps <=5s forward-filled, longer gaps left as NaN
     - Zeros preserved (coasting)
     """
     s = power_series.copy().astype(float)
 
-    # Spike removal: replace >2000W with NaN, then interpolate
-    spike_mask = s > SPIKE_THRESHOLD
+    # Spike removal: replace readings above threshold with NaN, then interpolate
+    cfg = get_config()
+    spike_threshold = cfg["spike_threshold_watts"]
+    spike_mask = s > spike_threshold
     if spike_mask.any():
-        logger.info(f"Removing {spike_mask.sum()} power spikes >2000W")
+        logger.info(f"Removing {spike_mask.sum()} power spikes >{spike_threshold}W")
         s[spike_mask] = np.nan
         s = s.interpolate(method="linear", limit_direction="both")
 

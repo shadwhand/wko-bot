@@ -4,7 +4,8 @@ import logging
 import numpy as np
 import pandas as pd
 
-from wko5.db import get_activities, get_records, WEIGHT_KG
+from wko5.db import get_activities, get_records
+from wko5.config import get_config
 from wko5.pdcurve import compute_envelope_mmp, compute_mmp, power_at_durations
 
 logger = logging.getLogger(__name__)
@@ -28,7 +29,8 @@ def power_profile(days=90, sub_sport=None):
     if len(mmp) == 0:
         return {}
     watts = power_at_durations(mmp, KEY_DURATIONS)
-    wkg = {d: round(w / WEIGHT_KG, 2) if not np.isnan(w) else float("nan") for d, w in watts.items()}
+    weight_kg = get_config()["weight_kg"]
+    wkg = {d: round(w / weight_kg, 2) if not np.isnan(w) else float("nan") for d, w in watts.items()}
     return {"watts": watts, "wkg": wkg}
 
 
@@ -105,7 +107,8 @@ def profile_trend(duration_s, window_days=90, step_days=7):
         mmp = compute_envelope_mmp(start=start, end=end)
         if len(mmp) >= duration_s:
             watts = float(mmp[duration_s - 1])
-            results.append({"date": current.strftime("%Y-%m-%d"), "watts": round(watts, 1), "wkg": round(watts / WEIGHT_KG, 2)})
+            weight_kg = get_config()["weight_kg"]
+            results.append({"date": current.strftime("%Y-%m-%d"), "watts": round(watts, 1), "wkg": round(watts / weight_kg, 2)})
         current += pd.Timedelta(days=step_days)
     return pd.DataFrame(results)
 
@@ -121,7 +124,8 @@ def _profile_for_range(start, end):
     if len(mmp) == 0:
         return {}
     watts = power_at_durations(mmp, KEY_DURATIONS)
-    wkg = {d: round(w / WEIGHT_KG, 2) if not np.isnan(w) else float("nan") for d, w in watts.items()}
+    weight_kg = get_config()["weight_kg"]
+    wkg = {d: round(w / weight_kg, 2) if not np.isnan(w) else float("nan") for d, w in watts.items()}
     return {"watts": watts, "wkg": wkg}
 
 

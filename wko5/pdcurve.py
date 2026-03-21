@@ -6,7 +6,8 @@ import numpy as np
 import pandas as pd
 from scipy.optimize import curve_fit
 
-from wko5.db import get_connection, get_activities, get_records, WEIGHT_KG, FTP_DEFAULT
+from wko5.db import get_connection, get_activities, get_records
+from wko5.config import get_config
 
 logger = logging.getLogger(__name__)
 
@@ -153,9 +154,10 @@ def fit_pd_model(mmp):
     if len(durations) != len(powers):
         durations = durations[:len(powers)]
 
+    cfg = get_config()
     p0 = [1200, 15, 20, 5, 280]
-    bounds_low = [800, 5, 5, 1, 150]
-    bounds_high = [2500, 30, 30, 15, 400]
+    bounds_low = [cfg["pd_pmax_low"], cfg["pd_tau_low"], cfg["pd_frc_low"], cfg["pd_t0_low"], cfg["pd_mftp_low"]]
+    bounds_high = [cfg["pd_pmax_high"], cfg["pd_tau_high"], cfg["pd_frc_high"], cfg["pd_t0_high"], cfg["pd_mftp_high"]]
 
     try:
         popt, _ = curve_fit(
@@ -176,8 +178,9 @@ def fit_pd_model(mmp):
     tte = float(above_ftp[-1] + 1) if len(above_ftp) > 0 else float("nan")
 
     # mVO2max via ACSM: VO2 (mL/min) = (watts * 12.35) + (weight * 3.5)
-    vo2max_ml_min = (mftp * 12.35) + (WEIGHT_KG * 3.5)
-    vo2max_ml_min_kg = vo2max_ml_min / WEIGHT_KG
+    cfg = get_config()
+    vo2max_ml_min = (mftp * 12.35) + (cfg["weight_kg"] * 3.5)
+    vo2max_ml_min_kg = vo2max_ml_min / cfg["weight_kg"]
 
     return {
         "Pmax": round(float(pmax), 1),

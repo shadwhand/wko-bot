@@ -5,7 +5,8 @@ import logging
 import numpy as np
 import pandas as pd
 
-from wko5.db import get_connection, get_activities, get_records, FTP_DEFAULT
+from wko5.db import get_connection, get_activities, get_records
+from wko5.config import get_config
 
 logger = logging.getLogger(__name__)
 
@@ -40,7 +41,7 @@ def _get_activity_tss(activity_row, ftp=None):
         if device_ftp and not pd.isna(device_ftp) and device_ftp > 0:
             ftp = float(device_ftp)
         else:
-            ftp = FTP_DEFAULT
+            ftp = get_config()["ftp_manual"]
 
     records = get_records(activity_row["id"])
     if records.empty or "power" not in records.columns:
@@ -78,7 +79,7 @@ def _get_cached_tss(activity_id, activity_row, ftp=None):
 
     tss = _get_activity_tss(activity_row, ftp=ftp)
 
-    ftp_used = ftp or FTP_DEFAULT
+    ftp_used = ftp or get_config()["ftp_manual"]
     conn.execute(
         "INSERT OR REPLACE INTO tss_cache (activity_id, np_watts, tss, ftp_used) VALUES (?, ?, ?, ?)",
         (activity_id, float("nan"), tss, ftp_used),
@@ -110,8 +111,9 @@ def build_pmc(start=None, end=None, ftp=None):
     daily = pd.DataFrame({"date": full_range})
     daily = daily.merge(daily_tss, on="date", how="left").fillna(0)
 
-    ctl_decay = 1 - np.exp(-1 / 42)
-    atl_decay = 1 - np.exp(-1 / 7)
+    cfg = get_config()
+    ctl_decay = 1 - np.exp(-1 / cfg["ctl_time_constant"])
+    atl_decay = 1 - np.exp(-1 / cfg["atl_time_constant"])
 
     daily["CTL"] = daily["TSS"].ewm(alpha=ctl_decay, adjust=False).mean()
     daily["ATL"] = daily["TSS"].ewm(alpha=atl_decay, adjust=False).mean()

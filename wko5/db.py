@@ -9,6 +9,8 @@ import pandas as pd
 logger = logging.getLogger(__name__)
 
 DB_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "cycling_power.db")
+
+# DEPRECATED — use get_config() instead. Kept for backward test compatibility.
 WEIGHT_KG = 78.0
 FTP_RANGE = (285, 299)
 FTP_DEFAULT = 292

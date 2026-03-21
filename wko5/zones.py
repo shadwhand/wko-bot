@@ -2,7 +2,8 @@
 
 import logging
 import pandas as pd
-from wko5.db import get_connection, get_activities, get_records, FTP_DEFAULT
+from wko5.db import get_connection, get_activities, get_records
+from wko5.config import get_config
 
 logger = logging.getLogger(__name__)
 
@@ -68,7 +69,7 @@ def time_in_zones(power_series, zones):
 
 def ride_distribution(activity_id, zone_system="coggan", ftp=None):
     if ftp is None:
-        ftp = FTP_DEFAULT
+        ftp = get_config()["ftp_manual"]
     records = get_records(activity_id)
     if records.empty:
         return {}
@@ -83,7 +84,7 @@ def ride_distribution(activity_id, zone_system="coggan", ftp=None):
 
 def period_distribution(start, end, zone_system="coggan", ftp=None):
     if ftp is None:
-        ftp = FTP_DEFAULT
+        ftp = get_config()["ftp_manual"]
     activities = get_activities(start=start, end=end)
     if activities.empty:
         return {}

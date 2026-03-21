@@ -5,7 +5,8 @@ import logging
 import numpy as np
 import pandas as pd
 
-from wko5.db import get_connection, get_records, FTP_DEFAULT
+from wko5.db import get_connection, get_records
+from wko5.config import get_config
 from wko5.training_load import compute_np, compute_tss
 from wko5.pdcurve import compute_mmp
 
@@ -30,9 +31,9 @@ def ride_summary(activity_id):
 
     power = records["power"].fillna(0)
     np_watts = compute_np(power)
-    ftp = act.get("threshold_power") or FTP_DEFAULT
+    ftp = act.get("threshold_power") or get_config()["ftp_manual"]
     if not ftp or ftp <= 0:
-        ftp = FTP_DEFAULT
+        ftp = get_config()["ftp_manual"]
     intensity_factor = np_watts / ftp
     duration_s = float(act.get("total_timer_time") or len(records))
     tss = compute_tss(np_watts, duration_s, ftp)
@@ -61,7 +62,7 @@ def ride_summary(activity_id):
 
 def detect_intervals(activity_id, min_power_pct=0.9, min_duration=30, ftp=None):
     if ftp is None:
-        ftp = FTP_DEFAULT
+        ftp = get_config()["ftp_manual"]
     threshold = ftp * min_power_pct
 
     records = get_records(activity_id)
