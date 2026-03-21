@@ -22,15 +22,19 @@
 
 ```
 wko5/
-  physics.py       # Cycling power equation, air density, speed estimation
-  segments.py      # Segment detection, classification, demand profiling
-  durability.py    # Empirical degradation model, fatigued PD, FRC budget
+  physics.py          # Cycling power equation, air density, speed estimation
+  segments.py         # Segment detection, classification, demand profiling
+  durability.py       # Empirical degradation model, fatigued PD, FRC budget
+  demand_profile.py   # Composition: segments + durability + PD → demand ratios
 ```
 
 Each module has a single clear responsibility:
 - `physics.py` — pure math: given grade, speed, weight, CdA, Crr → power required (and inverse)
 - `segments.py` — data processing: given altitude+distance time series → classified segments with demands
 - `durability.py` — modeling: given historical rides → fitted decay, given a route position → effective capacity
+- `demand_profile.py` — composition: given segments + PD model + durability params → per-segment demand ratios and success probabilities
+
+**Deferred to later phases:** circadian adjustment, collapse zone detection, Bayesian upgrade (Phase 6)
 
 ---
 
@@ -508,8 +512,13 @@ def classify_segments(altitude, distance, power=None, speed=None, timestamps=Non
         else:
             merged.append(seg)
 
-    # Compute metrics for each segment
+    # Get config once outside loop (not per-segment)
+    cfg = get_config()
+
+    # Compute metrics for each segment, tracking cumulative kJ
     result = []
+    cumulative_kj = 0.0
+
     for seg in merged:
         s, e = seg["start_idx"], min(seg["end_idx"], len(altitude) - 1)
         if s >= e:
@@ -532,6 +541,7 @@ def classify_segments(altitude, distance, power=None, speed=None, timestamps=Non
             "elevation_gain": round(elev_gain, 1),
             "elevation_loss": round(elev_loss, 1),
             "avg_grade": round(avg_grade, 4),
+            "cumulative_kj_at_start": round(cumulative_kj, 1),
         }
 
         if timestamps is not None and len(timestamps) > e:
@@ -549,28 +559,30 @@ def classify_segments(altitude, distance, power=None, speed=None, timestamps=Non
             if len(seg_power) > 0:
                 entry["avg_power"] = round(float(seg_power.mean()), 1)
                 entry["max_power"] = int(seg_power.max())
+                # Accumulate kJ for cumulative tracking
+                cumulative_kj += float(seg_power.sum()) / 1000
 
         if speed is not None:
             seg_speed = speed.iloc[s:e+1].dropna()
             if len(seg_speed) > 0:
                 entry["avg_speed_ms"] = round(float(seg_speed.mean()), 2)
 
-        # Classify physiological demand
+        # Classify physiological demand for climbs
         if seg["type"] == "climb" and entry["duration_s"] > 0:
             entry["system_taxed"] = _classify_demand(entry["duration_s"])
 
-        # Compute power required (from physics model) for climbs
-        if seg["type"] in ("climb", "rolling") and dist_m > 0 and entry["duration_s"] > 0:
-            cfg = get_config()
-            avg_speed = dist_m / entry["duration_s"] if entry["duration_s"] > 0 else 3.0
-            entry["power_required"] = round(power_required(
+        # Compute power required for ALL segment types (spec requirement)
+        if dist_m > 0 and entry["duration_s"] > 0:
+            avg_speed = dist_m / entry["duration_s"]
+            p_req = power_required(
                 speed=avg_speed,
                 grade=avg_grade,
                 weight_rider=cfg["weight_kg"],
                 weight_bike=cfg["bike_weight_kg"],
                 cda=cfg["cda"],
                 crr=cfg["crr"],
-            ), 1)
+            )
+            entry["power_required"] = round(max(0, p_req), 1)  # floor at 0 for descents
 
         result.append(entry)
 
@@ -900,10 +912,13 @@ def effective_capacity(fresh_mmp, cumulative_kj, elapsed_hours, params):
 
 
 def compute_windowed_mmp(power_series, window_hours=2):
-    """Compute MMP in rolling time windows across a ride.
+    """Compute MMP at specific durations in rolling time windows across a ride.
 
-    Returns list of dicts: [{window_start_h, window_end_h, mmp_60s, mmp_300s, mmp_1200s, cumulative_kj, elapsed_hours}]
+    Uses vectorized rolling max at 4 target durations instead of full O(n^2) MMP.
+    Returns list of dicts per window.
     """
+    DURATIONS = [60, 300, 2400, 3600]  # 1min, 5min, 40min, 1hr
+
     window_s = int(window_hours * 3600)
     n = len(power_series)
 
@@ -911,38 +926,41 @@ def compute_windowed_mmp(power_series, window_hours=2):
         return []
 
     power = power_series.fillna(0).values.astype(float)
+    cumsum = np.concatenate([[0], np.cumsum(power)])
+
+    # Pre-compute cumulative TSS: sum(power_i^2) / FTP / 3600
+    cfg = get_config()
+    ftp = cfg["ftp_manual"]
+    cum_tss = np.cumsum(power ** 2) / (ftp * 3600) if ftp > 0 else np.cumsum(power) / 1000
+
     results = []
 
     # Non-overlapping windows
     for start in range(0, n - window_s + 1, window_s):
         end = start + window_s
-        window_power = pd.Series(power[start:end])
+        window_power = power[start:end]
 
-        mmp = compute_mmp(window_power)
-
-        # Cumulative work from ride start to window midpoint
+        # Cumulative work and TSS from ride start to window midpoint
         midpoint = start + window_s // 2
-        cum_kj = float(power[:midpoint].sum()) / 1000
+        cum_kj = float(cumsum[midpoint]) / 1000
         elapsed_h = midpoint / 3600
-
-        # Intensity-weighted kJ: use NP^2/FTP to weight by intensity
-        cfg = get_config()
-        ftp = cfg["ftp_manual"]
-        window_np = compute_np(window_power)
-        # TSS-weighted cumulative work (approximation)
-        tss_weighted_kj = cum_kj * (window_np / ftp) if ftp > 0 else cum_kj
+        cum_tss_val = float(cum_tss[midpoint - 1]) if midpoint > 0 else 0.0
 
         entry = {
             "window_start_h": round(start / 3600, 2),
             "window_end_h": round(end / 3600, 2),
             "elapsed_hours": round(elapsed_h, 2),
             "cumulative_kj": round(cum_kj, 1),
-            "tss_weighted_kj": round(tss_weighted_kj, 1),
+            "cumulative_tss": round(cum_tss_val, 1),
         }
 
-        for d, label in [(60, "mmp_60s"), (300, "mmp_300s"), (1200, "mmp_1200s")]:
-            if d <= len(mmp):
-                entry[label] = round(float(mmp[d-1]), 1)
+        # Compute MMP at specific durations via rolling mean max (vectorized)
+        window_cumsum = np.concatenate([[0], np.cumsum(window_power)])
+        for d in DURATIONS:
+            label = f"mmp_{d}s"
+            if d <= len(window_power):
+                rolling_avg = (window_cumsum[d:] - window_cumsum[:len(window_power) - d + 1]) / d
+                entry[label] = round(float(rolling_avg.max()), 1)
             else:
                 entry[label] = float("nan")
 
@@ -997,7 +1015,7 @@ def fit_durability_model(min_ride_hours=2, min_rides=5):
             if ratio > 1.2:  # Ignore anomalous increases (e.g., sprints at end)
                 continue
 
-            all_x_kj.append(w["tss_weighted_kj"])
+            all_x_kj.append(w["cumulative_tss"])
             all_x_hours.append(w["elapsed_hours"])
             all_y_ratio.append(ratio)
 
@@ -1158,7 +1176,214 @@ git commit -m "feat: add empirical durability model with FRC budget and repeatab
 
 ---
 
-## Task 4: API endpoints for Phase 2 modules
+## Task 4: Demand profile composition (`demand_profile.py`)
+
+The core integration point — composes segments with the durability model and PD curve to answer "what does this route demand and what's my capacity at each point?"
+
+**Files:**
+- Create: `wko5/demand_profile.py`
+- Create: `tests/test_demand_profile.py`
+
+- [ ] **Step 1: Write tests**
+
+```python
+# tests/test_demand_profile.py
+import sys, os
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
+
+import numpy as np
+from wko5.demand_profile import build_demand_profile
+
+
+def test_demand_profile_basic():
+    """Demand profile should enrich segments with capacity and demand ratio."""
+    segments = [
+        {"type": "flat", "distance_m": 5000, "duration_s": 600, "avg_grade": 0.0,
+         "power_required": 180, "cumulative_kj_at_start": 0},
+        {"type": "climb", "distance_m": 2000, "duration_s": 600, "avg_grade": 0.06,
+         "power_required": 280, "cumulative_kj_at_start": 108},
+        {"type": "flat", "distance_m": 5000, "duration_s": 600, "avg_grade": 0.0,
+         "power_required": 180, "cumulative_kj_at_start": 276},
+    ]
+    # Fresh PD model
+    pd_model = {"Pmax": 1100, "FRC": 20, "mFTP": 290, "TTE": 3600}
+    durability_params = {"a": 0.5, "b": 0.001, "c": 0.05}
+
+    result = build_demand_profile(segments, pd_model, durability_params)
+    assert isinstance(result, list)
+    assert len(result) == 3
+
+    for seg in result:
+        assert "effective_capacity" in seg
+        assert "demand_ratio" in seg
+        assert "degradation" in seg
+
+
+def test_demand_ratio_increases_with_fatigue():
+    """Later segments should have higher demand ratios due to degradation."""
+    segments = [
+        {"type": "climb", "distance_m": 3000, "duration_s": 600, "avg_grade": 0.05,
+         "power_required": 260, "cumulative_kj_at_start": 0},
+        {"type": "climb", "distance_m": 3000, "duration_s": 600, "avg_grade": 0.05,
+         "power_required": 260, "cumulative_kj_at_start": 5000},
+    ]
+    pd_model = {"Pmax": 1100, "FRC": 20, "mFTP": 290, "TTE": 3600}
+    durability_params = {"a": 0.5, "b": 0.001, "c": 0.05}
+
+    result = build_demand_profile(segments, pd_model, durability_params)
+    # Same power_required but more fatigue → higher demand ratio
+    assert result[1]["demand_ratio"] > result[0]["demand_ratio"]
+
+
+def test_demand_profile_fresh_has_no_degradation():
+    """At zero cumulative work, degradation should be ~1.0."""
+    segments = [
+        {"type": "climb", "distance_m": 2000, "duration_s": 300, "avg_grade": 0.06,
+         "power_required": 280, "cumulative_kj_at_start": 0},
+    ]
+    pd_model = {"Pmax": 1100, "FRC": 20, "mFTP": 290, "TTE": 3600}
+    durability_params = {"a": 0.5, "b": 0.001, "c": 0.05}
+
+    result = build_demand_profile(segments, pd_model, durability_params)
+    assert result[0]["degradation"] > 0.95
+
+
+def test_demand_profile_with_real_ride():
+    """End-to-end: real ride → segments → demand profile."""
+    from wko5.db import get_connection
+    from wko5.segments import analyze_ride_segments
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("""
+        SELECT a.id FROM activities a
+        JOIN records r ON r.activity_id = a.id
+        WHERE a.sub_sport = 'road' AND a.total_ascent > 500
+        AND r.altitude IS NOT NULL
+        GROUP BY a.id
+        ORDER BY a.start_time DESC LIMIT 1
+    """)
+    row = cursor.fetchone()
+    conn.close()
+
+    if row is None:
+        return  # Skip if no suitable ride
+
+    ride_result = analyze_ride_segments(row[0])
+    if not ride_result["segments"]:
+        return
+
+    pd_model = {"Pmax": 1100, "FRC": 20, "mFTP": 290, "TTE": 3600}
+    durability_params = {"a": 0.5, "b": 0.001, "c": 0.05}
+
+    result = build_demand_profile(ride_result["segments"], pd_model, durability_params)
+    assert len(result) == len(ride_result["segments"])
+    assert all("demand_ratio" in s for s in result)
+```
+
+- [ ] **Step 2: Run tests to verify they fail**
+
+Run: `source /tmp/fitenv/bin/activate && pytest tests/test_demand_profile.py -v`
+Expected: FAIL — `ModuleNotFoundError`
+
+- [ ] **Step 3: Implement demand_profile.py**
+
+```python
+# wko5/demand_profile.py
+"""Demand profile — compose segments with durability model and PD curve."""
+
+import numpy as np
+
+from wko5.durability import degradation_factor
+
+
+def _capacity_at_duration(pd_model, duration_s):
+    """Estimate power capacity at a given duration from PD model parameters.
+
+    Uses the 3-component model: P(t) = Pmax * e^(-t/tau) + FRC*1000/(t+t0) + mFTP
+    For simplicity, approximate from mFTP and FRC for durations > 60s.
+    """
+    mftp = pd_model.get("mFTP", 0)
+    frc_kj = pd_model.get("FRC", 0)
+
+    if duration_s <= 0:
+        return mftp
+
+    # Above-threshold capacity from FRC: P_above = FRC * 1000 / duration_s
+    frc_contribution = (frc_kj * 1000) / duration_s if duration_s > 0 else 0
+
+    return mftp + frc_contribution
+
+
+def build_demand_profile(segments, pd_model, durability_params):
+    """Build demand profile by composing segments with durability and PD curve.
+
+    For each segment:
+    1. Look up cumulative_kj_at_start and elapsed time
+    2. Compute degradation_factor at that point
+    3. Compute effective capacity = fresh_capacity * degradation
+    4. Compute demand_ratio = power_required / effective_capacity
+
+    Args:
+        segments: list of segment dicts (from classify_segments or analyze_ride_segments)
+        pd_model: dict with at least {mFTP, FRC} from fit_pd_model
+        durability_params: dict with {a, b, c} from fit_durability_model
+
+    Returns: list of enriched segment dicts with demand_ratio, effective_capacity, degradation
+    """
+    result = []
+    elapsed_s = 0.0
+
+    for seg in segments:
+        cum_kj = seg.get("cumulative_kj_at_start", 0)
+        duration_s = seg.get("duration_s", seg.get("estimated_duration_s", 0))
+        elapsed_h = elapsed_s / 3600
+
+        # Compute degradation at this point in the ride
+        deg = degradation_factor(cum_kj, elapsed_h, durability_params)
+
+        # Fresh capacity at this segment's duration
+        fresh_capacity = _capacity_at_duration(pd_model, duration_s)
+
+        # Effective (fatigued) capacity
+        eff_capacity = fresh_capacity * deg
+
+        # Demand ratio
+        p_required = seg.get("power_required", 0)
+        demand_ratio = p_required / eff_capacity if eff_capacity > 0 else float("inf")
+
+        enriched = dict(seg)
+        enriched.update({
+            "degradation": round(deg, 4),
+            "fresh_capacity": round(fresh_capacity, 1),
+            "effective_capacity": round(eff_capacity, 1),
+            "demand_ratio": round(demand_ratio, 4),
+        })
+
+        result.append(enriched)
+        elapsed_s += duration_s
+
+    return result
+```
+
+- [ ] **Step 4: Run tests**
+
+Run: `source /tmp/fitenv/bin/activate && pytest tests/test_demand_profile.py -v`
+Expected: All tests PASS
+
+- [ ] **Step 5: Run full suite**
+
+Run: `pytest tests/ -q`
+
+- [ ] **Step 6: Commit**
+
+```bash
+git add wko5/demand_profile.py tests/test_demand_profile.py
+git commit -m "feat: add demand profile — compose segments with durability model"
+```
+
+---
+
+## Task 5: API endpoints for Phase 2 modules
 
 **Files:**
 - Modify: `wko5/api/routes.py`
@@ -1171,6 +1396,7 @@ Add to `wko5/api/routes.py`:
 ```python
 from wko5.segments import analyze_ride_segments
 from wko5.durability import fit_durability_model, effective_capacity, frc_budget_simulate
+from wko5.demand_profile import build_demand_profile
 
 @router.get("/segments/{activity_id}", dependencies=[Depends(verify_token)])
 def segments(activity_id: int):
@@ -1183,6 +1409,19 @@ def durability():
     if result is None:
         return {"error": "Insufficient data for durability model"}
     return result
+
+@router.get("/demand/{activity_id}", dependencies=[Depends(verify_token)])
+def demand(activity_id: int):
+    from wko5.pdcurve import compute_envelope_mmp, fit_pd_model
+    ride_segments = analyze_ride_segments(activity_id)
+    if not ride_segments["segments"]:
+        return {"error": "No segments found"}
+    pd_model = fit_pd_model(compute_envelope_mmp(days=90))
+    dur_params = fit_durability_model()
+    if dur_params is None:
+        return {"error": "Insufficient data for durability model"}
+    profile = build_demand_profile(ride_segments["segments"], pd_model, dur_params)
+    return _sanitize_nans({"segments": profile, "summary": ride_segments["summary"]})
 ```
 
 - [ ] **Step 2: Add tests**
@@ -1192,7 +1431,6 @@ Add to `tests/test_api.py`:
 ```python
 def test_segments_with_auth():
     client, token = _get_client()
-    # Use a known road ride with altitude
     response = client.get("/api/segments/1", headers={"Authorization": f"Bearer {token}"})
     assert response.status_code == 200
     data = response.json()
@@ -1208,12 +1446,12 @@ Run: `source /tmp/fitenv/bin/activate && pytest tests/test_api.py -v`
 
 ```bash
 git add wko5/api/routes.py tests/test_api.py
-git commit -m "feat: add segment analysis and durability API endpoints"
+git commit -m "feat: add segment, durability, and demand profile API endpoints"
 ```
 
 ---
 
-## Task 5: Update __init__.py and wko5-analyzer skill
+## Task 6: Update __init__.py and wko5-analyzer skill
 
 **Files:**
 - Modify: `wko5/__init__.py`
@@ -1226,6 +1464,7 @@ Add to `wko5/__init__.py`:
 from wko5.segments import analyze_ride_segments, analyze_gpx
 from wko5.durability import fit_durability_model, effective_capacity, frc_budget_simulate
 from wko5.physics import power_required, speed_from_power
+from wko5.demand_profile import build_demand_profile
 ```
 
 - [ ] **Step 2: Update the wko5-analyzer skill**
@@ -1246,6 +1485,7 @@ eff = effective_capacity(fresh_mmp, cumulative_kj=5000, elapsed_hours=5, params=
 | Route analysis / terrain | analyze_ride_segments() or analyze_gpx() |
 | Durability / fade | fit_durability_model() + effective_capacity() |
 | FRC budget for a route | frc_budget_simulate(segments, mftp, frc_kj) |
+| Demand profile / what does this route require | build_demand_profile(segments, pd_model, durability_params) |
 ```
 
 - [ ] **Step 3: Run full test suite**

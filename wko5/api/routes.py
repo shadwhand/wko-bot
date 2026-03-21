@@ -26,6 +26,9 @@ def _sanitize_nans(obj):
         return [_sanitize_nans(v) for v in obj]
     return obj
 from wko5.config import get_config
+from wko5.segments import analyze_ride_segments
+from wko5.durability import fit_durability_model
+from wko5.demand_profile import build_demand_profile
 from wko5.training_load import current_fitness, build_pmc
 from wko5.pdcurve import compute_envelope_mmp, fit_pd_model, rolling_ftp
 from wko5.profile import power_profile, coggan_ranking, strengths_limiters, phenotype
@@ -100,3 +103,32 @@ def efforts(activity_id: int):
 def rolling_ftp_endpoint(window: int = 90, step: int = 14):
     df = rolling_ftp(window_days=window, step_days=step)
     return df.to_dict(orient="records")
+
+
+@router.get("/segments/{activity_id}", dependencies=[Depends(verify_token)])
+def segments(activity_id: int):
+    result = analyze_ride_segments(activity_id)
+    return _sanitize_nans(result)
+
+
+@router.get("/durability", dependencies=[Depends(verify_token)])
+def durability():
+    result = fit_durability_model()
+    if result is None:
+        return {"error": "Insufficient data for durability model"}
+    return result
+
+
+@router.get("/demand/{activity_id}", dependencies=[Depends(verify_token)])
+def demand(activity_id: int):
+    ride_segments = analyze_ride_segments(activity_id)
+    if not ride_segments["segments"]:
+        return {"error": "No segments found"}
+    pd_model = fit_pd_model(compute_envelope_mmp(days=90))
+    if pd_model is None:
+        return {"error": "PD model fitting failed"}
+    dur_params = fit_durability_model()
+    if dur_params is None:
+        return {"error": "Insufficient data for durability model"}
+    profile = build_demand_profile(ride_segments["segments"], pd_model, dur_params)
+    return _sanitize_nans({"segments": profile, "summary": ride_segments["summary"]})
