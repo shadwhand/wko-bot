@@ -54,7 +54,11 @@ def backfill():
                 for frame in fit:
                     if not isinstance(frame, fitdecode.FitDataMessage) or frame.name != "record":
                         continue
-                    ts = str(safe_get(frame, "timestamp", ""))
+                    ts_raw = safe_get(frame, "timestamp")
+                    if ts_raw is None:
+                        continue
+                    # Normalize timestamp to ISO format with 'T' separator (matches DB storage)
+                    ts = str(ts_raw).replace(" ", "T", 1)
                     alt = safe_get(frame, "enhanced_altitude") or safe_get(frame, "altitude")
                     spd = safe_get(frame, "enhanced_speed") or safe_get(frame, "speed")
                     if ts:
