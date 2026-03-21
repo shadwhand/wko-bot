@@ -2,30 +2,29 @@
 """
 Sync new cycling+power activities from Garmin Connect into cycling_power.db.
 
+Uses garth for authentication (OAuth tokens with auto-refresh, saved to ~/.garth/).
+
 Usage:
     python garmin_sync.py                    # Sync new activities since last DB entry
     python garmin_sync.py --days 30          # Sync last 30 days
     python garmin_sync.py --from 2024-01-01  # Sync from specific date
-
-First run will prompt for Garmin credentials and MFA, then save a session token
-for future runs. Token is stored at ~/.garmin_tokens/
+    python garmin_sync.py --save-fit         # Also save FIT files to fit-files/
 """
 
 import argparse
+import io
 import os
-import sys
 import sqlite3
-import tempfile
 from datetime import datetime, timedelta
 from getpass import getpass
 
 import fitdecode
-from garminconnect import Garmin
+import garth
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 DB_PATH = os.path.join(SCRIPT_DIR, "cycling_power.db")
 FIT_DIR = os.path.join(SCRIPT_DIR, "..", "fit-files")
-TOKEN_DIR = os.path.expanduser("~/.garmin_tokens")
+GARTH_DIR = os.path.expanduser("~/.garth")
 
 
 def safe_get(msg, field, default=None):
@@ -36,22 +35,17 @@ def safe_get(msg, field, default=None):
         return default
 
 
-def get_garmin_client():
-    """Login to Garmin Connect, using saved tokens if available."""
-    os.makedirs(TOKEN_DIR, exist_ok=True)
-
-    client = Garmin()
+def login():
+    """Login to Garmin Connect via garth. Tokens auto-refresh and persist to ~/.garth/."""
     try:
-        client.login(tokenstore=TOKEN_DIR)
+        garth.resume(GARTH_DIR)
         print("Logged in with saved session.")
     except Exception:
         email = input("Garmin email: ")
         password = getpass("Garmin password: ")
-        client = Garmin(email=email, password=password, prompt_mfa=lambda: input("MFA code: "))
-        client.login(tokenstore=TOKEN_DIR)
-        print("Logged in and saved session token.")
-
-    return client
+        garth.login(email, password)
+        garth.save(GARTH_DIR)
+        print("Logged in and saved session.")
 
 
 def get_latest_activity_date(conn):
@@ -60,12 +54,50 @@ def get_latest_activity_date(conn):
     cursor.execute("SELECT MAX(start_time) FROM activities")
     row = cursor.fetchone()
     if row and row[0]:
-        # Parse the datetime string - format varies but typically "YYYY-MM-DD HH:MM:SS"
         try:
             return datetime.fromisoformat(str(row[0]).replace("Z", "+00:00")).date()
         except ValueError:
             return datetime.strptime(str(row[0])[:10], "%Y-%m-%d").date()
     return datetime(2015, 1, 1).date()
+
+
+def fetch_cycling_activities(start_date, end_date):
+    """Fetch cycling activities from Garmin Connect via garth."""
+    activities = []
+    start = 0
+    limit = 100
+
+    while True:
+        batch = garth.Activity.list(limit=limit, start=start)
+        if not batch:
+            break
+
+        for act in batch:
+            # Filter by date
+            act_date_str = act.start_time_local or act.start_time_gmt
+            if act_date_str:
+                try:
+                    act_date = datetime.fromisoformat(str(act_date_str).replace("Z", "+00:00")).date()
+                except (ValueError, TypeError):
+                    continue
+                if act_date < start_date:
+                    # Activities are ordered newest first, so we can stop
+                    return activities
+                if act_date > end_date:
+                    continue
+
+            activities.append(act)
+
+        if len(batch) < limit:
+            break
+        start += limit
+
+    return activities
+
+
+def download_fit(activity_id):
+    """Download the original FIT file for an activity."""
+    return garth.client.download(f"/download-service/files/activity/{activity_id}")
 
 
 def ingest_fit_bytes(fit_bytes, filename, conn):
@@ -82,7 +114,7 @@ def ingest_fit_bytes(fit_bytes, filename, conn):
             if frame.name == "session":
                 sport = str(safe_get(frame, "sport", "")).lower()
                 if sport not in ("cycling", "6"):
-                    return False  # Not cycling
+                    return False
 
                 session_data = {
                     "filename": filename,
@@ -112,11 +144,10 @@ def ingest_fit_bytes(fit_bytes, filename, conn):
                 }
 
             elif frame.name == "record":
-                power = safe_get(frame, "power")
                 records.append({
                     "timestamp": str(safe_get(frame, "timestamp", "")),
                     "elapsed_seconds": safe_get(frame, "elapsed_time"),
-                    "power": power,
+                    "power": safe_get(frame, "power"),
                     "heart_rate": safe_get(frame, "heart_rate"),
                     "cadence": safe_get(frame, "cadence"),
                     "speed": safe_get(frame, "enhanced_speed") or safe_get(frame, "speed"),
@@ -148,7 +179,6 @@ def ingest_fit_bytes(fit_bytes, filename, conn):
     if not session_data:
         return False
 
-    # Check if any records have power data
     has_power = any(r["power"] is not None and r["power"] > 0 for r in records)
     if not has_power:
         return False
@@ -163,14 +193,24 @@ def ingest_fit_bytes(fit_bytes, filename, conn):
 
     for r in records:
         cursor.execute(
-            "INSERT INTO records (activity_id, timestamp, elapsed_seconds, power, heart_rate, cadence, speed, altitude, temperature, latitude, longitude, distance) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)",
-            (activity_id, r["timestamp"], r["elapsed_seconds"], r["power"], r["heart_rate"], r["cadence"], r["speed"], r["altitude"], r["temperature"], r["latitude"], r["longitude"], r["distance"]),
+            "INSERT INTO records (activity_id, timestamp, elapsed_seconds, power, heart_rate, "
+            "cadence, speed, altitude, temperature, latitude, longitude, distance) "
+            "VALUES (?,?,?,?,?,?,?,?,?,?,?,?)",
+            (activity_id, r["timestamp"], r["elapsed_seconds"], r["power"], r["heart_rate"],
+             r["cadence"], r["speed"], r["altitude"], r["temperature"], r["latitude"],
+             r["longitude"], r["distance"]),
         )
 
     for lap in laps:
         cursor.execute(
-            "INSERT INTO laps (activity_id, lap_number, start_time, total_elapsed_time, total_timer_time, total_distance, avg_power, max_power, avg_heart_rate, max_heart_rate, avg_cadence, avg_speed, total_ascent, total_calories, intensity) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
-            (activity_id, lap["lap_number"], lap["start_time"], lap["total_elapsed_time"], lap["total_timer_time"], lap["total_distance"], lap["avg_power"], lap["max_power"], lap["avg_heart_rate"], lap["max_heart_rate"], lap["avg_cadence"], lap["avg_speed"], lap["total_ascent"], lap["total_calories"], lap["intensity"]),
+            "INSERT INTO laps (activity_id, lap_number, start_time, total_elapsed_time, "
+            "total_timer_time, total_distance, avg_power, max_power, avg_heart_rate, "
+            "max_heart_rate, avg_cadence, avg_speed, total_ascent, total_calories, intensity) "
+            "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+            (activity_id, lap["lap_number"], lap["start_time"], lap["total_elapsed_time"],
+             lap["total_timer_time"], lap["total_distance"], lap["avg_power"], lap["max_power"],
+             lap["avg_heart_rate"], lap["max_heart_rate"], lap["avg_cadence"], lap["avg_speed"],
+             lap["total_ascent"], lap["total_calories"], lap["intensity"]),
         )
 
     conn.commit()
@@ -204,21 +244,23 @@ def main():
     existing_filenames = {row[0] for row in cursor.fetchall()}
 
     # Login and fetch activities
-    client = get_garmin_client()
-    activities = client.get_activities_by_date(
-        startdate=start_date.isoformat(),
-        enddate=end_date.isoformat(),
-        activitytype="cycling",
-    )
-    print(f"Found {len(activities)} cycling activities on Garmin Connect")
+    login()
+    activities = fetch_cycling_activities(start_date, end_date)
+    print(f"Found {len(activities)} activities on Garmin Connect in date range")
 
     synced = 0
     skipped = 0
     no_power = 0
 
     for act in activities:
-        activity_id = act["activityId"]
-        activity_name = act.get("activityName", "unknown")
+        # Get activity ID from the summary dict
+        summary = act.summary or {}
+        activity_id = summary.get("activityId")
+        activity_name = summary.get("activityName", "unknown")
+
+        if not activity_id:
+            continue
+
         filename = f"garmin_{activity_id}.fit"
 
         if filename in existing_filenames:
@@ -226,18 +268,13 @@ def main():
             continue
 
         try:
-            fit_data = client.download_activity(
-                activity_id,
-                dl_fmt=Garmin.ActivityDownloadFormat.ORIGINAL,
-            )
-
-            # fitdecode needs a file-like object
-            import io
+            fit_data = download_fit(activity_id)
             fit_io = io.BytesIO(fit_data)
 
             if ingest_fit_bytes(fit_io, filename, conn):
                 synced += 1
-                print(f"  + {activity_name} ({act.get('startTimeLocal', '')[:10]})")
+                date_str = str(act.start_time_local or "")[:10]
+                print(f"  + {activity_name} ({date_str})")
 
                 if args.save_fit:
                     os.makedirs(FIT_DIR, exist_ok=True)
