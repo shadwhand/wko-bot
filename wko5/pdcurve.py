@@ -177,10 +177,21 @@ def fit_pd_model(mmp):
     above_ftp = np.where(modeled > mftp + 1)[0]
     tte = float(above_ftp[-1] + 1) if len(above_ftp) > 0 else float("nan")
 
-    # mVO2max via ACSM: VO2 (mL/min) = (watts * 12.35) + (weight * 3.5)
+    # mVO2max for trained cyclists
+    # Use power at ~5min (300s) from MMP as proxy for VO2max power
+    # Convert via gross efficiency (23% for trained cyclists, range 22-25%)
+    # Caloric equivalent: 1 L O2 ≈ 20.9 kJ (at RER ~0.9)
+    # VO2 (mL/min) = Power(W) * 60 * 1000 / (efficiency * 20900)
     cfg = get_config()
-    vo2max_ml_min = (mftp * 12.35) + (cfg["weight_kg"] * 3.5)
-    vo2max_ml_min_kg = vo2max_ml_min / cfg["weight_kg"]
+    weight_kg = cfg["weight_kg"]
+    if len(mmp) >= 300:
+        p_vo2max = float(mmp[299])  # power at 5 min — proxy for VO2max power
+    else:
+        p_vo2max = mftp * 1.15  # rough estimate: VO2max power ~115% of FTP
+
+    gross_efficiency = 0.23
+    vo2max_ml_min = p_vo2max * 60 * 1000 / (gross_efficiency * 20900)
+    vo2max_ml_min_kg = vo2max_ml_min / weight_kg
 
     return {
         "Pmax": round(float(pmax), 1),

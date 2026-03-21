@@ -107,3 +107,16 @@ def test_power_at_durations_beyond_length():
     result = power_at_durations(mmp, durations=[1, 5])
     assert result[1] == 500
     assert np.isnan(result[5])
+
+
+def test_vo2max_trained_cyclist():
+    """VO2max for a trained cyclist should be in a reasonable range using efficiency-based estimation."""
+    mmp = compute_envelope_mmp(days=365)
+    if len(mmp) < 300:
+        return
+    result = fit_pd_model(mmp)
+    if result is None:
+        return
+    # Trained cyclist at ~3.5-4.0 W/kg should be ~45-70 mL/min/kg
+    assert 40 < result["mVO2max_ml_min_kg"] < 75, \
+        f"mVO2max={result['mVO2max_ml_min_kg']} outside trained cyclist range"
