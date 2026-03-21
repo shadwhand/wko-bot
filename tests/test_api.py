@@ -58,3 +58,12 @@ def test_config_get():
     data = response.json()
     assert "weight_kg" in data
     assert data["weight_kg"] == 78.0
+
+
+def test_segments_with_auth():
+    client, token = _get_client()
+    response = client.get("/api/segments/1", headers={"Authorization": f"Bearer {token}"})
+    assert response.status_code == 200
+    data = response.json()
+    assert "segments" in data
+    assert "summary" in data
