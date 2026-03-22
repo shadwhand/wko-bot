@@ -3,7 +3,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
 import numpy as np
 import pandas as pd
-from wko5.training_load import compute_np, compute_tss, build_pmc, current_fitness, efficiency_factor
+from wko5.training_load import compute_np, compute_tss, build_pmc, current_fitness, efficiency_factor, if_distribution
 
 
 def test_compute_np_constant_power():
@@ -73,3 +73,16 @@ def test_current_fitness_returns_dict():
 def test_efficiency_factor():
     ef = efficiency_factor(1)
     assert isinstance(ef, float)
+
+
+def test_if_distribution():
+    """IF distribution should return histogram and floor/ceiling."""
+    result = if_distribution(days_back=90)
+    if result is None:
+        return  # insufficient data
+    assert "histogram" in result
+    assert "floor" in result
+    assert "ceiling" in result
+    assert "compressed" in result
+    assert isinstance(result["compressed"], bool)
+    assert result["floor"] <= result["ceiling"]

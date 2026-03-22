@@ -170,3 +170,48 @@ def ef_trend(days=365):
                 "activity_id": act["id"],
             })
     return pd.DataFrame(results)
+
+
+def if_distribution(days_back=90, ftp=None):
+    """Analyze IF distribution across recent rides.
+
+    Returns dict with histogram, floor (10th percentile), ceiling (90th percentile),
+    spread, compressed flag (floor > 0.70), and ride count.
+
+    Source: TMT-68, TMT-69 — IF distribution is the #1 coaching diagnostic.
+    """
+    from wko5.db import FTP_DEFAULT
+
+    if ftp is None:
+        ftp = get_config().get("ftp") or FTP_DEFAULT
+
+    activities = get_activities()
+    cutoff = (pd.Timestamp.now() - pd.Timedelta(days=days_back)).strftime("%Y-%m-%d")
+    recent = activities[activities["start_time"] >= cutoff]
+
+    if_values = []
+    for _, act in recent.iterrows():
+        np_val = act.get("normalized_power")
+        if np_val and np_val > 0 and ftp > 0:
+            if_values.append(round(np_val / ftp, 3))
+
+    if len(if_values) < 5:
+        return None
+
+    arr = np.array(if_values)
+    floor = float(np.percentile(arr, 10))
+    ceiling = float(np.percentile(arr, 90))
+
+    bins = np.arange(0, 1.5, 0.05)
+    counts, edges = np.histogram(arr, bins=bins)
+    histogram = {f"{edges[i]:.2f}-{edges[i+1]:.2f}": int(counts[i])
+                 for i in range(len(counts)) if counts[i] > 0}
+
+    return {
+        "histogram": histogram,
+        "floor": round(floor, 3),
+        "ceiling": round(ceiling, 3),
+        "spread": round(ceiling - floor, 3),
+        "compressed": floor > 0.70,
+        "rides_analyzed": len(if_values),
+    }

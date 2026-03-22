@@ -7,6 +7,7 @@ import pandas as pd
 from wko5.clinical import (
     check_ctl_ramp_rate, check_tsb_floor, check_hr_decoupling_anomaly,
     check_power_hr_inversion, check_collapse_zone, check_energy_deficit,
+    check_if_floor, check_intensity_black_hole,
     get_clinical_flags, MEDICAL_DISCLAIMER,
 )
 
@@ -109,6 +110,26 @@ def test_medical_disclaimer_present():
     """Medical disclaimer string should be defined."""
     assert len(MEDICAL_DISCLAIMER) > 100
     assert "NOT a substitute" in MEDICAL_DISCLAIMER
+
+
+def test_check_if_floor():
+    """IF floor diagnostic should return severity and floor value."""
+    result = check_if_floor(days_back=90)
+    if result is None:
+        return  # insufficient data
+    assert "floor_if" in result
+    assert "severity" in result
+    assert result["severity"] in ("green", "yellow", "red")
+
+
+def test_check_intensity_black_hole():
+    """Should detect when most rides are in the moderate zone."""
+    result = check_intensity_black_hole(days_back=90)
+    # Result is dict or None
+    if result is not None:
+        assert "compressed" in result
+        assert "floor" in result
+        assert "ceiling" in result
 
 
 def test_get_clinical_flags_structure():

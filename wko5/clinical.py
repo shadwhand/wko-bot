@@ -276,6 +276,77 @@ def check_energy_deficit(total_duration_s, avg_power, weight_kg,
     return None
 
 
+def check_if_floor(days_back=90):
+    """Check if endurance ride IF floor is too high.
+
+    IF floor > 0.70 = yellow (riding endurance too hard)
+    IF floor > 0.75 = red (significant easy gains available from riding easier)
+
+    Source: TMT-69, TMT-68 — IF distribution is the #1 diagnostic coaches check.
+    """
+    from wko5.training_load import if_distribution
+
+    dist = if_distribution(days_back=days_back)
+    if dist is None:
+        return None
+
+    floor_if = dist["floor"]
+    if floor_if > 0.75:
+        severity = "red"
+        message = (f"Endurance ride IF floor is {floor_if:.2f} — riding too hard. "
+                   f"Easy gains available from riding easier (target IF 0.50-0.65).")
+    elif floor_if > 0.70:
+        severity = "yellow"
+        message = (f"Endurance ride IF floor is {floor_if:.2f} — slightly high. "
+                   f"Consider riding easier on recovery/endurance days.")
+    else:
+        severity = "green"
+        message = f"Endurance ride IF floor is {floor_if:.2f} — good distribution."
+
+    return {
+        "flag": "if_floor",
+        "floor_if": round(floor_if, 3),
+        "severity": severity,
+        "message": message,
+        "rides_analyzed": dist["rides_analyzed"],
+    }
+
+
+def check_intensity_black_hole(days_back=90):
+    """Detect intensity black hole — most rides in moderate zone.
+
+    Flags when IF distribution is compressed (floor > 0.70, spread < 0.25),
+    meaning the athlete never rides truly easy or truly hard.
+
+    Source: TMT-58, TMT-69 — athletes who don't polarize settle into
+    80-90% capacity, never truly hard or easy.
+    """
+    from wko5.training_load import if_distribution
+
+    dist = if_distribution(days_back=days_back)
+    if dist is None:
+        return None
+
+    floor = dist["floor"]
+    ceiling = dist["ceiling"]
+    spread = dist["spread"]
+
+    if dist["compressed"] and spread < 0.25:
+        return {
+            "flag": "intensity_black_hole",
+            "compressed": True,
+            "floor": round(floor, 3),
+            "ceiling": round(ceiling, 3),
+            "spread": round(spread, 3),
+            "severity": "yellow",
+            "message": (f"Intensity black hole detected: IF range {floor:.2f}-{ceiling:.2f}. "
+                        f"Most rides are moderate — add truly easy (IF<0.50) and truly hard "
+                        f"(IF>0.90) sessions."),
+        }
+
+    return None
+
+
 def get_clinical_flags(days_back=30):
     """Get all current clinical flags.
 
@@ -296,6 +367,15 @@ def get_clinical_flags(days_back=30):
     hr_flag = check_hr_decoupling_anomaly(days_back=days_back)
     if hr_flag:
         flags.append(hr_flag)
+
+    # EC podcast diagnostics
+    if_floor = check_if_floor()
+    if if_floor and if_floor["severity"] != "green":
+        flags.append(if_floor)
+
+    black_hole = check_intensity_black_hole()
+    if black_hole:
+        flags.append(black_hole)
 
     # Determine overall alert level
     severities = [f["severity"] for f in flags]
