@@ -11,3 +11,4 @@ __pycache__/
 .pytest_cache/
 tools/backfill-altitude/target/
 tools/frechet-rs/target/
+docs/research/raw/
