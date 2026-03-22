@@ -34,6 +34,7 @@ from wko5.clinical import get_clinical_flags
 from wko5.pacing import solve_pacing, RidePlan
 from wko5.nutrition import NutritionPlan, FeedEvent
 from wko5.ride_planner import plan_ride
+from wko5.blocks import block_stats, detect_phase, feasibility_projection
 from wko5.training_load import current_fitness, build_pmc
 from wko5.pdcurve import compute_envelope_mmp, fit_pd_model, rolling_ftp
 from wko5.profile import power_profile, coggan_ranking, strengths_limiters, phenotype
@@ -204,3 +205,35 @@ def plan_ride_endpoint(body: dict):
         humidity_pct=body.get("humidity_pct", 50),
     )
     return _sanitize_nans(result)
+
+
+@router.get("/training-blocks", dependencies=[Depends(verify_token)])
+def training_blocks(start: str = "2025-01-01", end: str = None):
+    from datetime import datetime
+    if not end:
+        end = datetime.now().strftime("%Y-%m-%d")
+    result = block_stats(start, end)
+    return _sanitize_nans(result)
+
+
+@router.get("/weekly-summary", dependencies=[Depends(verify_token)])
+def weekly_summary_endpoint(start: str = "2025-01-01", end: str = None):
+    from datetime import datetime
+    from wko5.blocks import weekly_summary
+    if not end:
+        end = datetime.now().strftime("%Y-%m-%d")
+    df = weekly_summary(start, end)
+    return _sanitize_nans(df.to_dict(orient="records"))
+
+
+@router.get("/detect-phase", dependencies=[Depends(verify_token)])
+def detect_phase_endpoint(start: str = "2025-01-01", end: str = None):
+    from datetime import datetime
+    if not end:
+        end = datetime.now().strftime("%Y-%m-%d")
+    return detect_phase(start, end)
+
+
+@router.get("/feasibility", dependencies=[Depends(verify_token)])
+def feasibility(target_ctl: int = 80, weeks: int = 12):
+    return feasibility_projection(target_ctl, weeks)

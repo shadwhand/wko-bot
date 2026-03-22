@@ -16,3 +16,5 @@ from wko5.clinical import get_clinical_flags, check_ctl_ramp_rate, check_tsb_flo
 from wko5.pacing import solve_pacing, RidePlan
 from wko5.nutrition import evaluate_nutrition_plan, NutritionPlan, FeedEvent, time_to_bonk, cho_burn_rate
 from wko5.ride_planner import plan_ride
+from wko5.blocks import block_stats, weekly_summary, detect_phase, compare_blocks, feasibility_projection
+from wko5.tp_ingest import ingest_tp_csv, get_tp_workouts, match_tp_to_activities
