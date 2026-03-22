@@ -286,26 +286,21 @@ def _transcribe_episode(audio_file):
     whisper_out = "/tmp/whisper_ec"
     os.makedirs(whisper_out, exist_ok=True)
 
-    # Try MPS (Apple Silicon GPU) first, fall back to CPU
-    for device, timeout_s in [("mps", 1800), ("cpu", 3600)]:
-        try:
-            logger.info(f"  Transcribing with Whisper ({device})...")
-            result = subprocess.run(
-                ["whisper", audio_file, "--model", "base", "--device", device,
-                 "--output_format", "txt", "--output_dir", whisper_out, "--language", "en"],
-                capture_output=True, text=True, timeout=timeout_s,
-            )
-            if result.returncode == 0:
-                break
-            if device == "mps":
-                logger.info(f"  MPS failed (rc={result.returncode}), trying CPU...")
-                continue
+    # CPU-only: MPS has torch.AcceleratorError bugs with Whisper beam search
+    # base model on CPU runs ~5x real-time (~14min for 1hr episode)
+    try:
+        logger.info(f"  Transcribing with Whisper (cpu, base model)...")
+        result = subprocess.run(
+            ["whisper", audio_file, "--model", "base", "--device", "cpu",
+             "--output_format", "txt", "--output_dir", whisper_out, "--language", "en"],
+            capture_output=True, text=True, timeout=3600,
+        )
+        if result.returncode != 0:
+            logger.warning(f"  Whisper failed (rc={result.returncode}): {result.stderr[:200]}")
             return None
-        except subprocess.TimeoutExpired:
-            if device == "mps":
-                logger.info(f"  MPS timed out after {timeout_s}s, trying CPU...")
-                continue
-            return None
+    except subprocess.TimeoutExpired:
+        logger.warning(f"  Whisper timed out after 3600s")
+        return None
 
     basename = Path(audio_file).stem
     txt_path = Path(whisper_out) / f"{basename}.txt"
