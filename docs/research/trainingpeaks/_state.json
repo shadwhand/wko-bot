@@ -1,0 +1,44 @@
+{
+  "processed": {
+    "https://www.trainingpeaks.com/blog/circadian-rhythm-athletic-performance/": {
+      "score": 3,
+      "reason": "Could not triage",
+      "tags": [],
+      "title": "How Circadian Rhythm Affects Peak Athletic Performance",
+      "author": "Allison Bettin"
+    },
+    "https://www.trainingpeaks.com/blog/4-easy-bike-handling-drills-for-beginners/": {
+      "score": 3,
+      "reason": "Could not triage",
+      "tags": [],
+      "title": "4 Easy Bike Handling Drills for Beginners",
+      "author": "Allison Bettin"
+    },
+    "https://www.trainingpeaks.com/blog/endurance-training-after-giving-birth/": {
+      "score": 3,
+      "reason": "Could not triage",
+      "tags": [],
+      "title": "Endurance Training After Giving Birth",
+      "author": "Allison Bettin"
+    },
+    "https://www.trainingpeaks.com/blog/shoulder-strengthening-exercises-for-triathletes/": {
+      "score": 3,
+      "reason": "Could not triage",
+      "tags": [],
+      "title": "Shoulder Strengthening Exercises for Triathletes",
+      "author": "Allison Bettin"
+    },
+    "https://www.trainingpeaks.com/blog/how-to-pace-a-time-trial/": {
+      "score": 3,
+      "reason": "Could not triage",
+      "tags": [],
+      "title": "How to Pace a Time Trial",
+      "author": "Allison Bettin"
+    }
+  },
+  "stats": {
+    "total": 5,
+    "kept": 0,
+    "skipped": 5
+  }
+}
