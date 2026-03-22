@@ -58,10 +58,7 @@ def compute_windowed_mmp(power_series, window_hours=2):
     power = power_series.fillna(0).values.astype(float)
     cumsum = np.concatenate([[0], np.cumsum(power)])
 
-    # Pre-compute cumulative TSS: sum(power_i^2) / FTP / 3600
-    cfg = get_config()
-    ftp = cfg["ftp_manual"]
-    cum_tss = np.cumsum(power ** 2) / (ftp * 3600) if ftp > 0 else np.cumsum(power) / 1000
+    # Cumulative kJ is computed from the cumsum already (cumsum is in watt-seconds)
 
     results = []
 
@@ -70,18 +67,16 @@ def compute_windowed_mmp(power_series, window_hours=2):
         end = start + window_s
         window_power = power[start:end]
 
-        # Cumulative work and TSS from ride start to window midpoint
+        # Cumulative work (kJ) from ride start to window midpoint
         midpoint = start + window_s // 2
         cum_kj = float(cumsum[midpoint]) / 1000
         elapsed_h = midpoint / 3600
-        cum_tss_val = float(cum_tss[midpoint - 1]) if midpoint > 0 else 0.0
 
         entry = {
             "window_start_h": round(start / 3600, 2),
             "window_end_h": round(end / 3600, 2),
             "elapsed_hours": round(elapsed_h, 2),
             "cumulative_kj": round(cum_kj, 1),
-            "cumulative_tss": round(cum_tss_val, 1),
         }
 
         # Compute MMP at specific durations via rolling mean max (vectorized)
@@ -100,9 +95,9 @@ def compute_windowed_mmp(power_series, window_hours=2):
 
 
 def _decay_model(x, a, b, c):
-    """Decay function for curve fitting. x = (cumulative_tss, elapsed_hours)."""
-    tss, hours = x
-    return a * np.exp(-b * tss / 1000) + (1 - a) * np.exp(-c * hours)
+    """Decay function for curve fitting. x = (cumulative_kj, elapsed_hours)."""
+    kj, hours = x
+    return a * np.exp(-b * kj / 1000) + (1 - a) * np.exp(-c * hours)
 
 
 def fit_durability_model(min_ride_hours=2, min_rides=5):
@@ -145,7 +140,7 @@ def fit_durability_model(min_ride_hours=2, min_rides=5):
             if ratio > 1.2:
                 continue
 
-            all_x_kj.append(w["cumulative_tss"])
+            all_x_kj.append(w["cumulative_kj"])
             all_x_hours.append(w["elapsed_hours"])
             all_y_ratio.append(ratio)
 
