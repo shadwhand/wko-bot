@@ -67,3 +67,12 @@ def test_segments_with_auth():
     data = response.json()
     assert "segments" in data
     assert "summary" in data
+
+
+def test_clinical_flags_with_auth():
+    client, token = _get_client()
+    response = client.get("/api/clinical-flags", headers={"Authorization": f"Bearer {token}"})
+    assert response.status_code == 200
+    data = response.json()
+    assert "alert_level" in data
+    assert "current_flags" in data

@@ -11,3 +11,5 @@ from wko5.physics import power_required, speed_from_power
 from wko5.segments import analyze_ride_segments, analyze_gpx
 from wko5.durability import fit_durability_model, effective_capacity, frc_budget_simulate
 from wko5.demand_profile import build_demand_profile
+from wko5.gap_analysis import gap_analysis, run_monte_carlo
+from wko5.clinical import get_clinical_flags, check_ctl_ramp_rate, check_tsb_floor

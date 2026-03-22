@@ -29,6 +29,8 @@ from wko5.config import get_config
 from wko5.segments import analyze_ride_segments
 from wko5.durability import fit_durability_model
 from wko5.demand_profile import build_demand_profile
+from wko5.gap_analysis import gap_analysis
+from wko5.clinical import get_clinical_flags
 from wko5.training_load import current_fitness, build_pmc
 from wko5.pdcurve import compute_envelope_mmp, fit_pd_model, rolling_ftp
 from wko5.profile import power_profile, coggan_ranking, strengths_limiters, phenotype
@@ -132,3 +134,24 @@ def demand(activity_id: int):
         return {"error": "Insufficient data for durability model"}
     profile = build_demand_profile(ride_segments["segments"], pd_model, dur_params)
     return _sanitize_nans({"segments": profile, "summary": ride_segments["summary"]})
+
+
+@router.get("/gap-analysis/{activity_id}", dependencies=[Depends(verify_token)])
+def gap_analysis_endpoint(activity_id: int, n_draws: int = 200):
+    ride_segments = analyze_ride_segments(activity_id)
+    if not ride_segments["segments"]:
+        return {"error": "No segments found"}
+    pd_model = fit_pd_model(compute_envelope_mmp(days=90))
+    if pd_model is None:
+        return {"error": "PD model fitting failed"}
+    dur_params = fit_durability_model()
+    if dur_params is None:
+        return {"error": "Insufficient data for durability model"}
+    result = gap_analysis(ride_segments["segments"], pd_model, dur_params, n_draws=n_draws)
+    return _sanitize_nans(result)
+
+
+@router.get("/clinical-flags", dependencies=[Depends(verify_token)])
+def clinical_flags(days_back: int = 30):
+    result = get_clinical_flags(days_back=days_back)
+    return _sanitize_nans(result)
