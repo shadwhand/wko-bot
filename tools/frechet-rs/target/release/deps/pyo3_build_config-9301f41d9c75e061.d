@@ -1,0 +1,14 @@
+/Users/jshin/Documents/wko5-experiments/tools/frechet-rs/target/release/deps/pyo3_build_config-9301f41d9c75e061.d: /Users/jshin/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/pyo3-build-config-0.23.5/src/lib.rs /Users/jshin/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/pyo3-build-config-0.23.5/src/errors.rs /Users/jshin/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/pyo3-build-config-0.23.5/src/impl_.rs /Users/jshin/Documents/wko5-experiments/tools/frechet-rs/target/release/build/pyo3-build-config-986d5b01db1fc0a4/out/pyo3-build-config-file.txt /Users/jshin/Documents/wko5-experiments/tools/frechet-rs/target/release/build/pyo3-build-config-986d5b01db1fc0a4/out/pyo3-build-config.txt
+
+/Users/jshin/Documents/wko5-experiments/tools/frechet-rs/target/release/deps/libpyo3_build_config-9301f41d9c75e061.rlib: /Users/jshin/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/pyo3-build-config-0.23.5/src/lib.rs /Users/jshin/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/pyo3-build-config-0.23.5/src/errors.rs /Users/jshin/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/pyo3-build-config-0.23.5/src/impl_.rs /Users/jshin/Documents/wko5-experiments/tools/frechet-rs/target/release/build/pyo3-build-config-986d5b01db1fc0a4/out/pyo3-build-config-file.txt /Users/jshin/Documents/wko5-experiments/tools/frechet-rs/target/release/build/pyo3-build-config-986d5b01db1fc0a4/out/pyo3-build-config.txt
+
+/Users/jshin/Documents/wko5-experiments/tools/frechet-rs/target/release/deps/libpyo3_build_config-9301f41d9c75e061.rmeta: /Users/jshin/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/pyo3-build-config-0.23.5/src/lib.rs /Users/jshin/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/pyo3-build-config-0.23.5/src/errors.rs /Users/jshin/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/pyo3-build-config-0.23.5/src/impl_.rs /Users/jshin/Documents/wko5-experiments/tools/frechet-rs/target/release/build/pyo3-build-config-986d5b01db1fc0a4/out/pyo3-build-config-file.txt /Users/jshin/Documents/wko5-experiments/tools/frechet-rs/target/release/build/pyo3-build-config-986d5b01db1fc0a4/out/pyo3-build-config.txt
+
+/Users/jshin/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/pyo3-build-config-0.23.5/src/lib.rs:
+/Users/jshin/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/pyo3-build-config-0.23.5/src/errors.rs:
+/Users/jshin/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/pyo3-build-config-0.23.5/src/impl_.rs:
+/Users/jshin/Documents/wko5-experiments/tools/frechet-rs/target/release/build/pyo3-build-config-986d5b01db1fc0a4/out/pyo3-build-config-file.txt:
+/Users/jshin/Documents/wko5-experiments/tools/frechet-rs/target/release/build/pyo3-build-config-986d5b01db1fc0a4/out/pyo3-build-config.txt:
+
+# env-dep:CARGO_PKG_VERSION=0.23.5
+# env-dep:OUT_DIR=/Users/jshin/Documents/wko5-experiments/tools/frechet-rs/target/release/build/pyo3-build-config-986d5b01db1fc0a4/out
