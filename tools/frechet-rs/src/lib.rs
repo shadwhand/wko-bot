@@ -225,9 +225,18 @@ fn find_matching_activities(
             continue;
         }
 
-        // Convert semicircles to degrees
-        let lats: Vec<f64> = rows.iter().map(|(lat, _)| lat * semicircle_to_deg).collect();
-        let lons: Vec<f64> = rows.iter().map(|(_, lon)| lon * semicircle_to_deg).collect();
+        // Detect format: semicircles (abs > 1000) vs degrees (abs < 180)
+        let is_semicircles = rows[0].0.abs() > 1000.0;
+        let lats: Vec<f64> = if is_semicircles {
+            rows.iter().map(|(lat, _)| lat * semicircle_to_deg).collect()
+        } else {
+            rows.iter().map(|(lat, _)| *lat).collect()
+        };
+        let lons: Vec<f64> = if is_semicircles {
+            rows.iter().map(|(_, lon)| lon * semicircle_to_deg).collect()
+        } else {
+            rows.iter().map(|(_, lon)| *lon).collect()
+        };
 
         // Quick bounding box check
         let lat_min = lats.iter().cloned().fold(f64::INFINITY, f64::min);

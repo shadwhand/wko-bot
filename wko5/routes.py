@@ -333,8 +333,17 @@ def _get_activity_track(activity_id, conn, target_spacing_m=1000):
     if len(rows) < 10:
         return None
 
-    lats = np.array([r[0] for r in rows]) * SEMICIRCLE_TO_DEG
-    lons = np.array([r[1] for r in rows]) * SEMICIRCLE_TO_DEG
+    raw_lats = np.array([r[0] for r in rows])
+    raw_lons = np.array([r[1] for r in rows])
+
+    # Detect format: semicircles (large integers like 451061695) vs degrees (small floats like 37.8)
+    # Semicircles have absolute values > 1000; degrees are -180 to 180
+    if np.abs(raw_lats[0]) > 1000:
+        lats = raw_lats * SEMICIRCLE_TO_DEG
+        lons = raw_lons * SEMICIRCLE_TO_DEG
+    else:
+        lats = raw_lats
+        lons = raw_lons
 
     # Downsample
     ds = downsample_track(lats, lons, target_spacing_m=target_spacing_m)
