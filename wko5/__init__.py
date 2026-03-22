@@ -18,3 +18,4 @@ from wko5.nutrition import evaluate_nutrition_plan, NutritionPlan, FeedEvent, ti
 from wko5.ride_planner import plan_ride
 from wko5.blocks import block_stats, weekly_summary, detect_phase, compare_blocks, feasibility_projection
 from wko5.tp_ingest import ingest_tp_csv, get_tp_workouts, match_tp_to_activities
+from wko5.routes import save_route, get_route, find_similar_routes, link_activities_to_routes, get_route_history

@@ -35,6 +35,7 @@ from wko5.pacing import solve_pacing, RidePlan
 from wko5.nutrition import NutritionPlan, FeedEvent
 from wko5.ride_planner import plan_ride
 from wko5.blocks import block_stats, detect_phase, feasibility_projection
+from wko5.routes import save_route as save_route_fn, get_route, get_all_routes, get_route_history, get_ride_plans
 from wko5.training_load import current_fitness, build_pmc
 from wko5.pdcurve import compute_envelope_mmp, fit_pd_model, rolling_ftp
 from wko5.profile import power_profile, coggan_ranking, strengths_limiters, phenotype
@@ -237,3 +238,18 @@ def detect_phase_endpoint(start: str = "2025-01-01", end: str = None):
 @router.get("/feasibility", dependencies=[Depends(verify_token)])
 def feasibility(target_ctl: int = 80, weeks: int = 12):
     return feasibility_projection(target_ctl, weeks)
+
+
+@router.get("/routes", dependencies=[Depends(verify_token)])
+def list_routes():
+    return get_all_routes()
+
+
+@router.get("/routes/{route_id}", dependencies=[Depends(verify_token)])
+def route_detail(route_id: int):
+    route = get_route(route_id)
+    if route is None:
+        return {"error": "Route not found"}
+    route["history"] = get_route_history(route_id)
+    route["plans"] = get_ride_plans(route_id)
+    return _sanitize_nans(route)
