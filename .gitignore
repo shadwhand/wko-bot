@@ -10,3 +10,4 @@ __pycache__/
 *.pyc
 .pytest_cache/
 tools/backfill-altitude/target/
+tools/frechet-rs/target/
