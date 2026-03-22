@@ -282,34 +282,20 @@ def _download_episode(url, slug):
 
 
 def _transcribe_episode(audio_file):
-    """Transcribe audio file with Whisper. Returns transcript text or None."""
-    whisper_out = "/tmp/whisper_ec"
-    os.makedirs(whisper_out, exist_ok=True)
+    """Transcribe audio file with mlx-whisper. Returns transcript text or None.
 
-    # CPU-only: MPS has torch.AcceleratorError bugs with Whisper beam search
-    # base model on CPU runs ~5x real-time (~14min for 1hr episode)
+    mlx-whisper uses Apple's MLX framework — native Apple Silicon GPU acceleration
+    without PyTorch MPS bugs. ~68s for 1hr episode with large-v3 model.
+    """
     try:
-        logger.info(f"  Transcribing with Whisper (cpu, base model)...")
-        result = subprocess.run(
-            ["whisper", audio_file, "--model", "base", "--device", "cpu",
-             "--output_format", "txt", "--output_dir", whisper_out, "--language", "en"],
-            capture_output=True, text=True, timeout=3600,
-        )
-        if result.returncode != 0:
-            logger.warning(f"  Whisper failed (rc={result.returncode}): {result.stderr[:200]}")
-            return None
-    except subprocess.TimeoutExpired:
-        logger.warning(f"  Whisper timed out after 3600s")
+        logger.info(f"  Transcribing with mlx-whisper (large-v3)...")
+        import mlx_whisper
+        result = mlx_whisper.transcribe(audio_file)
+        transcript = result.get("text", "").strip()
+        return transcript if len(transcript) > 100 else None
+    except Exception as e:
+        logger.warning(f"  mlx-whisper failed: {e}")
         return None
-
-    basename = Path(audio_file).stem
-    txt_path = Path(whisper_out) / f"{basename}.txt"
-    if not txt_path.exists():
-        return None
-
-    transcript = txt_path.read_text().strip()
-    txt_path.unlink(missing_ok=True)
-    return transcript if len(transcript) > 100 else None
 
 
 def scrape_ec_podcast(limit=None):
