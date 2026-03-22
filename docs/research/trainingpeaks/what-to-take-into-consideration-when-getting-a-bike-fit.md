@@ -1,0 +1,47 @@
+---
+title: "Considerations When Getting a Bike Fit"
+author: "Nick Busca"
+source: "https://www.trainingpeaks.com/blog/what-to-take-into-consideration-when-getting-a-bike-fit/"
+score: 0
+skills: ["wko5-science", "wko5-training"]
+relevance: "aerodynamics, recovery, ultra_endurance, heat_altitude"
+trusted_author: false
+---
+
+Setting up your bike fit for a particular race or racing season can help you find a comfortable position that balances aerodynamics and comfort with performance.
+In August 2016, when the German powerhouse Tony Martin finished 12th in the Individual Time Trial at the Olympic Games in Rio—3:18 behind the gold medal Fabian Cancellara—many thought that the German rider was already over the hill. Fast forward to the Qatar World Championships held in October 2016: Tony Martin has his revenge and wins not only the team’s TT with his squad, but smashes the individual event and brings home another gold—his fourth in the discipline.
+What happened in between? An incredible recovery? A grueling training schedule that was able to get him back into shape?
+Martin confessed that ahead of the WC, he trained in his bathroom with the heater on in order to get used to the conditions he would face in Doha. Afterward, he said that the actual race was easier than doing turbo training in the toilet.
+At the same time, there was also another (more technical) reason for his success: After the Games, Martin decided to go back to his former TT position. Not one as aerodynamic as what he opted for in Rio, but one that in the past had helped him crank out more watts on his bike.
+Before Doha, he told Radsport News that the changes in the aero position he used in Rio “Have been serious. I had my hands very high up and my elbows low down, but that wasn’t for me. Now, I feel much more comfortable again. One has to accept that the aerodynamics are not everything, but the comfort factor plays a very, very important role. If your body does not work well, then the whole aerodynamics thing means nothing.”
+That is equally true (if not even more important) in longer time trials, or events like IRONMAN and IRONMAN 70.3. The balance between aerodynamics and comfort is a tricky one, but one that you must take into consideration when you’re spending a big chunk of your training time on your TT bike.
+When Mat Steinmetz, the bike fitter employed by Cervélo to develop the P5X and a TrainingPeaks contributor, presented the bolide to the European press, he also listed his own fitting pillars:
+comfort, power and aerodynamics
+— in that order.
+There are many bike fitters who will put you on a bike by only looking at numbers, and they will not take into consideration your comfort, or the final wattage output you can perform on your bike (I have been there in the past, as well). And that is a bad practice. It doesn’t matter how aero you are on the bike according to your measurements: if your position is not comfortable and you cannot sustain it for a long period of time, then aerodynamic gains are useless and can be thrown out of the window.
+However, not being able to sustain an aero position also could be due to the fact that either your fitness level is not yet used to riding in that position (but you can adapt to it with the time). Or perhaps “the most aero position” is just nonsense for you on that bike.
+Tony Martin is a good example of this at a very high level. Martin is one of the best specialists of the TT, so he’s used to riding in a TT position. Yet, the aero fit he had in Rio was just not good for him. A more relaxed one, the one he used again in Qatar and he had also used in the past, was actually ideal and made him perform at his best. He also said he will work on his aerodynamics again this year, but the process of getting faster will be achieved step by step, as he needs to get used to it while not losing power.
+But how should you set up your bike according to the event you are participating in? Do you need a different set-up for short TTs, 70.3 and IRONMAN events? And, more importantly, do you need to get a bike fit at all? If yes, how often do you need to get one?
+Two-time IRONMAN World Champion Jan Frodeno
+is convinced that doing a bike fit is probably the best investment you can do if you’re spending a lot of time on your bike. Frodeno says that, theoretically, you just need to do a bike fit once (although he has one bike fit a year) and you can be re-set only when (and if) you change your bike.
+“Frodo” also uses the same fit both for IRONMAN and IRONMAN 70.3 races, and this is a great choice. Both events have long bike legs where you wouldn’t really need a different position on the bike, unless you have already experienced a lot of gains by riding the two races on different set-ups.
+At the same time, having the same position for 70.3 and IRONMAN will also make all your training much simpler as you won’t have to change the position all the time. Furthermore, the one set-up solution would also give you more time to adapt to the position you prefer. And that is really important: take plenty of time ahead of the your “A” race to adapt to your position.
+A good bike fit, in my opinion, is definitely worth it, not only because you will be put on your bike in the correct position, but hopefully in a comfortable one that will boost your performance rather than limiting it. Working with a good fitter (ask your clubmates for advice, but also do research online and don’t just jump into the first shop you find) is crucial. Give him/her plenty of feedback on how you feel on the bike, and not only in situ or indoors, but particularly when you’re riding outdoors.
+A bike fit, as Frodeno says, is money well spent — and again, theoretically, you just need to be fitted once. After the fitting session, in fact, you will get access to your bike fitter report (if not, ask for it). Those numbers will be the base for all your future purchases and fits. If you don’t understand all of them it’s okay (most of us don’t have a clue of what they mean), but ask your fitter what they represent so you can become more familiar with them.
+Most importantly, though, is to practice in the new position. Take plenty of time before your “A” race to test the position and make sure you do it early in the season. This will give you enough extra time to fix all the niggles. If you’re riding a short TT months ahead of an IRONMAN, it is also okay to change your set-up and do some tests and experiment a bit.
+In this case, it’s good to go more aero, meaning more “closed down in the front,” and see if you can sustain that position and for how long — and to see if with time you can get used to it without losing power and speed. But generally, if you have a couple of IRONMAN 70.3s planned as a build-up for your long event, it is wiser to keep the same position on your bike for them that you will ride during your IRONMAN. Finally, go for the position that makes you feel comfortable in the long ride and that allows you to push more power into your cranks, or that you can ride at higher speeds.
+I had two bike fits last year ahead of an IRONMAN. The first one was all numbers and totally not comfortable. It was rubbish and I could not even sustain it for 40 km. The second one was dictated by comfort, but allowed me to push hard and go fast anyway.
+This season I have another fit planned (after doing more research in the market) and a bit like Tony Martin (yeah, I wish!), I am trying to retain the comfort, but also looking to get a bit more aero than last year.
+Try to look at the experimentation process as a fun part of your learning process into the sport, and not only as a pain or unnecessary expense. It can be the difference between a good and a great racing season.
+Ultimate Century Training Guide
+Training Guide
+This guide is designed to be used as you train for a century, with in-depth information on every part of the process. Each chapter is packed with tips, workouts, and insights from expert cycling coaches, to give you all the tools you need to succeed.
+Read The Guide
+The Ultimate Full-Distance Training Guide
+Training Guide
+This guide is designed to be used as you train for a full-distance triathlon, with in-depth information on every part of the process. Each chapter is packed with tips, workouts, and insights from triathlon coaches, to give you all the tools you need to succeed.
+Read The Guide
+About Nick Busca
+Nicola (Nick) Busca is an Italian triathlon coach based in London. He is a Level 3 High-Performance triathlon coach with British Triathlon and also a Training Peaks Level 2 and an IRONMAN-certified coach. Before setting up his own club in 2018, Core – Ski and Triathlon Academy, he led swimming, cycling and running sessions with the London-based triathlon club Ful-on Tri and coached the swimming squads of Swim For Tri (also based in London). After more than 20 years racing and coaching alpine skiing, he needed a new challenge and started to train and compete in triathlons in 2012. He began with the Turin-based triathlon team Aquatica and received private coaching from former Olympian athlete Vladimir Polikarpenko, who raced in three Olympic games for Ukraine. In 2016 and 2017, he qualified for Team GB for both the ETU European Championships (middle distance) and the ITU World Championships (long-distance). He still races and tries to improve season after season.
+#cycling
+#Full-Distance Triathlon
