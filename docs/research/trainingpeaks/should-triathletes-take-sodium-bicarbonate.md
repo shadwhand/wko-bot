@@ -2,8 +2,42 @@
 title: "Does Sodium Bicarbonate Work for Long Endurance Events?"
 author: "Dr. Jeff Sankoff"
 source: "https://www.trainingpeaks.com/blog/should-triathletes-take-sodium-bicarbonate/"
-score: 6
-relevance: "pdcurve, durability, nutrition, zones"
+score: 0
+skills: ["wko5-science", "wko5-training", "wko5-nutrition"]
+relevance: "ftp, hydration"
+trusted_author: false
 ---
 
-Source: https://www.trainingpeaks.com/blog/should-triathletes-take-sodium-bicarbonate/
+Taking sodium bicarbonate is said to increase performance and strength, but is this just another extravagant claim? Is it even safe to take? Dr. Jeff Sankoff gives you the facts.
+The supplement industry is a multi-billion-dollar-a-year enterprise that targets athletes heavily. Given the fact that manufacturers are held to very lax standards in substantiating their wide-ranging and often very extravagant claims, it is easy to understand why they are front of mind for many athletes who are looking for an edge on their competition.
+One particular supplement that has garnered attention in the athletic realm is bicarbonate, the active ingredient in baking soda. Bicarbonate is available in an aggressively marketed topical solution, but can also be taken orally (which is what this article will discuss). Taking sodium bicarbonate is said to increase performance and strength, but is this just another extravagant claim? Here are the facts.
+How Our Bodies Control Acidity
+The notion that bicarbonate could have an impact on exercise performance is not new and is based on some pretty basic concepts of physiology. Our bodies are remarkably complex structures with myriad types of cells and organs, all of which work together to perform one basic task — maintaining homeostasis.
+One of these tightly controlled parameters is acid-base status. The pH, a measure of acidity, must be tightly regulated in the blood and within the cells, because many functions are sensitive to changes in how acidic or, more importantly, how basic the blood and the intracellular environment are. To maintain a near-constant pH of around 7.40, our bodies have three important systems that all work interdependently and simultaneously to neutralize any sudden changes in acidity: blood buffering, respiration, and kidney excretion.
+The main determinant of acidity is the presence of free hydrogen ions, so what these three systems are really doing is working to eliminate hydrogen. Here’s where bicarbonate comes into play. Within the blood, naturally-occurring bicarbonate acts as a buffer to soak up those hydrogen ions so they don’t have any effect on acid-base status. When bicarbonate combines with hydrogen it forms carbolic acid that then dissociates into water and carbon dioxide, and that carbon dioxide is then quickly eliminated by our lungs. The kidneys also work to actively excrete hydrogen ions and return blood pH to normal, but this process takes longer than the one just described.
+The Theory Behind Sodium Bicarbonate for Athletes
+Despite the efficacy of these three systems, there are still circumstances in which they can become overwhelmed and acidosis can result. During high-intensity exercise for example, when muscular demand for oxygen outstrips supply, those cells begin to produce lactic acid which then liberates hydrogen ions and can quickly precipitate acidosis first within the cells and then within the blood. Once this happens, muscle cell function is reduced and exertional fatigue sets in.
+The theory behind bicarbonate supplementation then, is that if one could increase the reservoir of bicarbonate in the blood prior to exercise, then it may be possible to forestall the onset of acidosis and delay the onset of muscular exertion that is precipitated by all of that extra hydrogen ion that’s been liberated.
+Sodium Bicarbonate for Athletes: What the Science Says
+That is the theory, but what does the science say? For the most part, studies to date have not been very supportive though there are some results that would appear to suggest some benefits. You just need to be careful in interpreting the results.
+For example, in some studies, bicarbonate has been shown to improve muscular endurance — but these only observed its effects on weightlifting and resistance training. Bicarbonate supplementation was shown to not have any effect on how much weight or resistance could be lifted or overcome, but it did have some effects on how many repetitions could be done before failure. The actual amount of improvement varied by study and not all studies actually showed this benefit. In fact, several have not, but most authors do believe that the use of bicarbonate supplementation can have positive effects on the ability to lift weights for more reps before failure, but not to lift more weight.
+Should Triathletes Take Sodium Bicarbonate?
+With respect to the kind of performance that triathletes are interested in, the evidence becomes much more inconsistent and harder to parse out.
+With respect to swimming, there is no data to support the use of bicarbonate as beneficial for swimmers — all of the studies on swimming are on sprint sets and none are on distance swimming. Still, no evidence to date supports the use of bicarbonate supplementation in this regard.
+For cycling, the research has been more mixed. One study did show that women who supplemented with bicarbonate over a period of training were able to improve their FTP to a larger degree than a control group who did not use supplementation despite employing the same training regimen. Another study showed that male cyclists who used bicarbonate supplements were able to improve their peak power but not their average power. In contrast, a more recent study found no difference between athletes supplementing with sodium bicarbonate and controls in a sixty-minute test.
+Finally, the research on running has been almost universally negative, with all of the studies focusing on sprint distances or sports that involve brief high-intensity bursts of running. None have looked at the effects of bicarbonate supplementation for longer, lower intensity efforts that are common for longer duration triathlon.
+Negative Effects of Bicarbonate Ingestion
+It is important to note that all of the research had participants ingesting bicarbonate an hour or half an hour before exercise and only on days of training. This is extremely important because ongoing chronic ingestion of bicarbonate is potentially dangerous and should not be undertaken because of the very real risks of adverse health effects.
+Also, taking bicarbonate for this reason is neither easy nor without side effects. The supplementation protocols use 0.3 grams per kilogram of body weight, which for an average-sized male is a little more than a tablespoon of baking soda (which contains a hefty amount of salt). Furthermore, anywhere from 10-25% of participants in these studies had gastrointestinal effects from bloating to nausea to diarrhea — so that must be considered.
+Finally, there is no data available on how long the effects of taking bicarbonate last. Given how quickly and effectively the body works to restore pH to a normal range, it is unlikely that bicarbonate supplementation will last more than an hour or so.
+All in all, the take-home here is that, once again, the science really does not support the use of this supplement for performance improvement for triathletes. While there may be some benefit for cyclists, the likelihood of the effects of the bicarbonate lasting through the swim, transition, and well into the bike is very low, and the evidence supporting this benefit is far from convincing.
+Train hard, train healthy.
+Do you have a question for me to consider answering in this column or on my TriDoc podcast? Please email it to me at
+tri_doc@icloud.com
+1. McNaughton LR, Siegler J, Midgley A. Ergogenic effects of sodium bicarbonate. Curr Sports Med Rep. 2008;7(4):230-236. doi:10.1249/JSR.0b013e31817ef530
+2. Grgic J, Rodriguez RF, Garofolini A, et al. Effects of Sodium Bicarbonate Supplementation on Muscular Strength and Endurance: A Systematic Review and Meta-analysis. Sport Med. 2020;50(7):1361-1375. doi:10.1007/s40279-020-01275-y
+3. Rothschild JA, Bishop DJ. Effects of Dietary Supplements on Adaptations to Endurance Training. Sport Med. 2020;50(1):25-53. doi:10.1007/s40279-019-01185-8
+About Dr. Jeff Sankoff
+Jeff Sankoff is an Emergency Physician, long time triathlete and USAT/IRONMAN University Certified coach. He has completed 6 IRONMAN races (including Kona) and more than fifty races at the 70.3 distance including 5 World Championships. He produces the TriDoc Podcast that can be found on most popular podcast platforms and iWork’s with LifeSport Coaching. You can learn more about him at his website:
+TriDoc Coaching
+.

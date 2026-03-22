@@ -2,8 +2,47 @@
 title: "Power Numbers From The Spring Classics"
 author: "Hunter Allen"
 source: "https://www.trainingpeaks.com/blog/power-numbers-from-the-spring-classics/"
-score: 6
-relevance: "pdcurve, durability, training_load, zones, intervals"
+score: 0
+skills: ["wko5-training"]
+relevance: "ftp, vo2max, intervals, zones, recovery"
+trusted_author: false
 ---
 
-Source: https://www.trainingpeaks.com/blog/power-numbers-from-the-spring-classics/
+Until recently, we have not known the exact demands of the Spring Classics, but with some recent power files downloaded from one of the best Classic riders, we have been able to define exactly the demands of these races.
+The Classics require the hard men of cycling to be their hardest. They race in the cold, the rain, the wind, on the cobbles, over steeper than imaginable hills and wage war on their opponents. The classics are war and the toughest of soldiers are the ones that survive and finish. The winners have incredible abilities that only a few in the world have and these unique attributes help them to stand on the podium at the finish. Each race contains its own unique demands but the Tour of Flanders and Paris-Roubaix are two of the toughest single day races on the planet. The Tour of Flanders is comprised of nearly an endless sea of hills near the end of the race that come after 4 hours of racing, in which lesser men have already packed it in for the day. Paris-Roubaix is relentless and the pressure is on from the start of the race and only continues to increase as the race approaches the cobbled sections. What are the demands of these two classic races and how should a racer train for them? Are they different than other races and as a consequence demand some sort of specific fitness? Until recently, we have not known the exact demands of the race, but with some recent power files downloaded from one of the best classic riders, we have been able to define exactly the demands of this race.
+As we examine the power file from a top rider, we learn many things about the race. What it takes to just ride in the peloton, to also be at the front on the hills, and then at the finish. The Tour of Flanders race is 259 kilometers long and takes over 6 hours to complete. Looking at 2011 6
+th
+place finisher George Hincapie truly shows just how brutal this race is on the rider. From an overall perspective we see that this elite pro raced over six hours, did over 6100 kilojoules of work, had a Normalized Power
+®
+of 342 watts for the entire race and also scored a Training Stress Score
+®
+(TSS
+®
+) of 353 points.
+Normalized Power was created by Dr. Andrew R. Coggan and is used in the TrainingPeaks WKO+ software to help riders understand the metabolic costs of cycling better. In many cases, Average Power does not tell the story since it contains all the time a rider is coasting, thereby bringing the average down. Normalized Power uses a special algorithm to account for the way the body deals with waste products and how that affects the recovery from hard efforts. When you see the Normalized Power, you are seeing what is more likely the true metabolic cost of the effort.
+Training Stress Score was also created by Dr. Coggan and gives the rider a score for each ride based on how much stress was accumulated during the ride or race. The maximum points that can be scored per hour is 100, and this would mean that the athlete rode at their maximum pace for an entire hour. So, when a rider does 314 points, this means that they accumulated the same amount of training stress as having done a little more than three back to back – 1 hour time trials.
+When we look at some of the charts in the TrainingPeaks WKO+ software, one of the more interesting ones is the Power Zone Distribution chart as it tells a lot this race and which training zones are most important. For the Tour of Flanders, of course, you need to be a very well rounded rider to compete for the trophy at the end, but one important strength stands out. A very strong Anaerobic Capacity is needed and this means that the successful Flanders rider must be able to do very hard efforts from 30 seconds to two minutes and also be able to recover super quickly from any of them and be ready for another.
+Why? Since the Flanders race is comprised of many little short, but super steep hills, like the famed trio of the Oude Kwaremont , Koppenberg and Paterberg, a powerful rider with an ability to go very hard for a short period of time and recover quickly will do well.
+As we look closer at the end of the race, we see just how hard these short efforts are. Hill after hill after hill beats the riders down, along with hard accelerations from the peloton making just hanging onto the group a challenge. A successful rider needs to be able to do over 40 hard hills ranging from 15-60 seconds long and then about 10-20 hills in the 1 minute to 2 minute range. The amount of watts needed to be near the front is between 120 and 200% of the riders Functional Threshold Power (FTP). Ranges for these riders is from 450 watts to 760 watts and after one effort, you have to recover within 30 seconds and go again….and again….and again.
+When considering Paris-Roubaix, there are many differences from the Tour of Flanders. First off, in Figure 4, you can see that the power for the entire race was very steady and always consistent for the entire 6 hour and 12 minute race where he burned 6229kiloJoules. George scored less TSS points for this race at 319, because there were fewer efforts over his FTP. His Normalized Power for the entire race was still up there in the rarified wattage range that only the best can do at 323 watts for the entire race. Remember this when you try to average 323 watts for 3 minutes on your next Vo2 Max interval!
+In figure 4, it is clear that constant pressure on the pedals was needed in order to stay in the peloton and close to the front of the race. This is very different than the first 2:35 at active recovery in Flanders. There is no rest in this race and that means that incredible endurance, both aerobically and muscularly are necessary for success in Roubaix, along with excellent bike handling skills in the peloton and on the cobbles.
+The consistency of wattage output from George’s race makes it challenging just to find the hardest part of the race, but fortunately, we have software to tell us where the peak efforts are located! The Peak 60 minutes occurred after 4 hours and 30 minutes of racing and George averaged 353 watts (normalized) for that hour. That includes the “wind up” to the first section of cobbles at the Arenberg forest and then through the first hour riding in and out of the cobbled sections.
+One myth that I’d like to bust here is that you have to push a big gear (low cadence and high force) through the cobbles to be successful. This is just not true and George demonstrates this by averaging 88rpm for that brutal hour. When we examine the Quadrant Analysis of the race, we see that George actually spent 56% of that hour pedaling OVER 90 rpm! This is contrary to the myth of slow cadence/big gear needed to be successful in Roubaix. In Figure 5, the blue colored dots are the hardest hour, and the yellow is the entire rest of the race.
+What does this mean for training purposes? First off, if you are doing an event as long as Roubaix and intense, then you will need to ride some big, long rides that challenge both your cardiovascular endurance and the fatigue resistance of your muscles. I highly suggest a bunch of 6-7 hour rides and trying to include intensity in the last hour if you have anything left! Based on the Quadrant analysis plot of the race, a variety of cadence and force combinations are needed, from high force and slower cadence to near sprinting ability with high force and high cadence. Clearly, when you are doing your longer rides, you’ll need to vary how you produce power and not just drone along at 85rpm all day. Riding in the peloton demands a higher cadence and lower force (QIV), whereas riding on the cobbles require a little more force and the same cadence (QI), so it’s imperative that you train in these quadrants to prepare for similar race. Comparing the demands of races to your training is an excellent way to utilize the Quadrant Analysis software tool and I use this daily looking through files of all my clients.
+These short hills, long distances, and hard terrain (cobbles) truly define the classic races and make them what they are. A rider with substantial muscular endurance to last 6+ hours of hard racing, combined with the ability to go hard and recover quickly over and over again, really limits the amount of riders that are capable of winning this classic. There is no doubt that the riders finishing in the front are hard men. They have reached a pinnacle in the sport and to be able to do battle on the streets and cobbled hills of the Belgium countryside, and come out the victor is truly an amazing athletic performance.
+Workouts to prepare you for the Spring Classics.
+(If you want to really simulate the races… do these after about 5 hours in your legs….)
+Hill repeats:
+Warm-up: 15 minutes, just getting the muscles loosened up.
+Main Set: Let’s make this ride a very hilly one, or simulating hills, by riding into the wind.
+Let’s shoot for 20 hills; they can range from 30 seconds to 2 minutes in length. Do these as part of your ride, not necessarily repeating the same hill over and over (although, that’s fine if want). Set a goal to average over 150% of your FTP over each one. The legs should be burning at the top of each!
+Rest for 2-3 minutes between each…. and ride easy afterward.
+Cool -down: 15 minutes easy.
+Anaerobic Repeats:
+Warm-Up: 20 minutes warm-up
+Main Set: Then do (6) x 2 minutes striving for 135% of your FTP with 1 minute rest between each,
+Then 5 minutes easy,
+Then 6 x 1 minute, striving for 150% of your FTP with 1 minute rest,
+Then 5 minutes easy
+and finish with 6 x 30 seconds ALL out with 1 minute rest…..
+Cool Down: Cool down for 15 minutes of easy spinning.
