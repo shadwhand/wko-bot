@@ -13,3 +13,6 @@ from wko5.durability import fit_durability_model, effective_capacity, frc_budget
 from wko5.demand_profile import build_demand_profile
 from wko5.gap_analysis import gap_analysis, run_monte_carlo
 from wko5.clinical import get_clinical_flags, check_ctl_ramp_rate, check_tsb_floor
+from wko5.pacing import solve_pacing, RidePlan
+from wko5.nutrition import evaluate_nutrition_plan, NutritionPlan, FeedEvent, time_to_bonk, cho_burn_rate
+from wko5.ride_planner import plan_ride

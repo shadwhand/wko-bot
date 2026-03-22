@@ -31,6 +31,9 @@ from wko5.durability import fit_durability_model
 from wko5.demand_profile import build_demand_profile
 from wko5.gap_analysis import gap_analysis
 from wko5.clinical import get_clinical_flags
+from wko5.pacing import solve_pacing, RidePlan
+from wko5.nutrition import NutritionPlan, FeedEvent
+from wko5.ride_planner import plan_ride
 from wko5.training_load import current_fitness, build_pmc
 from wko5.pdcurve import compute_envelope_mmp, fit_pd_model, rolling_ftp
 from wko5.profile import power_profile, coggan_ranking, strengths_limiters, phenotype
@@ -154,4 +157,50 @@ def gap_analysis_endpoint(activity_id: int, n_draws: int = 200):
 @router.get("/clinical-flags", dependencies=[Depends(verify_token)])
 def clinical_flags(days_back: int = 30):
     result = get_clinical_flags(days_back=days_back)
+    return _sanitize_nans(result)
+
+
+@router.post("/plan-ride", dependencies=[Depends(verify_token)])
+def plan_ride_endpoint(body: dict):
+    """Plan a ride with pacing, nutrition, and feasibility analysis."""
+    activity_id = body.get("activity_id")
+    if not activity_id:
+        return {"error": "activity_id required"}
+
+    ride_segments = analyze_ride_segments(activity_id)
+    if not ride_segments["segments"]:
+        return {"error": "No segments found"}
+
+    pd_model = fit_pd_model(compute_envelope_mmp(days=90))
+    if pd_model is None:
+        return {"error": "PD model fitting failed"}
+
+    cfg = get_config()
+    if pd_model["mFTP"] < cfg["ftp_manual"] * 0.85:
+        pd_model["mFTP"] = cfg["ftp_manual"]
+
+    dur_params = fit_durability_model()
+    if dur_params is None:
+        return {"error": "Insufficient data for durability model"}
+
+    ride_plan = RidePlan(
+        target_riding_hours=body.get("target_riding_hours", 4),
+        rest_hours=body.get("rest_hours", 0),
+        cda=body.get("cda", cfg["cda"]),
+        drafting_pct=body.get("drafting_pct", 0),
+        drafting_savings=body.get("drafting_savings", 0.30),
+    )
+
+    feed_events = [FeedEvent(**e) for e in body.get("feed_events", [])]
+    nutrition_plan = NutritionPlan(
+        baseline_intake_g_hr=body.get("baseline_intake_g_hr", cfg["fueling_rate_g_hr"]),
+        feed_events=feed_events,
+        starting_glycogen_g=body.get("starting_glycogen_g", 500),
+    )
+
+    result = plan_ride(
+        ride_segments["segments"], ride_plan, nutrition_plan, pd_model, dur_params,
+        temp_c=body.get("temp_c", 20),
+        humidity_pct=body.get("humidity_pct", 50),
+    )
     return _sanitize_nans(result)
