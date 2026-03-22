@@ -124,3 +124,27 @@ def test_gap_analysis_with_real_ride():
     result = gap_analysis(ride["segments"], pd_model, dur_params, n_draws=20)
     assert len(result["segments"]) == len(ride["segments"])
     assert isinstance(result["overall"]["probability_of_completion"], float)
+
+
+def test_monte_carlo_with_posteriors():
+    """Monte Carlo should use posteriors when available."""
+    from wko5.bayesian import fit_pd_bayesian, fit_durability_bayesian, store_posterior
+
+    # Fit and store posteriors
+    pd = fit_pd_bayesian(days=90)
+    dur = fit_durability_bayesian()
+    if pd:
+        store_posterior("pd_model", pd)
+    if dur:
+        store_posterior("durability", dur)
+
+    segments = [
+        {"type": "flat", "distance_m": 5000, "duration_s": 600, "avg_grade": 0.0,
+         "power_required": 180, "cumulative_kj_at_start": 0},
+    ]
+    pd_model = {"Pmax": 1100, "FRC": 20, "mFTP": 290, "TTE": 3600, "tau": 15, "t0": 4}
+    dur_params = {"a": 0.5, "b": 0.001, "c": 0.05}
+
+    result = run_monte_carlo(segments, pd_model, dur_params, n_draws=50)
+    assert len(result) == 1
+    assert "success_probability" in result[0]

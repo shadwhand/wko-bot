@@ -19,3 +19,4 @@ from wko5.ride_planner import plan_ride
 from wko5.blocks import block_stats, weekly_summary, detect_phase, compare_blocks, feasibility_projection
 from wko5.tp_ingest import ingest_tp_csv, get_tp_workouts, match_tp_to_activities
 from wko5.routes import save_route, get_route, find_similar_routes, link_activities_to_routes, get_route_history
+from wko5.bayesian import fit_pd_bayesian, fit_durability_bayesian, update_all_models, get_posterior_summary, load_posterior_samples

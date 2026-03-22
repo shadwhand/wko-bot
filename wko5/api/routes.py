@@ -253,3 +253,18 @@ def route_detail(route_id: int):
     route["history"] = get_route_history(route_id)
     route["plans"] = get_ride_plans(route_id)
     return _sanitize_nans(route)
+
+
+@router.get("/posterior-summary", dependencies=[Depends(verify_token)])
+def posterior_summary():
+    from wko5.bayesian import get_posterior_summary
+    pd_summary = get_posterior_summary("pd_model")
+    dur_summary = get_posterior_summary("durability")
+    return _sanitize_nans({"pd_model": pd_summary, "durability": dur_summary})
+
+
+@router.post("/update-models", dependencies=[Depends(verify_token)])
+def update_models():
+    from wko5.bayesian import update_all_models
+    update_all_models()
+    return {"status": "updated"}

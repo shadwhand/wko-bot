@@ -62,25 +62,43 @@ def run_monte_carlo(segments, pd_model, durability_params, n_draws=200, seed=42)
     """Run Monte Carlo simulation over demand profiles.
 
     For each draw:
-    1. Perturb PD model and durability params
-    2. Build demand profile with perturbed params
+    1. Draw PD + durability params from Bayesian posteriors (or perturb if unavailable)
+    2. Build demand profile with drawn params
     3. Record per-segment completion (demand_ratio <= 1.0)
 
     Returns: list of segment dicts with success_probability added.
     """
+    from wko5.bayesian import load_posterior_samples
+
     rng = np.random.default_rng(seed)
     n_segments = len(segments)
 
     if n_segments == 0:
         return []
 
+    # Try to use real posteriors
+    pd_posterior = load_posterior_samples("pd_model")
+    dur_posterior = load_posterior_samples("durability")
+
     # Track completions per segment across draws
     completions = np.zeros(n_segments)
     demand_ratios_all = np.zeros((n_draws, n_segments))
 
     for draw in range(n_draws):
-        pd_draw = _perturb_pd_model(pd_model, rng)
-        dur_draw = _perturb_durability(durability_params, rng)
+        if pd_posterior and dur_posterior:
+            # Draw from real posteriors
+            pd_idx = rng.integers(0, len(pd_posterior["mFTP"]))
+            pd_draw = dict(pd_model)  # keep non-sampled keys (e.g. TTE)
+            for k in pd_posterior:
+                pd_draw[k] = float(pd_posterior[k][pd_idx])
+
+            dur_idx = rng.integers(0, len(dur_posterior["a"]))
+            dur_draw = {k: float(dur_posterior[k][dur_idx])
+                        for k in dur_posterior if k != "sigma"}
+        else:
+            # Fallback to Gaussian perturbation
+            pd_draw = _perturb_pd_model(pd_model, rng)
+            dur_draw = _perturb_durability(durability_params, rng)
 
         profile = build_demand_profile(segments, pd_draw, dur_draw)
 
