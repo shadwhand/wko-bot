@@ -7,7 +7,7 @@ import pandas as pd
 from wko5.clinical import (
     check_ctl_ramp_rate, check_tsb_floor, check_hr_decoupling_anomaly,
     check_power_hr_inversion, check_collapse_zone, check_energy_deficit,
-    check_if_floor, check_intensity_black_hole,
+    check_if_floor, check_intensity_black_hole, check_panic_training,
     get_clinical_flags, MEDICAL_DISCLAIMER,
 )
 
@@ -130,6 +130,15 @@ def test_check_intensity_black_hole():
         assert "compressed" in result
         assert "floor" in result
         assert "ceiling" in result
+
+
+def test_check_panic_training():
+    """Panic training detection should return flag or None."""
+    result = check_panic_training(days_back=90)
+    # May be None if no panic pattern detected
+    if result is not None:
+        assert "flag" in result
+        assert result["flag"] == "panic_training"
 
 
 def test_get_clinical_flags_structure():

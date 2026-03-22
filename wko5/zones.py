@@ -2,7 +2,7 @@
 
 import logging
 import pandas as pd
-from wko5.db import get_connection, get_activities, get_records
+from wko5.db import get_connection, get_activities, get_records, FTP_DEFAULT
 from wko5.config import get_config
 
 logger = logging.getLogger(__name__)
@@ -102,3 +102,44 @@ def period_distribution(start, end, zone_system="coggan", ftp=None):
             for name in total:
                 total[name] += tiz.get(name, 0)
     return total
+
+
+def sweet_spot_band(ftp):
+    """Return (low, high) power for sweet spot band (~88-93% FTP).
+
+    Source: TMT-44 — sweet spot TTE is a key fitness marker.
+    Ranges: untrained 40-60 min, trained 90-120 min, elite 180+ min.
+    """
+    return (int(ftp * 0.88), int(ftp * 0.93))
+
+
+def validate_endurance_rides(days_back=90, ftp=None):
+    """Check if endurance rides are actually easy enough.
+
+    Flags rides >1.5h with IF > 0.65.
+    Source: TMT-69 — endurance target IF 0.50-0.65.
+    """
+    if ftp is None:
+        ftp = get_config().get("ftp") or FTP_DEFAULT
+
+    activities = get_activities()
+    cutoff = (pd.Timestamp.now() - pd.Timedelta(days=days_back)).strftime("%Y-%m-%d")
+    recent = activities[
+        (activities["start_time"] >= cutoff) &
+        (activities["total_timer_time"] > 5400)  # > 1.5 hours
+    ]
+
+    flagged = []
+    for _, act in recent.iterrows():
+        np_val = act.get("normalized_power")
+        if np_val and ftp > 0:
+            ride_if = np_val / ftp
+            if ride_if > 0.65:
+                flagged.append({
+                    "activity_id": act.get("id"),
+                    "date": str(act.get("start_time", ""))[:10],
+                    "if_value": round(ride_if, 3),
+                    "duration_h": round(act.get("total_timer_time", 0) / 3600, 1),
+                })
+
+    return flagged if flagged else None

@@ -9,6 +9,19 @@ from wko5.pdcurve import (
 )
 
 
+def test_decompose_pd_change():
+    """Should decompose PD changes into CP vs W' vs Pmax contributions."""
+    from wko5.pdcurve import decompose_pd_change
+    old = {"Pmax": 1100, "FRC": 18, "mFTP": 280, "tau": 15, "t0": 4}
+    new = {"Pmax": 1100, "FRC": 22, "mFTP": 285, "tau": 15, "t0": 4}
+    result = decompose_pd_change(old, new)
+    assert "mFTP_change_w" in result
+    assert "FRC_change_kj" in result
+    assert result["mFTP_change_w"] == 5
+    assert result["FRC_change_kj"] == 4
+    assert "dominant_change" in result
+
+
 def test_compute_mmp_constant_power():
     power = pd.Series([200.0] * 100)
     mmp = compute_mmp(power)

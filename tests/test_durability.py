@@ -7,6 +7,7 @@ import pandas as pd
 from wko5.durability import (
     compute_windowed_mmp, fit_durability_model, degradation_factor,
     effective_capacity, frc_budget_simulate, repeatability_index,
+    check_fresh_baseline, durability_benchmark,
 )
 
 
@@ -94,3 +95,38 @@ def test_repeatability_index():
     ri = repeatability_index(activity_id=1, duration_s=300)
     if ri is not None:
         assert 0 < ri <= 1.0
+
+
+def test_degradation_factor_with_weight():
+    """Degradation factor should accept weight_kg for kJ/kg normalization."""
+    params = {"a": 0.5, "b": 0.001, "c": 0.05}
+    # Same kJ, different weights = different degradation
+    df_heavy = degradation_factor(2000, 3.0, params, weight_kg=80)
+    df_light = degradation_factor(2000, 3.0, params, weight_kg=55)
+    # Lighter rider should degrade more at same absolute kJ
+    assert df_light < df_heavy
+
+
+def test_windowed_mmp_has_kj_per_kg():
+    """Windowed MMP should include kJ/kg field when weight provided."""
+    power = pd.Series(np.random.normal(200, 20, 14400))  # 4 hours
+    windows = compute_windowed_mmp(power, window_hours=2, weight_kg=78)
+    if windows:
+        assert "cumulative_kj_per_kg" in windows[0]
+
+
+def test_check_fresh_baseline():
+    """Fresh baseline check should return staleness info."""
+    result = check_fresh_baseline(days=180)
+    assert isinstance(result, dict)
+    for dur in [60, 300]:
+        if dur in result:
+            assert "exists" in result[dur]
+
+
+def test_durability_benchmark():
+    """Benchmark classification should match EC podcast tiers."""
+    assert durability_benchmark(1) == "elite_pro"
+    assert durability_benchmark(15) == "good_amateur"
+    assert durability_benchmark(35) == "average_amateur"
+    assert durability_benchmark(50) == "needs_work"

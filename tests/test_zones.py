@@ -45,3 +45,19 @@ def test_time_in_zones():
     tiz = time_in_zones(power, zones)
     total = sum(tiz.values())
     assert total == 150
+
+
+def test_sweet_spot_band():
+    """Sweet spot should be 88-93% of FTP."""
+    from wko5.zones import sweet_spot_band
+    low, high = sweet_spot_band(300)
+    assert low == 264  # 300 * 0.88
+    assert high == 279  # 300 * 0.93
+
+
+def test_validate_endurance_rides():
+    """Should flag endurance rides with IF > 0.65."""
+    from wko5.zones import validate_endurance_rides
+    result = validate_endurance_rides(days_back=90)
+    if result is not None:
+        assert isinstance(result, list)

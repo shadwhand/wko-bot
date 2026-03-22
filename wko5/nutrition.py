@@ -29,7 +29,7 @@ class FeedEvent:
 @dataclass
 class NutritionPlan:
     """Rider's nutrition plan for a ride."""
-    baseline_intake_g_hr: float = 60    # carbs from gels/drink while riding
+    baseline_intake_g_hr: float = 75    # Updated: 60-90g/hr standard (EC podcast, Persp-41)
     feed_events: List[FeedEvent] = field(default_factory=list)
     starting_glycogen_g: float = 500    # normal diet; 650 if carb loaded
     bottles_capacity_ml: float = 1500

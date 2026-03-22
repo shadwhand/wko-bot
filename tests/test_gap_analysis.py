@@ -90,6 +90,19 @@ def test_gap_analysis_structure():
     assert "safety_margin_w" in result["overall"]
 
 
+def test_gap_analysis_has_absolute_power_check():
+    """Gap analysis should include absolute power check alongside durability."""
+    segments = [
+        {"type": "climb", "distance_m": 5000, "duration_s": 1200, "avg_grade": 0.06,
+         "power_required": 280, "cumulative_kj_at_start": 0},
+    ]
+    pd_model = {"Pmax": 1100, "FRC": 20, "mFTP": 290, "TTE": 3600, "tau": 15, "t0": 4}
+    dur_params = {"a": 0.5, "b": 0.001, "c": 0.05}
+    result = gap_analysis(segments, pd_model, dur_params, n_draws=20)
+    assert "absolute_power_check" in result
+    assert "fresh_power_sufficient" in result["absolute_power_check"]
+
+
 def test_gap_analysis_with_real_ride():
     """End-to-end: real ride -> segments -> gap analysis."""
     from wko5.db import get_connection

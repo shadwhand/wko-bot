@@ -347,6 +347,49 @@ def check_intensity_black_hole(days_back=90):
     return None
 
 
+def check_panic_training(days_back=90):
+    """Detect panic training pattern: sudden intensity spike after low-load period.
+
+    Flags when 2+ weeks of low training load are followed by a sudden
+    CTL ramp > 7 TSS/day.
+
+    Source: TMT-71 — panic training almost always backfires.
+    """
+    pmc = build_pmc()
+    if pmc.empty or len(pmc) < 28:
+        return None
+
+    recent = pmc.tail(days_back)
+    if len(recent) < 28:
+        return None
+
+    # Look for pattern: 14+ days of low CTL followed by rapid ramp
+    tss = recent["TSS"].values
+
+    for i in range(14, len(tss) - 7):
+        # Check if preceding 14 days had low average TSS
+        pre_avg_tss = float(np.mean(tss[i-14:i]))
+        # Check if following 7 days had high average TSS
+        post_avg_tss = float(np.mean(tss[i:i+7]))
+
+        if pre_avg_tss < 30 and post_avg_tss > 60:
+            ramp_ratio = post_avg_tss / max(pre_avg_tss, 1)
+            if ramp_ratio > 2.0:
+                return {
+                    "flag": "panic_training",
+                    "severity": "yellow",
+                    "pre_avg_tss": round(pre_avg_tss, 1),
+                    "post_avg_tss": round(post_avg_tss, 1),
+                    "ramp_ratio": round(ramp_ratio, 1),
+                    "message": (f"Panic training pattern detected: avg TSS jumped from "
+                                f"{pre_avg_tss:.0f} to {post_avg_tss:.0f} "
+                                f"({ramp_ratio:.1f}x increase). Recommend building volume "
+                                f"first, then adding intensity gradually."),
+                }
+
+    return None
+
+
 def get_clinical_flags(days_back=30):
     """Get all current clinical flags.
 
@@ -376,6 +419,10 @@ def get_clinical_flags(days_back=30):
     black_hole = check_intensity_black_hole()
     if black_hole:
         flags.append(black_hole)
+
+    panic = check_panic_training()
+    if panic:
+        flags.append(panic)
 
     # Determine overall alert level
     severities = [f["severity"] for f in flags]

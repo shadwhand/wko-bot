@@ -203,6 +203,19 @@ def gap_analysis(segments, pd_model, durability_params, n_draws=200, seed=42):
     if not risk_factors:
         risk_factors.append("No significant risks identified")
 
+    # Absolute power check (WD-60: need sufficient power first)
+    max_demand = max((s.get("power_required", 0) for s in segments), default=0)
+    fresh_capacity = pd_model.get("mFTP", 0)
+    absolute_power_check = {
+        "fresh_mftp_w": round(fresh_capacity, 1),
+        "max_segment_demand_w": round(max_demand, 1),
+        "fresh_power_sufficient": fresh_capacity >= max_demand * 0.95,
+        "message": ("Absolute power is sufficient for this route."
+                    if fresh_capacity >= max_demand * 0.95
+                    else f"Fresh power ({fresh_capacity:.0f}W) may be insufficient for "
+                         f"hardest segment ({max_demand:.0f}W). Durability is secondary."),
+    }
+
     return {
         "segments": mc_segments,
         "bottleneck": {
@@ -217,4 +230,5 @@ def gap_analysis(segments, pd_model, durability_params, n_draws=200, seed=42):
             "key_risk_factors": risk_factors,
             "safety_margin_w": round(safety_margin, 1),
         },
+        "absolute_power_check": absolute_power_check,
     }

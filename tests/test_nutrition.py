@@ -103,6 +103,13 @@ def test_evaluate_nutrition_plan_basic():
     assert "warnings" in result
 
 
+def test_default_carb_target_updated():
+    """Default carb intake should be 75g/hr (midpoint of 60-90 range)."""
+    from wko5.nutrition import NutritionPlan
+    plan = NutritionPlan()
+    assert plan.baseline_intake_g_hr == 75
+
+
 def test_evaluate_plan_detects_bonk_risk():
     """A long ride with low fueling should flag bonk risk."""
     # 6 hours at 250W with only 30g/hr

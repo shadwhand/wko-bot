@@ -15,10 +15,12 @@ from wko5.training_load import compute_np, compute_tss
 logger = logging.getLogger(__name__)
 
 
-def degradation_factor(cumulative_kj, elapsed_hours, params):
+def degradation_factor(cumulative_kj, elapsed_hours, params, weight_kg=None):
     """Compute the degradation factor at a given point in a ride.
 
     Model: df = a * exp(-b * kJ/1000) + (1-a) * exp(-c * hours)
+
+    If weight_kg is provided, normalizes kJ to kJ/kg (recommended per van Erp 2021).
 
     Returns: float between 0 and 1 (1 = fresh, 0 = fully degraded)
     """
@@ -26,7 +28,8 @@ def degradation_factor(cumulative_kj, elapsed_hours, params):
     b = params["b"]
     c = params["c"]
 
-    kj_term = a * np.exp(-b * cumulative_kj / 1000)
+    kj = cumulative_kj / weight_kg if weight_kg else cumulative_kj
+    kj_term = a * np.exp(-b * kj / 1000)
     time_term = (1 - a) * np.exp(-c * elapsed_hours)
 
     return float(max(0, kj_term + time_term))
@@ -41,10 +44,11 @@ def effective_capacity(fresh_mmp, cumulative_kj, elapsed_hours, params):
     return fresh_mmp * df
 
 
-def compute_windowed_mmp(power_series, window_hours=2):
+def compute_windowed_mmp(power_series, window_hours=2, weight_kg=None):
     """Compute MMP at specific durations in rolling time windows across a ride.
 
     Uses vectorized rolling max at 4 target durations instead of full O(n^2) MMP.
+    If weight_kg is provided, adds cumulative_kj_per_kg to each window dict.
     Returns list of dicts per window.
     """
     DURATIONS = [60, 300, 2400, 3600]  # 1min, 5min, 40min, 1hr
@@ -88,6 +92,9 @@ def compute_windowed_mmp(power_series, window_hours=2):
                 entry[label] = round(float(rolling_avg.max()), 1)
             else:
                 entry[label] = float("nan")
+
+        if weight_kg and weight_kg > 0:
+            entry["cumulative_kj_per_kg"] = round(cum_kj / weight_kg, 1)
 
         results.append(entry)
 
@@ -258,3 +265,88 @@ def repeatability_index(activity_id, duration_s=300):
         return None
 
     return round(efforts[2] / efforts[0], 3)
+
+
+def check_fresh_baseline(days=90, durations=None):
+    """Check if fresh baselines exist for key durations.
+
+    Fresh = effort occurring in first 2 hours of ride AND cumulative kJ < 500.
+    Returns dict: {duration: {exists, date, value, staleness_days}}
+    """
+    if durations is None:
+        durations = [60, 300, 1200]
+
+    activities = get_activities()
+    cutoff = (pd.Timestamp.now() - pd.Timedelta(days=days)).strftime("%Y-%m-%d")
+    recent = activities[activities["start_time"] >= cutoff]
+
+    result = {}
+    for dur in durations:
+        best_power = 0
+        best_date = None
+
+        for _, act in recent.iterrows():
+            records = get_records(act["id"])
+            if records.empty or "power" not in records.columns:
+                continue
+
+            power = records["power"].fillna(0).values.astype(float)
+            n = len(power)
+
+            # Only look at first 2 hours (7200 seconds)
+            early_power = power[:min(n, 7200)]
+            # Check cumulative kJ < 500
+            cum_kj = float(np.sum(early_power)) / 1000
+            if cum_kj > 500:
+                early_power = power[:min(n, 3600)]  # restrict to 1 hour
+
+            if len(early_power) < dur:
+                continue
+
+            cumsum = np.concatenate([[0], np.cumsum(early_power)])
+            rolling = (cumsum[dur:] - cumsum[:len(early_power) - dur + 1]) / dur
+            if len(rolling) == 0:
+                continue
+
+            peak = float(rolling.max())
+            if peak > best_power:
+                best_power = peak
+                best_date = act.get("start_time", "")
+
+        staleness = None
+        if best_date:
+            try:
+                dt = pd.Timestamp(best_date)
+                staleness = (pd.Timestamp.now() - dt).days
+            except Exception:
+                pass
+
+        result[dur] = {
+            "exists": best_power > 0,
+            "value": round(best_power, 1) if best_power > 0 else None,
+            "date": str(best_date) if best_date else None,
+            "staleness_days": staleness,
+        }
+
+    return result
+
+
+def durability_benchmark(drop_pct_at_50kjkg):
+    """Classify power drop percentage against EC podcast benchmarks.
+
+    Benchmarks from WD-60 coaching data:
+    - Elite pro: <2% drop at 50 kJ/kg
+    - Strong amateur: 2-10% drop
+    - Good amateur: 10-20% drop
+    - Average amateur: 20-40% drop
+    """
+    if drop_pct_at_50kjkg < 2:
+        return "elite_pro"
+    elif drop_pct_at_50kjkg < 10:
+        return "strong_amateur"
+    elif drop_pct_at_50kjkg < 20:
+        return "good_amateur"
+    elif drop_pct_at_50kjkg < 40:
+        return "average_amateur"
+    else:
+        return "needs_work"

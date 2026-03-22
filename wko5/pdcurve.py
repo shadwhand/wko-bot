@@ -248,6 +248,57 @@ def rolling_ftp(window_days=90, step_days=7):
     return pd.DataFrame(results)
 
 
+def _pd_power(duration_s, model):
+    """Compute predicted power at a duration from PD model parameters."""
+    pmax = model.get("Pmax", 1100)
+    frc = model.get("FRC", 20)
+    mftp = model.get("mFTP", 280)
+    tau = model.get("tau", 15)
+    t0 = model.get("t0", 4)
+    return pmax * np.exp(-duration_s / tau) + frc * 1000 / (duration_s + t0) + mftp
+
+
+def decompose_pd_change(model_old, model_new):
+    """Decompose PD curve change into CP vs W' vs Pmax contributions.
+
+    Compares two PD models and attributes power changes at key durations
+    to mFTP (aerobic), FRC (anaerobic), or Pmax (neuromuscular).
+
+    Source: WD-55 — ramp test gains may reflect W', not VO2max.
+    """
+    mftp_delta = model_new.get("mFTP", 0) - model_old.get("mFTP", 0)
+    frc_delta = model_new.get("FRC", 0) - model_old.get("FRC", 0)
+    pmax_delta = model_new.get("Pmax", 0) - model_old.get("Pmax", 0)
+
+    # Determine dominant change
+    changes = {
+        "aerobic": abs(mftp_delta) / max(model_old.get("mFTP", 280), 1) * 100,
+        "anaerobic": abs(frc_delta) / max(model_old.get("FRC", 20), 1) * 100,
+        "neuromuscular": abs(pmax_delta) / max(model_old.get("Pmax", 1100), 1) * 100,
+    }
+    dominant = max(changes, key=changes.get)
+
+    # Compute power at key durations for both models
+    durations = [10, 60, 300, 1200, 3600]
+    at_durations = {}
+    for d in durations:
+        old_p = _pd_power(d, model_old)
+        new_p = _pd_power(d, model_new)
+        at_durations[d] = {
+            "old": round(old_p, 1),
+            "new": round(new_p, 1),
+            "delta": round(new_p - old_p, 1),
+        }
+
+    return {
+        "mFTP_change_w": round(mftp_delta, 1),
+        "FRC_change_kj": round(frc_delta, 1),
+        "Pmax_change_w": round(pmax_delta, 1),
+        "dominant_change": dominant,
+        "at_durations": at_durations,
+    }
+
+
 def compare_periods(period1, period2):
     """Compare PD curves between two periods."""
     mmp1 = compute_envelope_mmp(start=period1[0], end=period1[1])
