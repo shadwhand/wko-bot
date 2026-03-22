@@ -197,36 +197,132 @@ def scrape_tp_blog(limit=None):
 # Empirical Cycling Podcast
 # ============================================================
 
-def get_ec_episodes():
-    """Get Soundcloud episode URLs from Empirical Cycling website."""
+EC_SOUNDCLOUD = "https://soundcloud.com/empiricalcyclingpodcast"
+
+
+def _slugify(title):
+    """Convert episode title to a filesystem-safe slug."""
+    slug = title.lower().strip()
+    slug = re.sub(r'[^a-z0-9\s-]', '', slug)
+    slug = re.sub(r'[\s]+', '-', slug)
+    slug = re.sub(r'-+', '-', slug).strip('-')
+    return slug[:80]
+
+
+def get_ec_episodes(limit=None):
+    """Get episode URLs + titles from Soundcloud profile via yt-dlp.
+
+    Returns list of dicts: [{url, title, slug}, ...] in reverse chronological order.
+    """
     try:
-        resp = requests.get("https://www.empiricalcycling.com/podcast-episodes", timeout=30)
-        soup = BeautifulSoup(resp.text, "html.parser")
+        cmd = [
+            "yt-dlp", "--flat-playlist", "--no-warnings",
+            "--print", "%(url)s\t%(title)s",
+            EC_SOUNDCLOUD,
+        ]
+        result = subprocess.run(cmd, capture_output=True, text=True, timeout=60)
+        if result.returncode != 0:
+            logger.warning(f"yt-dlp playlist fetch failed: {result.stderr[:200]}")
+            return []
 
         episodes = []
-        for iframe in soup.find_all("iframe"):
-            src = iframe.get("src", "")
-            if "soundcloud.com" in src:
-                match = re.search(r'url=([^&]+)', src)
-                if match:
-                    from urllib.parse import unquote
-                    episodes.append(unquote(match.group(1)))
+        for line in result.stdout.strip().split("\n"):
+            if not line.strip():
+                continue
+            parts = line.split("\t", 1)
+            if len(parts) != 2:
+                continue
+            url, title = parts
+            episodes.append({
+                "url": url.strip(),
+                "title": title.strip(),
+                "slug": _slugify(title),
+            })
 
-        for a in soup.find_all("a", href=re.compile("soundcloud.com")):
-            href = a.get("href", "")
-            if "empiricalcyclingpodcast" in href:
-                episodes.append(href)
+        if limit:
+            episodes = episodes[:limit]
 
-        episodes = list(dict.fromkeys(episodes))
-        logger.info(f"Found {len(episodes)} podcast episodes")
+        logger.info(f"Found {len(episodes)} podcast episodes from Soundcloud")
         return episodes
+    except subprocess.TimeoutExpired:
+        logger.warning("yt-dlp playlist fetch timed out")
+        return []
     except Exception as e:
         logger.warning(f"Failed to get EC episodes: {e}")
         return []
 
 
+def _download_episode(url, slug):
+    """Download audio from Soundcloud URL. Returns path to audio file or None."""
+    import glob
+    audio_path = f"/tmp/ec_{slug}"
+
+    # Clean up any leftover files from previous attempts
+    for old in glob.glob(f"/tmp/ec_{slug}.*"):
+        try:
+            os.unlink(old)
+        except OSError:
+            pass
+
+    try:
+        result = subprocess.run(
+            ["yt-dlp", "--extract-audio", "--no-warnings",
+             "--output", audio_path + ".%(ext)s", url],
+            capture_output=True, text=True, timeout=300,
+        )
+    except subprocess.TimeoutExpired:
+        return None
+
+    files = glob.glob(f"/tmp/ec_{slug}.*")
+    audio_files = [f for f in files if not f.endswith(('.part', '.ytdl'))]
+    if not audio_files:
+        return None
+
+    return audio_files[0]
+
+
+def _transcribe_episode(audio_file):
+    """Transcribe audio file with Whisper. Returns transcript text or None."""
+    whisper_out = "/tmp/whisper_ec"
+    os.makedirs(whisper_out, exist_ok=True)
+
+    # Try MPS (Apple Silicon GPU) first, fall back to CPU
+    for device, timeout_s in [("mps", 1800), ("cpu", 3600)]:
+        try:
+            logger.info(f"  Transcribing with Whisper ({device})...")
+            result = subprocess.run(
+                ["whisper", audio_file, "--model", "base", "--device", device,
+                 "--output_format", "txt", "--output_dir", whisper_out, "--language", "en"],
+                capture_output=True, text=True, timeout=timeout_s,
+            )
+            if result.returncode == 0:
+                break
+            if device == "mps":
+                logger.info(f"  MPS failed (rc={result.returncode}), trying CPU...")
+                continue
+            return None
+        except subprocess.TimeoutExpired:
+            if device == "mps":
+                logger.info(f"  MPS timed out after {timeout_s}s, trying CPU...")
+                continue
+            return None
+
+    basename = Path(audio_file).stem
+    txt_path = Path(whisper_out) / f"{basename}.txt"
+    if not txt_path.exists():
+        return None
+
+    transcript = txt_path.read_text().strip()
+    txt_path.unlink(missing_ok=True)
+    return transcript if len(transcript) > 100 else None
+
+
 def scrape_ec_podcast(limit=None):
-    """Download and transcribe Empirical Cycling podcast episodes."""
+    """Download and transcribe Empirical Cycling podcast episodes.
+
+    Uses yt-dlp to enumerate episodes directly from the Soundcloud profile.
+    Episodes are processed in reverse chronological order (newest first).
+    """
     EC_RAW.mkdir(parents=True, exist_ok=True)
     state_file = EC_RAW / "_state.json"
 
@@ -235,98 +331,81 @@ def scrape_ec_podcast(limit=None):
         with open(state_file) as f:
             state = json.load(f)
 
-    episodes = get_ec_episodes()
-    unprocessed = [e for e in episodes if e not in state]
-    logger.info(f"{len(unprocessed)} new episodes")
+    episodes = get_ec_episodes(limit=limit)
 
-    if limit:
-        unprocessed = unprocessed[:limit]
+    # Filter to unprocessed (check both URL and slug to avoid re-processing)
+    processed_slugs = {v.get("slug") for v in state.values() if isinstance(v, dict)}
+    unprocessed = [
+        e for e in episodes
+        if e["url"] not in state and e["slug"] not in processed_slugs
+    ]
+    logger.info(f"{len(unprocessed)} new episodes to process")
 
-    for i, url in enumerate(unprocessed):
-        slug = url.split("/")[-1][:60]
-        logger.info(f"[{i+1}/{len(unprocessed)}] {slug}")
+    transcribed = 0
+    failed = 0
+
+    for i, ep in enumerate(unprocessed):
+        url = ep["url"]
+        slug = ep["slug"]
+        title = ep["title"]
+        logger.info(f"[{i+1}/{len(unprocessed)}] {title}")
 
         # Download
-        audio_path = f"/tmp/ec_{slug}"
-        try:
-            result = subprocess.run(
-                ["yt-dlp", "--extract-audio", "--output", audio_path + ".%(ext)s", url],
-                capture_output=True, text=True, timeout=180,
-            )
-        except subprocess.TimeoutExpired:
-            state[url] = {"status": "download_timeout"}
+        audio_file = _download_episode(url, slug)
+        if not audio_file:
+            state[url] = {"status": "download_failed", "slug": slug, "title": title}
+            failed += 1
+            logger.warning(f"  Download failed: {title}")
+            _save_state(state_file, state)
             continue
 
-        # Find downloaded file
-        import glob
-        files = glob.glob(f"/tmp/ec_{slug}.*")
-        audio_files = [f for f in files if not f.endswith('.part') and not f.endswith('.ytdl')]
-        if not audio_files:
-            state[url] = {"status": "download_failed"}
-            continue
-
-        audio_file = audio_files[0]
-        logger.info(f"  Downloaded: {os.path.basename(audio_file)} ({os.path.getsize(audio_file) / 1e6:.0f}MB)")
+        size_mb = os.path.getsize(audio_file) / 1e6
+        logger.info(f"  Downloaded: {os.path.basename(audio_file)} ({size_mb:.0f}MB)")
 
         # Transcribe
-        logger.info(f"  Transcribing with Whisper (MPS)...")
-        whisper_out = "/tmp/whisper_ec"
-        os.makedirs(whisper_out, exist_ok=True)
+        transcript = _transcribe_episode(audio_file)
 
+        # Clean up audio file
         try:
-            result = subprocess.run(
-                ["whisper", audio_file, "--model", "base", "--device", "mps",
-                 "--output_format", "txt", "--output_dir", whisper_out, "--language", "en"],
-                capture_output=True, text=True, timeout=1800,
-            )
-        except subprocess.TimeoutExpired:
-            # Fallback to CPU
-            try:
-                result = subprocess.run(
-                    ["whisper", audio_file, "--model", "base", "--device", "cpu",
-                     "--output_format", "txt", "--output_dir", whisper_out, "--language", "en"],
-                    capture_output=True, text=True, timeout=3600,
-                )
-            except subprocess.TimeoutExpired:
-                state[url] = {"status": "transcription_timeout"}
-                os.unlink(audio_file)
-                continue
-
-        # Find transcript
-        basename = Path(audio_file).stem
-        txt_path = Path(whisper_out) / f"{basename}.txt"
-        if not txt_path.exists():
-            state[url] = {"status": "transcription_failed"}
             os.unlink(audio_file)
+        except OSError:
+            pass
+
+        if not transcript:
+            state[url] = {"status": "transcription_failed", "slug": slug, "title": title}
+            failed += 1
+            logger.warning(f"  Transcription failed: {title}")
+            _save_state(state_file, state)
             continue
 
-        transcript = txt_path.read_text()
-
-        # Save transcript
+        # Save transcript with title as header
         out_path = EC_RAW / f"{slug}.txt"
         with open(out_path, "w") as f:
-            f.write(transcript)
+            f.write(f"# {title}\n\n{transcript}")
 
         state[url] = {
             "status": "transcribed",
             "slug": slug,
+            "title": title,
             "length": len(transcript),
             "file": str(out_path.name),
         }
+        transcribed += 1
 
-        # Clean up audio + temp transcript
-        os.unlink(audio_file)
-        txt_path.unlink(missing_ok=True)
+        logger.info(f"  Saved: {slug}.txt ({len(transcript):,} chars)")
+        _save_state(state_file, state)
 
-        logger.info(f"  Saved: {slug}.txt ({len(transcript)} chars)")
+    _save_state(state_file, state)
+    total_transcribed = sum(1 for v in state.values() if isinstance(v, dict) and v.get("status") == "transcribed")
+    logger.info(f"Done: {transcribed} new transcriptions ({total_transcribed} total), {failed} failed")
 
-        with open(state_file, "w") as f:
-            json.dump(state, f, indent=2)
 
-    with open(state_file, "w") as f:
+def _save_state(state_file, state):
+    """Save state file atomically."""
+    tmp = state_file.with_suffix(".tmp")
+    with open(tmp, "w") as f:
         json.dump(state, f, indent=2)
-
-    logger.info(f"Done: {sum(1 for v in state.values() if isinstance(v, dict) and v.get('status') == 'transcribed')} transcribed")
+    tmp.rename(state_file)
 
 
 # ============================================================
