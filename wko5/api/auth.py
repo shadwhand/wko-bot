@@ -14,6 +14,6 @@ def set_token(token: str):
 
 def verify_token(credentials: HTTPAuthorizationCredentials = Security(security)):
     if _token is None:
-        return
+        raise HTTPException(status_code=503, detail="Auth not configured")
     if credentials is None or credentials.credentials != _token:
         raise HTTPException(status_code=401, detail="Invalid or missing token")
