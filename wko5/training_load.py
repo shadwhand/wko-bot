@@ -4,6 +4,7 @@ import logging
 
 import numpy as np
 import pandas as pd
+from scipy.optimize import curve_fit
 
 from wko5.db import get_connection, get_activities, get_records
 from wko5.config import get_config
@@ -215,3 +216,145 @@ def if_distribution(days_back=90, ftp=None):
         "compressed": floor > 0.70,
         "rides_analyzed": len(if_values),
     }
+
+
+def ftp_growth_curve(window_days=90, step_days=30):
+    """Fit a logarithmic model (FTP = a*ln(weeks+1) + b) to rolling FTP history.
+
+    Uses rolling_ftp() from wko5.pdcurve to get the FTP history, then fits
+    a logarithmic curve to characterise the athlete's adaptation trajectory.
+
+    Returns dict with keys:
+      slope, intercept, r_squared,
+      improvement_rate_w_per_year (watts per year at current training age),
+      plateau_detected (True if rate < 2 W/yr),
+      growth_phase ("early"|"intermediate"|"mature"|"plateau"),
+      training_age_weeks, data_points.
+    Returns None if insufficient data (fewer than 3 points).
+    """
+    from wko5.pdcurve import rolling_ftp
+
+    history = rolling_ftp(window_days=window_days, step_days=step_days)
+    if history.empty or len(history) < 3:
+        logger.warning("ftp_growth_curve: insufficient data points (need >= 3)")
+        return None
+
+    history = history.dropna(subset=["mFTP"]).reset_index(drop=True)
+    if len(history) < 3:
+        return None
+
+    # Convert date index to weeks from first data point
+    history["date"] = pd.to_datetime(history["date"])
+    t0 = history["date"].iloc[0]
+    history["weeks"] = (history["date"] - t0).dt.days / 7.0
+
+    weeks = history["weeks"].values
+    ftp_vals = history["mFTP"].values
+
+    def _log_model(w, a, b):
+        return a * np.log(w + 1) + b
+
+    try:
+        popt, _ = curve_fit(_log_model, weeks, ftp_vals, p0=[10.0, float(ftp_vals[0])], maxfev=5000)
+    except (RuntimeError, ValueError) as e:
+        logger.warning(f"ftp_growth_curve: curve_fit failed: {e}")
+        return None
+
+    a, b = popt
+    fitted = _log_model(weeks, a, b)
+
+    ss_res = np.sum((ftp_vals - fitted) ** 2)
+    ss_tot = np.sum((ftp_vals - ftp_vals.mean()) ** 2)
+    r_squared = float(1.0 - ss_res / ss_tot) if ss_tot > 0 else 0.0
+
+    # Instantaneous rate at the current (last) training age
+    training_age_weeks = float(weeks[-1])
+    # d/dw [a*ln(w+1) + b] = a / (w+1)
+    # Multiply by 52 to convert from W/week to W/year
+    rate_w_per_week = a / (training_age_weeks + 1)
+    improvement_rate_w_per_year = float(rate_w_per_week * 52)
+
+    plateau_detected = improvement_rate_w_per_year < 2.0
+
+    if plateau_detected:
+        growth_phase = "plateau"
+    elif training_age_weeks < 26:
+        growth_phase = "early"
+    elif training_age_weeks < 78:
+        growth_phase = "intermediate"
+    else:
+        growth_phase = "mature"
+
+    return {
+        "slope": round(float(a), 4),
+        "intercept": round(float(b), 4),
+        "r_squared": round(r_squared, 4),
+        "improvement_rate_w_per_year": round(improvement_rate_w_per_year, 2),
+        "plateau_detected": plateau_detected,
+        "growth_phase": growth_phase,
+        "training_age_weeks": round(training_age_weeks, 1),
+        "data_points": len(history),
+    }
+
+
+def performance_trend(durations=None, days_back=30):
+    """Track best effort at key durations per ride over recent days.
+
+    For each activity in the last *days_back* days, find the best average power
+    at each requested duration using the ride's power records.
+
+    Parameters
+    ----------
+    durations : list of int, optional
+        Durations in seconds to analyse. Defaults to [300, 1200].
+    days_back : int
+        How many days back to search for activities.
+
+    Returns
+    -------
+    pd.DataFrame with columns: date, activity_id, best_<N>s for each duration.
+    Empty DataFrame if no activities found or no power data.
+    """
+    if durations is None:
+        durations = [300, 1200]
+
+    cutoff = (pd.Timestamp.now() - pd.Timedelta(days=days_back)).strftime("%Y-%m-%d")
+    activities = get_activities(start=cutoff)
+
+    if activities.empty:
+        cols = ["date", "activity_id"] + [f"best_{d}s" for d in durations]
+        return pd.DataFrame(columns=cols)
+
+    rows = []
+    for _, act in activities.iterrows():
+        records = get_records(act["id"])
+        if records.empty or "power" not in records.columns:
+            continue
+
+        power = records["power"].fillna(0).values.astype(float)
+        n = len(power)
+        if n == 0:
+            continue
+
+        cumsum = np.concatenate([[0.0], np.cumsum(power)])
+        row = {
+            "date": str(act["start_time"])[:10],
+            "activity_id": act["id"],
+        }
+        for d in durations:
+            col = f"best_{d}s"
+            if d <= n:
+                avgs = (cumsum[d:] - cumsum[:n - d + 1]) / d
+                row[col] = float(avgs.max())
+            else:
+                row[col] = float("nan")
+        rows.append(row)
+
+    if not rows:
+        cols = ["date", "activity_id"] + [f"best_{d}s" for d in durations]
+        return pd.DataFrame(columns=cols)
+
+    df = pd.DataFrame(rows)
+    df["date"] = pd.to_datetime(df["date"])
+    df = df.sort_values("date").reset_index(drop=True)
+    return df

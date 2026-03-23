@@ -36,14 +36,138 @@ class NutritionPlan:
     sweat_na_mmol: float = 45           # individual sweat sodium concentration
 
 
-def energy_expenditure(power_watts, efficiency=0.23):
+def energy_expenditure(power_watts, efficiency=0.23, with_uncertainty=False):
     """Compute energy expenditure in kcal/hr from power output.
 
     EE = P * 3.6 / (GE * 4.184) kcal/hr
+
+    Args:
+        power_watts: average power output in watts
+        efficiency: gross mechanical efficiency (default 0.23)
+        with_uncertainty: if True, return (mid, low, high) tuple where low uses
+            efficiency=0.25 (more efficient → less expenditure) and high uses
+            efficiency=0.20 (less efficient → more expenditure)
+
+    Returns:
+        float kcal/hr when with_uncertainty=False (default)
+        tuple (mid, low, high) kcal/hr when with_uncertainty=True
     """
     if power_watts <= 0:
+        if with_uncertainty:
+            return (80.0, 80.0, 80.0)
         return 80.0  # basal metabolic rate while coasting
-    return power_watts * 3.6 / (efficiency * 4.184)
+    mid = power_watts * 3.6 / (efficiency * 4.184)
+    if not with_uncertainty:
+        return mid
+    low = power_watts * 3.6 / (0.25 * 4.184)   # higher efficiency → lower expenditure
+    high = power_watts * 3.6 / (0.20 * 4.184)  # lower efficiency → higher expenditure
+    return (mid, low, high)
+
+
+def check_absorption_ceiling(intake_g_hr, ceiling_g_hr=90):
+    """Check whether carbohydrate intake exceeds the gut absorption ceiling.
+
+    Args:
+        intake_g_hr: planned carbohydrate intake in g/hr
+        ceiling_g_hr: maximum absorbable CHO per hour (default 90 g/hr,
+            achievable with multiple transporter sources)
+
+    Returns:
+        None if intake is within the ceiling.
+        dict with warning, intake, ceiling, and excess if ceiling is exceeded.
+    """
+    if intake_g_hr <= ceiling_g_hr:
+        return None
+    excess = intake_g_hr - ceiling_g_hr
+    return {
+        "warning": (
+            f"Intake {intake_g_hr:.0f} g/hr exceeds absorption ceiling "
+            f"{ceiling_g_hr:.0f} g/hr by {excess:.0f} g/hr. "
+            "Use multiple CHO sources (glucose + fructose) to raise ceiling."
+        ),
+        "intake": intake_g_hr,
+        "ceiling": ceiling_g_hr,
+        "excess": excess,
+    }
+
+
+def glycogen_budget_daily(ride_kj, ride_duration_h, on_bike_carbs_g,
+                          post_ride_delay_h, daily_carb_target_g_kg, weight_kg):
+    """Model daily glycogen budget after a ride.
+
+    Args:
+        ride_kj: total mechanical work done in the ride (kJ)
+        ride_duration_h: ride duration in hours
+        on_bike_carbs_g: total exogenous CHO consumed during the ride (g)
+        post_ride_delay_h: hours between ride end and first post-ride meal
+        daily_carb_target_g_kg: daily carbohydrate target in g/kg body mass
+        weight_kg: rider body mass in kg
+
+    Returns:
+        dict with:
+            cho_burned_g: estimated CHO oxidised during the ride
+            on_bike_carbs_g: exogenous CHO taken on-bike (echo of input)
+            net_glycogen_cost_g: net glycogen draw after on-bike fuelling
+            recovery_carbs_available_g: CHO available from the rest of daily target
+            recovery_hours_available: waking hours left for recovery eating
+            achievable_repletion_g: glycogen that can realistically be replenished
+            next_day_glycogen_pct: predicted starting glycogen as % of capacity
+            warning: str or None
+    """
+    glycogen_capacity_g = weight_kg * 6.4
+
+    # CHO burned: treat ride_kj as kcal (1 kJ ≈ 1 kcal for mechanical work context),
+    # then 60% from CHO at 4 kcal/g
+    ride_kcal = ride_kj * KJ_TO_KCAL
+    cho_burned_g = ride_kcal * 0.60 / KCAL_PER_G_CHO
+
+    net_glycogen_cost_g = max(0.0, cho_burned_g - on_bike_carbs_g)
+
+    daily_carb_total_g = daily_carb_target_g_kg * weight_kg
+    recovery_carbs_available_g = max(0.0, daily_carb_total_g - on_bike_carbs_g)
+
+    # Waking day = 16 h; subtract ride time and post-ride delay
+    recovery_hours_available = max(0.0, 16.0 - ride_duration_h - post_ride_delay_h)
+
+    # Optimal repletion rate is 1.2 g/kg/hr
+    optimal_rate_g_hr = 1.2 * weight_kg
+    achievable_repletion_g = min(
+        recovery_carbs_available_g,
+        optimal_rate_g_hr * recovery_hours_available,
+    )
+
+    # Predicted glycogen at start of next day
+    starting_glycogen_g = glycogen_capacity_g  # assume fully topped up at ride start
+    next_day_glycogen_g = max(
+        0.0, starting_glycogen_g - net_glycogen_cost_g + achievable_repletion_g
+    )
+    next_day_glycogen_pct = min(100.0, next_day_glycogen_g / glycogen_capacity_g * 100.0)
+
+    warning = None
+    msgs = []
+    if post_ride_delay_h > 2:
+        msgs.append(
+            f"Post-ride delay of {post_ride_delay_h:.1f}h reduces glycogen repletion rate. "
+            "Aim to eat within 30-60 min of finishing."
+        )
+    if next_day_glycogen_pct < 70:
+        msgs.append(
+            f"Predicted next-day glycogen {next_day_glycogen_pct:.0f}% of capacity. "
+            "Consider increasing daily carbohydrate target."
+        )
+    if msgs:
+        warning = " | ".join(msgs)
+
+    return {
+        "cho_burned_g": round(cho_burned_g, 1),
+        "on_bike_carbs_g": on_bike_carbs_g,
+        "net_glycogen_cost_g": round(net_glycogen_cost_g, 1),
+        "recovery_carbs_available_g": round(recovery_carbs_available_g, 1),
+        "recovery_hours_available": round(recovery_hours_available, 2),
+        "achievable_repletion_g": round(achievable_repletion_g, 1),
+        "next_day_glycogen_pct": round(next_day_glycogen_pct, 1),
+        "warning": warning,
+    }
 
 
 def _cho_fraction(intensity_pct):

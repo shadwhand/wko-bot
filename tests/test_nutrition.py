@@ -2,11 +2,13 @@
 import sys, os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
+import pytest
 import numpy as np
 from wko5.nutrition import (
     energy_expenditure, cho_burn_rate, fat_burn_rate,
     glycogen_timeline, time_to_bonk, sweat_rate, sodium_loss,
     evaluate_nutrition_plan, NutritionPlan, FeedEvent,
+    check_absorption_ceiling, glycogen_budget_daily,
 )
 
 
@@ -122,3 +124,63 @@ def test_evaluate_plan_detects_bonk_risk():
     result = evaluate_nutrition_plan(paced_segments, plan, ftp=290, temp_c=20)
     assert result["bonk_risk_km"] is not None
     assert result["bonk_risk_km"] < 180  # should bonk within 180km
+
+
+# ── New tests: absorption ceiling, glycogen budget, energy uncertainty ─────────
+
+def test_check_absorption_ceiling_no_warning():
+    """Intake at or below the ceiling should return None."""
+    assert check_absorption_ceiling(90) is None
+    assert check_absorption_ceiling(60) is None
+
+
+def test_check_absorption_ceiling_exceeded():
+    """Intake above ceiling should return a dict with excess info."""
+    result = check_absorption_ceiling(110, ceiling_g_hr=90)
+    assert result is not None
+    assert result["excess"] == pytest.approx(20, abs=0.1)
+    assert result["intake"] == 110
+    assert result["ceiling"] == 90
+    assert "warning" in result
+    assert "110" in result["warning"]
+
+
+def test_glycogen_budget_daily_structure():
+    """glycogen_budget_daily should return all required keys."""
+    result = glycogen_budget_daily(
+        ride_kj=2000, ride_duration_h=3.0, on_bike_carbs_g=150,
+        post_ride_delay_h=1.0, daily_carb_target_g_kg=8.0, weight_kg=70,
+    )
+    required = {
+        "cho_burned_g", "on_bike_carbs_g", "net_glycogen_cost_g",
+        "recovery_carbs_available_g", "recovery_hours_available",
+        "achievable_repletion_g", "next_day_glycogen_pct", "warning",
+    }
+    assert required <= set(result.keys())
+    assert result["on_bike_carbs_g"] == 150
+    assert 0 <= result["next_day_glycogen_pct"] <= 100
+
+
+def test_glycogen_budget_daily_late_meal_warning():
+    """A post-ride delay > 2h should include a delay warning."""
+    result = glycogen_budget_daily(
+        ride_kj=1500, ride_duration_h=2.0, on_bike_carbs_g=100,
+        post_ride_delay_h=3.0, daily_carb_target_g_kg=7.0, weight_kg=75,
+    )
+    assert result["warning"] is not None
+    assert "delay" in result["warning"].lower()
+
+
+def test_energy_expenditure_with_uncertainty():
+    """with_uncertainty=True should return (mid, low, high) tuple with low < mid < high."""
+    result = energy_expenditure(200, efficiency=0.23, with_uncertainty=True)
+    assert isinstance(result, tuple)
+    assert len(result) == 3
+    mid, low, high = result
+    assert low < mid < high
+    # mid should match default call
+    assert mid == pytest.approx(energy_expenditure(200, efficiency=0.23), rel=1e-6)
+    # unchanged behavior when with_uncertainty=False
+    scalar = energy_expenditure(200, efficiency=0.23, with_uncertainty=False)
+    assert isinstance(scalar, float)
+    assert scalar == pytest.approx(mid, rel=1e-6)
