@@ -10,13 +10,13 @@ def test_coggan_zones_boundaries():
     assert len(zones) == 7
     assert "Active Recovery" in zones
     assert "Neuromuscular" in zones
-    low, high = zones["Threshold"]
+    low, high = zones["Threshold"]["power"]
     assert low < 292 < high
 
 
 def test_coggan_zones_values():
     zones = coggan_zones(292)
-    low, high = zones["Endurance"]
+    low, high = zones["Endurance"]["power"]
     assert abs(low - 292 * 0.56) < 1
     assert abs(high - 292 * 0.75) < 1
 
@@ -61,3 +61,35 @@ def test_validate_endurance_rides():
     result = validate_endurance_rides(days_back=90)
     if result is not None:
         assert isinstance(result, list)
+
+
+def test_coggan_zones_new_format():
+    """coggan_zones should return dicts with 'power' tuple and 'rpe' string."""
+    zones = coggan_zones(292)
+    for name, data in zones.items():
+        assert isinstance(data, dict), f"Zone '{name}' should be a dict"
+        assert "power" in data, f"Zone '{name}' missing 'power' key"
+        assert "rpe" in data, f"Zone '{name}' missing 'rpe' key"
+        low, high = data["power"]
+        assert isinstance(low, int)
+        assert isinstance(high, int)
+        assert low >= 0
+    assert zones["Active Recovery"]["rpe"] == "1-2/10"
+    assert zones["Endurance"]["rpe"] == "2-3/10"
+    assert zones["Tempo"]["rpe"] == "4-5/10"
+    assert zones["Threshold"]["rpe"] == "7-8/10"
+    assert zones["VO2max"]["rpe"] == "9-9.5/10"
+    assert zones["Anaerobic"]["rpe"] == "10/10"
+    assert zones["Neuromuscular"]["rpe"] == "max"
+
+
+def test_time_in_zones_with_new_coggan_format():
+    """time_in_zones should work correctly with the new coggan_zones dict format."""
+    zones = coggan_zones(300)
+    # 165W = Active Recovery (0-165), 210W = Endurance (168-225), 300W = Threshold (273-315)
+    power = pd.Series([165] * 10 + [210] * 20 + [300] * 30)
+    tiz = time_in_zones(power, zones)
+    assert tiz["Active Recovery"] == 10
+    assert tiz["Endurance"] == 20
+    assert tiz["Threshold"] == 30
+    assert sum(tiz.values()) == 60

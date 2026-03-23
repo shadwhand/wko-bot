@@ -49,9 +49,12 @@ def compute_windowed_mmp(power_series, window_hours=2, weight_kg=None):
 
     Uses vectorized rolling max at 4 target durations instead of full O(n^2) MMP.
     If weight_kg is provided, adds cumulative_kj_per_kg to each window dict.
+    For windows after the first, adds pre_effort_avg_if and pre_effort_class
+    to characterize the fatigue state entering that window.
     Returns list of dicts per window.
     """
     DURATIONS = [60, 300, 2400, 3600]  # 1min, 5min, 40min, 1hr
+    NP_WINDOW = 30  # seconds for rolling NP approximation
 
     window_s = int(window_hours * 3600)
     n = len(power_series)
@@ -61,6 +64,8 @@ def compute_windowed_mmp(power_series, window_hours=2, weight_kg=None):
 
     power = power_series.fillna(0).values.astype(float)
     cumsum = np.concatenate([[0], np.cumsum(power)])
+
+    ftp = get_config().get("ftp") or 292
 
     # Cumulative kJ is computed from the cumsum already (cumsum is in watt-seconds)
 
@@ -95,6 +100,25 @@ def compute_windowed_mmp(power_series, window_hours=2, weight_kg=None):
 
         if weight_kg and weight_kg > 0:
             entry["cumulative_kj_per_kg"] = round(cum_kj / weight_kg, 1)
+
+        # For windows after the first, compute pre-effort IF from power[:start]
+        if start > 0 and ftp > 0:
+            pre_power = power[:start]
+            if len(pre_power) >= NP_WINDOW:
+                # Rolling NP: 30s rolling mean raised to 4th power, then average, then 4th root
+                pre_cs = np.concatenate([[0], np.cumsum(pre_power ** 4)])
+                rolling_p4 = (pre_cs[NP_WINDOW:] - pre_cs[:len(pre_power) - NP_WINDOW + 1]) / NP_WINDOW
+                np_val = float(np.mean(rolling_p4) ** 0.25)
+            else:
+                np_val = float(np.mean(pre_power)) if len(pre_power) > 0 else 0.0
+            pre_if = round(np_val / ftp, 4)
+            entry["pre_effort_avg_if"] = pre_if
+            if pre_if < 0.65:
+                entry["pre_effort_class"] = "endurance_preload"
+            elif pre_if < 0.80:
+                entry["pre_effort_class"] = "tempo_preload"
+            else:
+                entry["pre_effort_class"] = "race_preload"
 
         results.append(entry)
 
@@ -178,6 +202,7 @@ def fit_durability_model(min_ride_hours=2, min_rides=5):
     y_pred = _decay_model(x_data, a, b, c)
     rmse = float(np.sqrt(np.mean((y_data - y_pred) ** 2)))
 
+    fueling_warning = b > 0.003
     return {
         "a": round(float(a), 4),
         "b": round(float(b), 6),
@@ -185,6 +210,11 @@ def fit_durability_model(min_ride_hours=2, min_rides=5):
         "rides_used": rides_used,
         "data_points": len(all_y_ratio),
         "rmse": round(rmse, 4),
+        "fueling_confound_warning": fueling_warning,
+        "fueling_message": (
+            "High degradation rate — poor durability may reflect fueling habits, not fitness."
+            if fueling_warning else None
+        ),
     }
 
 

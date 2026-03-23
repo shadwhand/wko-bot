@@ -11,13 +11,13 @@ logger = logging.getLogger(__name__)
 def coggan_zones(ftp):
     ftp = float(ftp)
     return {
-        "Active Recovery": (0, int(ftp * 0.55)),
-        "Endurance": (int(ftp * 0.56), int(ftp * 0.75)),
-        "Tempo": (int(ftp * 0.76), int(ftp * 0.90)),
-        "Threshold": (int(ftp * 0.91), int(ftp * 1.05)),
-        "VO2max": (int(ftp * 1.06), int(ftp * 1.20)),
-        "Anaerobic": (int(ftp * 1.21), int(ftp * 1.50)),
-        "Neuromuscular": (int(ftp * 1.51), 9999),
+        "Active Recovery": {"power": (0, int(ftp * 0.55)), "rpe": "1-2/10"},
+        "Endurance": {"power": (int(ftp * 0.56), int(ftp * 0.75)), "rpe": "2-3/10"},
+        "Tempo": {"power": (int(ftp * 0.76), int(ftp * 0.90)), "rpe": "4-5/10"},
+        "Threshold": {"power": (int(ftp * 0.91), int(ftp * 1.05)), "rpe": "7-8/10"},
+        "VO2max": {"power": (int(ftp * 1.06), int(ftp * 1.20)), "rpe": "9-9.5/10"},
+        "Anaerobic": {"power": (int(ftp * 1.21), int(ftp * 1.50)), "rpe": "10/10"},
+        "Neuromuscular": {"power": (int(ftp * 1.51), 9999), "rpe": "max"},
     }
 
 
@@ -60,7 +60,8 @@ def time_in_zones(power_series, zones):
     power = power_series.fillna(0).values
     result = {name: 0 for name in zones}
     for w in power:
-        for name, (low, high) in zones.items():
+        for name, data in zones.items():
+            low, high = data["power"] if isinstance(data, dict) else data
             if low <= w <= high:
                 result[name] += 1
                 break

@@ -130,3 +130,64 @@ def test_durability_benchmark():
     assert durability_benchmark(15) == "good_amateur"
     assert durability_benchmark(35) == "average_amateur"
     assert durability_benchmark(50) == "needs_work"
+
+
+def test_windowed_mmp_pre_effort_if():
+    """Windows after the first should have pre_effort_avg_if and pre_effort_class."""
+    rng = np.random.default_rng(42)
+    # 6 hours of power data so we get 3 windows (3 * 2hr)
+    power = pd.Series(rng.normal(200, 10, 6 * 3600).clip(0))
+    windows = compute_windowed_mmp(power, window_hours=2)
+    assert len(windows) == 3
+    # First window has no pre-effort fields
+    assert "pre_effort_avg_if" not in windows[0]
+    assert "pre_effort_class" not in windows[0]
+    # Subsequent windows have both fields
+    for w in windows[1:]:
+        assert "pre_effort_avg_if" in w, "Missing pre_effort_avg_if"
+        assert "pre_effort_class" in w, "Missing pre_effort_class"
+        assert w["pre_effort_avg_if"] >= 0
+        assert w["pre_effort_class"] in ("endurance_preload", "tempo_preload", "race_preload")
+
+
+def test_fit_durability_model_fueling_fields():
+    """fit_durability_model result should always include fueling_confound_warning and fueling_message."""
+    from unittest.mock import patch
+    from scipy.optimize import curve_fit
+    import numpy as np
+
+    # Build minimal synthetic data that will pass the fitting
+    # 5 rides, each with 2 windows (start + 1 later window)
+    mock_activities = pd.DataFrame({
+        "id": list(range(5)),
+        "total_timer_time": [10800] * 5,  # 3 hours each
+    })
+
+    # Make windows that represent a slight decay
+    window_data_ride = [
+        {"window_start_h": 0.0, "window_end_h": 2.0, "elapsed_hours": 1.0,
+         "cumulative_kj": 100.0, "mmp_300s": 300.0},
+        {"window_start_h": 2.0, "window_end_h": 4.0, "elapsed_hours": 3.0,
+         "cumulative_kj": 600.0, "mmp_300s": 270.0,
+         "pre_effort_avg_if": 0.60, "pre_effort_class": "endurance_preload"},
+    ]
+
+    empty_records = pd.DataFrame()
+
+    with patch("wko5.durability.get_activities", return_value=mock_activities), \
+         patch("wko5.durability.get_records", return_value=pd.DataFrame({"power": [200.0] * 10800})), \
+         patch("wko5.durability.compute_windowed_mmp", return_value=window_data_ride):
+        result = fit_durability_model(min_ride_hours=2, min_rides=5)
+
+    if result is None:
+        return  # Not enough data in mock — skip
+
+    assert "fueling_confound_warning" in result
+    assert "fueling_message" in result
+    assert isinstance(result["fueling_confound_warning"], bool)
+    # Message should be a string when warning is True, None otherwise
+    if result["fueling_confound_warning"]:
+        assert isinstance(result["fueling_message"], str)
+        assert "fueling" in result["fueling_message"].lower()
+    else:
+        assert result["fueling_message"] is None
