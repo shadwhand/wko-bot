@@ -42,13 +42,104 @@ from wko5.profile import power_profile, coggan_ranking, strengths_limiters, phen
 from wko5.ride import ride_summary, detect_intervals, best_efforts, hr_decoupling
 from wko5.zones import coggan_zones, ilevels, ride_distribution
 from wko5.db import get_activities
+import time
 
 router = APIRouter(prefix="/api")
+
+# Simple in-memory cache — data only changes on Garmin sync or model update
+_cache = {}
+_CACHE_TTL = 300  # 5 minutes
+
+
+def _cached(key, fn, ttl=_CACHE_TTL):
+    """Return cached result if fresh, otherwise compute and cache."""
+    now = time.time()
+    if key in _cache and (now - _cache[key]["t"]) < ttl:
+        return _cache[key]["v"]
+    result = fn()
+    _cache[key] = {"v": result, "t": now}
+    return result
+
+
+def _invalidate_cache():
+    """Clear all cached data (call after sync or model update)."""
+    _cache.clear()
+
+
+# Warmup state — tracks precompute results
+_warmup_status = {"running": False, "done": False, "results": {}, "errors": {}}
+
+
+def warmup_cache():
+    """Pre-compute all expensive endpoints at startup. Call from a background thread."""
+    import threading
+    _warmup_status["running"] = True
+    _warmup_status["done"] = False
+    _warmup_status["results"] = {}
+    _warmup_status["errors"] = {}
+
+    tasks = {
+        "fitness": lambda: _cached("fitness", current_fitness, ttl=86400),
+        "pmc": lambda: _cached("pmc:None:None", lambda: (
+            lambda df: [] if df.empty else _sanitize_nans(
+                df.assign(date=df["date"].astype(str))[["date", "TSS", "CTL", "ATL", "TSB"]].to_dict(orient="records")
+            )
+        )(build_pmc()), ttl=86400),
+        "model_90": lambda: _cached("model:90", lambda: (
+            lambda mmp: {"error": "Insufficient data"} if len(mmp) < 60 else (
+                lambda r: r if r is None else dict(r, mmp=_smooth_mmp(mmp))
+            )(fit_pd_model(mmp))
+        )(compute_envelope_mmp(days=90)), ttl=86400),
+        "profile_90": lambda: _cached("profile:90", lambda: (
+            lambda p: {"error": "Insufficient data"} if not p else {
+                "profile": p, "ranking": coggan_ranking(p), "strengths_limiters": strengths_limiters(p)
+            }
+        )(power_profile(days=90)), ttl=86400),
+        "rolling_ftp": lambda: _cached("rolling_ftp:90:14", lambda: rolling_ftp(window_days=90, step_days=14).to_dict(orient="records"), ttl=86400),
+        "clinical": lambda: (
+            lambda r: _sanitize_nans(r)
+        )(get_clinical_flags(days_back=30)),
+        "ftp_growth": lambda: _cached("ftp_growth", lambda: __import__("wko5.training_load", fromlist=["ftp_growth_curve"]).ftp_growth_curve(), ttl=86400),
+        "rolling_pd": lambda: _cached("rolling_pd_profile", lambda: (lambda r: {"data": []} if r is None else {"data": r.to_dict(orient="records")})(__import__("wko5.pdcurve", fromlist=["rolling_pd_profile"]).rolling_pd_profile()), ttl=86400),
+    }
+
+    for name, fn in tasks.items():
+        t0 = time.time()
+        try:
+            fn()
+            elapsed = round(time.time() - t0, 1)
+            _warmup_status["results"][name] = f"ok ({elapsed}s)"
+            import sys; sys.stderr.write(f"  [warmup] {name}: ok ({elapsed}s)\n"); sys.stderr.flush()
+        except Exception as e:
+            elapsed = round(time.time() - t0, 1)
+            _warmup_status["errors"][name] = str(e)
+            import sys; sys.stderr.write(f"  [warmup] {name}: FAILED ({elapsed}s) — {e}\n"); sys.stderr.flush()
+
+    _warmup_status["running"] = False
+    _warmup_status["done"] = True
+    ok = len(_warmup_status["results"])
+    fail = len(_warmup_status["errors"])
+    import sys; sys.stderr.write(f"  [warmup] Complete: {ok} ok, {fail} failed\n"); sys.stderr.flush()
 
 
 @router.get("/health")
 def health():
-    return {"status": "ok"}
+    return {
+        "status": "ok",
+        "cache_warm": _warmup_status["done"],
+        "warmup_errors": _warmup_status["errors"] if _warmup_status["errors"] else None,
+    }
+
+
+@router.get("/warmup-status")
+def warmup_status():
+    """Check precompute warmup status — no auth needed so dashboard can poll during startup."""
+    return {
+        "running": _warmup_status["running"],
+        "done": _warmup_status["done"],
+        "results": _warmup_status["results"],
+        "errors": _warmup_status["errors"],
+    }
 
 
 @router.get("/config", dependencies=[Depends(verify_token)])
@@ -58,42 +149,122 @@ def config():
 
 @router.get("/fitness", dependencies=[Depends(verify_token)])
 def fitness():
-    return current_fitness()
+    return _cached("fitness", current_fitness)
+
+
+@router.get("/pmc", dependencies=[Depends(verify_token)])
+def pmc(start: str = None, end: str = None):
+    """Full PMC history for charting."""
+    cache_key = f"pmc:{start}:{end}"
+    def compute():
+        df = build_pmc(start=start, end=end)
+        if df.empty:
+            return []
+        df["date"] = df["date"].astype(str)
+        return _sanitize_nans(df[["date", "TSS", "CTL", "ATL", "TSB"]].to_dict(orient="records"))
+    return _cached(cache_key, compute)
 
 
 @router.get("/activities", dependencies=[Depends(verify_token)])
-def activities(start: str = None, end: str = None, sub_sport: str = None):
+def activities(start: str = None, end: str = None, sub_sport: str = None,
+               limit: int = 50, offset: int = 0):
     df = get_activities(start=start, end=end, sub_sport=sub_sport)
-    return _sanitize_nans(df.to_dict(orient="records"))
+    # Sort newest first
+    df = df.sort_values("start_time", ascending=False).reset_index(drop=True)
+    total = len(df)
+    df = df.iloc[offset:offset + limit]
+    records = _sanitize_nans(df.to_dict(orient="records"))
+    return {"activities": records, "total": total, "limit": limit, "offset": offset}
+
+
+def _smooth_mmp(mmp):
+    """WKO5-style log-spaced MMP sampling with smoothing.
+
+    Returns ~250 points: every second up to 30s, then log-spaced with
+    rolling geometric mean smoothing at longer durations.
+    """
+    import numpy as np
+    n = len(mmp)
+    indices = set()
+    # Every second up to 30s
+    for i in range(min(30, n)):
+        indices.add(i)
+    # Every 2s from 30s to 2min
+    for i in range(30, min(120, n), 2):
+        indices.add(i)
+    # Every 5s from 2min to 10min
+    for i in range(120, min(600, n), 5):
+        indices.add(i)
+    # Every 15s from 10min to 30min
+    for i in range(600, min(1800, n), 15):
+        indices.add(i)
+    # Every 30s from 30min to 60min
+    for i in range(1800, min(3600, n), 30):
+        indices.add(i)
+    # Every 60s beyond 60min
+    for i in range(3600, n, 60):
+        indices.add(i)
+    # Always include last point
+    if n > 0:
+        indices.add(n - 1)
+
+    indices = sorted(indices)
+    arr = np.array(mmp, dtype=float)
+    result = []
+    for i in indices:
+        # Smooth: average a window around i (wider at longer durations)
+        window = max(1, i // 20)  # ~5% of duration
+        lo = max(0, i - window)
+        hi = min(n, i + window + 1)
+        smoothed = float(np.mean(arr[lo:hi]))
+        result.append([i + 1, round(smoothed, 1)])
+    return result
 
 
 @router.get("/model", dependencies=[Depends(verify_token)])
 def model(days: int = 90):
-    mmp = compute_envelope_mmp(days=days)
-    if len(mmp) < 60:
-        return {"error": "Insufficient data"}
-    result = fit_pd_model(mmp)
-    if result is None:
-        return {"error": "Model fitting failed"}
-    return result
+    def compute():
+        mmp = compute_envelope_mmp(days=days)
+        if len(mmp) < 60:
+            return {"error": "Insufficient data"}
+        result = fit_pd_model(mmp)
+        if result is None:
+            return {"error": "Model fitting failed"}
+        result["mmp"] = _smooth_mmp(mmp)
+        return result
+    return _cached(f"model:{days}", compute)
 
 
 @router.get("/profile", dependencies=[Depends(verify_token)])
 def profile(days: int = 90):
-    p = power_profile(days=days)
-    if not p:
-        return {"error": "Insufficient data"}
-    ranking = coggan_ranking(p)
-    sl = strengths_limiters(p)
-    return {"profile": p, "ranking": ranking, "strengths_limiters": sl}
+    def compute():
+        p = power_profile(days=days)
+        if not p:
+            return {"error": "Insufficient data"}
+        ranking = coggan_ranking(p)
+        sl = strengths_limiters(p)
+        return {"profile": p, "ranking": ranking, "strengths_limiters": sl}
+    return _cached(f"profile:{days}", compute)
 
 
 @router.get("/ride/{activity_id}", dependencies=[Depends(verify_token)])
-def ride(activity_id: int):
+def ride(activity_id: int, include_records: bool = True):
     summary = ride_summary(activity_id)
     if not summary:
         return {"error": "Activity not found"}
-    return summary
+    result = {"summary": summary}
+    if include_records:
+        from wko5.db import get_records
+        records_df = get_records(activity_id)
+        if not records_df.empty:
+            result["records"] = _sanitize_nans(
+                records_df[["elapsed_seconds", "power", "heart_rate", "cadence", "speed", "altitude"]]
+                .to_dict(orient="records")
+            )
+        else:
+            result["records"] = []
+        result["intervals"] = detect_intervals(activity_id)
+    return result
 
 
 @router.get("/ride/{activity_id}/intervals", dependencies=[Depends(verify_token)])
@@ -108,19 +279,40 @@ def efforts(activity_id: int):
 
 @router.get("/rolling-ftp", dependencies=[Depends(verify_token)])
 def rolling_ftp_endpoint(window: int = 90, step: int = 14):
-    df = rolling_ftp(window_days=window, step_days=step)
-    return df.to_dict(orient="records")
+    def compute():
+        df = rolling_ftp(window_days=window, step_days=step)
+        return df.to_dict(orient="records")
+    return _cached(f"rolling_ftp:{window}:{step}", compute)
+
+
+def _get_segments(activity_id):
+    """Cached segment analysis per route/activity."""
+    return _cached(f"segments:{activity_id}", lambda: analyze_ride_segments(activity_id))
+
+
+def _get_pd_model():
+    """Cached PD model — reuses warmup cache if available."""
+    def compute():
+        mmp = compute_envelope_mmp(days=90)
+        if len(mmp) < 60:
+            return None
+        return fit_pd_model(mmp)
+    return _cached("pd_model_raw", compute)
+
+
+def _get_durability():
+    """Cached durability model."""
+    return _cached("durability_raw", fit_durability_model)
 
 
 @router.get("/segments/{activity_id}", dependencies=[Depends(verify_token)])
 def segments(activity_id: int):
-    result = analyze_ride_segments(activity_id)
-    return _sanitize_nans(result)
+    return _sanitize_nans(_get_segments(activity_id))
 
 
 @router.get("/durability", dependencies=[Depends(verify_token)])
 def durability():
-    result = fit_durability_model()
+    result = _get_durability()
     if result is None:
         return {"error": "Insufficient data for durability model"}
     return result
@@ -128,38 +320,61 @@ def durability():
 
 @router.get("/demand/{activity_id}", dependencies=[Depends(verify_token)])
 def demand(activity_id: int):
-    ride_segments = analyze_ride_segments(activity_id)
-    if not ride_segments["segments"]:
-        return {"error": "No segments found"}
-    pd_model = fit_pd_model(compute_envelope_mmp(days=90))
-    if pd_model is None:
-        return {"error": "PD model fitting failed"}
-    dur_params = fit_durability_model()
-    if dur_params is None:
-        return {"error": "Insufficient data for durability model"}
-    profile = build_demand_profile(ride_segments["segments"], pd_model, dur_params)
-    return _sanitize_nans({"segments": profile, "summary": ride_segments["summary"]})
+    def compute():
+        ride_segments = _get_segments(activity_id)
+        if not ride_segments["segments"]:
+            return {"error": "No segments found"}
+        pd_model = _get_pd_model()
+        if pd_model is None:
+            return {"error": "PD model fitting failed"}
+        dur_params = _get_durability()
+        if dur_params is None:
+            return {"error": "Insufficient data for durability model"}
+        profile = build_demand_profile(ride_segments["segments"], pd_model, dur_params)
+        return {"segments": profile, "summary": ride_segments["summary"]}
+    return _sanitize_nans(_cached(f"demand:{activity_id}", compute))
 
 
 @router.get("/gap-analysis/{activity_id}", dependencies=[Depends(verify_token)])
 def gap_analysis_endpoint(activity_id: int, n_draws: int = 200):
-    ride_segments = analyze_ride_segments(activity_id)
-    if not ride_segments["segments"]:
-        return {"error": "No segments found"}
-    pd_model = fit_pd_model(compute_envelope_mmp(days=90))
-    if pd_model is None:
-        return {"error": "PD model fitting failed"}
-    dur_params = fit_durability_model()
-    if dur_params is None:
-        return {"error": "Insufficient data for durability model"}
-    result = gap_analysis(ride_segments["segments"], pd_model, dur_params, n_draws=n_draws)
-    return _sanitize_nans(result)
+    def compute():
+        ride_segments = _get_segments(activity_id)
+        if not ride_segments["segments"]:
+            return {"error": "No segments found"}
+        pd_model = _get_pd_model()
+        if pd_model is None:
+            return {"error": "PD model fitting failed"}
+        dur_params = _get_durability()
+        if dur_params is None:
+            return {"error": "Insufficient data for durability model"}
+        return gap_analysis(ride_segments["segments"], pd_model, dur_params, n_draws=n_draws)
+    return _sanitize_nans(_cached(f"gap:{activity_id}:{n_draws}", compute))
 
 
 @router.get("/clinical-flags", dependencies=[Depends(verify_token)])
 def clinical_flags(days_back: int = 30):
-    result = get_clinical_flags(days_back=days_back)
-    return _sanitize_nans(result)
+    try:
+        result = get_clinical_flags(days_back=days_back)
+        # Normalize to {flags: [...]} format for the ClinicalDashboard component
+        flags = result.get("current_flags", [])
+        normalized = []
+        for f in flags:
+            normalized.append({
+                "name": f.get("flag", f.get("name", "Unknown")),
+                "status": "danger" if f.get("severity") == "red" else "warning" if f.get("severity") == "yellow" else "ok",
+                "value": f.get("value", f.get("detail", "--")),
+                "threshold": f.get("threshold", ""),
+                "detail": f.get("detail", f.get("recommendation", "")),
+            })
+        # Add "all clear" entries for checks that passed
+        all_checks = ["CTL Ramp Rate", "TSB Floor", "HR Decoupling", "IF Floor", "Intensity Distribution", "Panic Training"]
+        flagged_names = {n["name"] for n in normalized}
+        for check in all_checks:
+            if check not in flagged_names:
+                normalized.append({"name": check, "status": "ok", "value": "Normal", "threshold": "", "detail": "No issues detected"})
+        return _sanitize_nans({"flags": normalized, "alert_level": result.get("alert_level", "green")})
+    except Exception as e:
+        return {"flags": [], "alert_level": "unknown", "error": str(e)}
 
 
 @router.post("/plan-ride", dependencies=[Depends(verify_token)])
@@ -246,12 +461,25 @@ def list_routes():
 
 
 @router.get("/routes/{route_id}", dependencies=[Depends(verify_token)])
-def route_detail(route_id: int):
+def route_detail(route_id: int, include_points: bool = True):
     route = get_route(route_id)
     if route is None:
         return {"error": "Route not found"}
     route["history"] = get_route_history(route_id)
     route["plans"] = get_ride_plans(route_id)
+    if include_points:
+        from wko5.db import get_connection
+        conn = get_connection()
+        cursor = conn.cursor()
+        cursor.execute(
+            "SELECT lat, lon, elevation, cumulative_distance_m FROM route_points "
+            "WHERE route_id = ? ORDER BY point_order", (route_id,)
+        )
+        route["points"] = [
+            {"lat": r[0], "lon": r[1], "elevation": r[2], "km": round(r[3] / 1000, 2) if r[3] else 0}
+            for r in cursor.fetchall()
+        ]
+        conn.close()
     return _sanitize_nans(route)
 
 
@@ -267,4 +495,70 @@ def posterior_summary():
 def update_models():
     from wko5.bayesian import update_all_models
     update_all_models()
+    _invalidate_cache()
     return {"status": "updated"}
+
+
+# ── P3 Endpoints ─────────────────────────────────────────────────────────────
+
+@router.get("/if-distribution", dependencies=[Depends(verify_token)])
+def get_if_distribution():
+    from wko5.training_load import if_distribution
+    return _sanitize_nans(if_distribution() or {})
+
+
+@router.get("/ftp-growth", dependencies=[Depends(verify_token)])
+def get_ftp_growth():
+    from wko5.training_load import ftp_growth_curve
+    return _sanitize_nans(_cached("ftp_growth", ftp_growth_curve) or {})
+
+
+@router.get("/performance-trend", dependencies=[Depends(verify_token)])
+def get_performance_trend():
+    from wko5.training_load import performance_trend
+    result = performance_trend()
+    if result is None:
+        return {"data": []}
+    return _sanitize_nans({"data": result.to_dict(orient="records")})
+
+
+@router.get("/opportunity-cost/{route_id}", dependencies=[Depends(verify_token)])
+def get_opportunity_cost(route_id: int):
+    from wko5.gap_analysis import opportunity_cost_analysis
+    return _sanitize_nans(opportunity_cost_analysis(route_id) or [])
+
+
+@router.post("/glycogen-budget", dependencies=[Depends(verify_token)])
+def post_glycogen_budget(body: dict):
+    from wko5.nutrition import glycogen_budget_daily
+    return _sanitize_nans(glycogen_budget_daily(
+        ride_kj=float(body.get("ride_kj", 0)),
+        ride_duration_h=float(body.get("ride_duration_h", 0)),
+        on_bike_carbs_g=float(body.get("on_bike_carbs_g", 0)),
+        post_ride_delay_h=float(body.get("post_ride_delay_h", 1)),
+        daily_carb_target_g_kg=float(body.get("daily_carb_target_g_kg", 8)),
+        weight_kg=float(body.get("weight_kg", 78)),
+    ))
+
+
+@router.get("/rolling-pd-profile", dependencies=[Depends(verify_token)])
+def get_rolling_pd_profile():
+    from wko5.pdcurve import rolling_pd_profile
+    def compute():
+        result = rolling_pd_profile()
+        if result is None:
+            return {"data": []}
+        return {"data": result.to_dict(orient="records")}
+    return _sanitize_nans(_cached("rolling_pd_profile", compute))
+
+
+@router.get("/fresh-baseline", dependencies=[Depends(verify_token)])
+def get_fresh_baseline():
+    from wko5.durability import check_fresh_baseline
+    return _sanitize_nans(check_fresh_baseline() or {})
+
+
+@router.get("/short-power-consistency", dependencies=[Depends(verify_token)])
+def get_short_power_consistency():
+    from wko5.gap_analysis import short_power_consistency
+    return _sanitize_nans(short_power_consistency() or {})

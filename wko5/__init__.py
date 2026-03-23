@@ -20,3 +20,10 @@ from wko5.blocks import block_stats, weekly_summary, detect_phase, compare_block
 from wko5.tp_ingest import ingest_tp_csv, get_tp_workouts, match_tp_to_activities
 from wko5.routes import save_route, get_route, find_similar_routes, link_activities_to_routes, get_route_history
 from wko5.bayesian import fit_pd_bayesian, fit_durability_bayesian, update_all_models, get_posterior_summary, load_posterior_samples
+from wko5.clinical import check_if_floor, check_intensity_black_hole, check_panic_training, check_reds_flags, check_within_day_deficit
+from wko5.training_load import if_distribution, ftp_growth_curve, performance_trend
+from wko5.gap_analysis import opportunity_cost_analysis, short_power_consistency
+from wko5.nutrition import check_absorption_ceiling, glycogen_budget_daily
+from wko5.pdcurve import rolling_pd_profile, decompose_pd_change
+from wko5.durability import check_fresh_baseline, durability_benchmark
+from wko5.zones import sweet_spot_band, validate_endurance_rides

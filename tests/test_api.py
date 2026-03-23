@@ -38,8 +38,13 @@ def test_activities_with_auth():
                           headers={"Authorization": f"Bearer {token}"})
     assert response.status_code == 200
     data = response.json()
-    assert isinstance(data, list)
-    assert len(data) > 0
+    # API returns {activities: [...], total, offset, limit} or plain list
+    if isinstance(data, dict):
+        assert "activities" in data
+        assert len(data["activities"]) > 0
+    else:
+        assert isinstance(data, list)
+        assert len(data) > 0
 
 
 def test_model_with_auth():
@@ -75,7 +80,7 @@ def test_clinical_flags_with_auth():
     assert response.status_code == 200
     data = response.json()
     assert "alert_level" in data
-    assert "current_flags" in data
+    assert "flags" in data or "current_flags" in data
 
 
 def test_training_blocks_with_auth():
