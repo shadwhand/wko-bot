@@ -7,6 +7,7 @@ import numpy as np
 
 from wko5.demand_profile import build_demand_profile
 from wko5.durability import degradation_factor
+from wko5.db import get_activities, get_records
 
 logger = logging.getLogger(__name__)
 
@@ -231,4 +232,257 @@ def gap_analysis(segments, pd_model, durability_params, n_draws=200, seed=42):
             "safety_margin_w": round(safety_margin, 1),
         },
         "absolute_power_check": absolute_power_check,
+    }
+
+
+def opportunity_cost_analysis(route_id):
+    """Derive race demands from route segments and compare against current power profile.
+
+    Uses linked activities from route_links/activity_routes to identify real efforts on
+    this route, then builds a demand profile and quantifies how much time would be saved
+    by improving each physiological dimension.
+
+    Args:
+        route_id: integer route ID from the routes table
+
+    Returns:
+        Sorted list of dicts: [{dimension: str, impact: float (minutes saved),
+        level: "high"|"medium"|"low"}, ...] sorted by impact descending.
+        Returns None if route not found or insufficient data.
+    """
+    from wko5.routes import get_route
+    from wko5.segments import analyze_ride_segments
+    from wko5.pdcurve import compute_envelope_mmp, fit_pd_model
+    from wko5.durability import fit_durability_model
+    from wko5.db import get_connection
+
+    # Verify route exists
+    route = get_route(route_id)
+    if route is None:
+        logger.warning(f"Route {route_id} not found")
+        return None
+
+    # Find activities linked to this route via activity_routes table
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    # Check for route_links table first, fall back to activity_routes
+    cursor.execute(
+        "SELECT name FROM sqlite_master WHERE type='table' AND name IN ('route_links', 'activity_routes')"
+    )
+    link_tables = {row[0] for row in cursor.fetchall()}
+
+    linked_activity_ids = []
+    if "route_links" in link_tables:
+        cursor.execute(
+            "SELECT activity_id FROM route_links WHERE route_id = ?", (route_id,)
+        )
+        linked_activity_ids = [row[0] for row in cursor.fetchall()]
+    elif "activity_routes" in link_tables:
+        cursor.execute(
+            "SELECT activity_id FROM activity_routes WHERE route_id = ?", (route_id,)
+        )
+        linked_activity_ids = [row[0] for row in cursor.fetchall()]
+    conn.close()
+
+    if not linked_activity_ids:
+        logger.warning(f"No activities linked to route {route_id}")
+        return None
+
+    # Analyze segments from the most recent linked activity
+    segments = []
+    for act_id in linked_activity_ids:
+        ride = analyze_ride_segments(act_id)
+        if ride["segments"]:
+            segments = ride["segments"]
+            break
+
+    if not segments:
+        logger.warning(f"No usable segments found for route {route_id}")
+        return None
+
+    # Fit current PD model and durability
+    pd_model = fit_pd_model(compute_envelope_mmp(days=365))
+    dur_params = fit_durability_model()
+
+    if pd_model is None:
+        logger.warning("Cannot fit PD model — insufficient power data")
+        return None
+
+    # Use default durability params if fitting failed
+    if dur_params is None:
+        dur_params = {"a": 0.5, "b": 0.001, "c": 0.05}
+
+    # Compute baseline total time (sum of segment durations)
+    baseline_time_s = sum(s.get("duration_s", 0) for s in segments)
+    if baseline_time_s <= 0:
+        return None
+
+    def _simulate_time(pd_override, dur_override):
+        """Estimate total route time using the demand profile with given models."""
+        from wko5.demand_profile import build_demand_profile
+        profile = build_demand_profile(segments, pd_override, dur_override)
+        total_time = 0.0
+        for i, seg in enumerate(profile):
+            dur = segments[i].get("duration_s", 0)
+            demand_ratio = seg.get("demand_ratio", 1.0)
+            # If demand > capacity, rider must slow down — scale time proportionally
+            if demand_ratio > 1.0:
+                total_time += dur * demand_ratio
+            else:
+                total_time += dur
+        return total_time
+
+    baseline_time = _simulate_time(pd_model, dur_params)
+
+    results = []
+
+    # 1. FTP +10W
+    pd_ftp_plus = dict(pd_model)
+    pd_ftp_plus["mFTP"] = pd_model["mFTP"] + 10
+    time_ftp = _simulate_time(pd_ftp_plus, dur_params)
+    impact_ftp = (baseline_time - time_ftp) / 60.0
+
+    # 2. Durability -2% fade (reduce c parameter for slower time-based decay)
+    dur_better = dict(dur_params)
+    dur_better["c"] = max(0.001, dur_params.get("c", 0.05) * 0.98)
+    time_dur = _simulate_time(pd_model, dur_better)
+    impact_dur = (baseline_time - time_dur) / 60.0
+
+    # 3. VO2max +5W (modeled as an increase in peak power at 5-min / mFTP headroom)
+    pd_vo2_plus = dict(pd_model)
+    pd_vo2_plus["mFTP"] = pd_model["mFTP"] + 5
+    pd_vo2_plus["Pmax"] = pd_model["Pmax"] + 5
+    time_vo2 = _simulate_time(pd_vo2_plus, dur_params)
+    impact_vo2 = (baseline_time - time_vo2) / 60.0
+
+    # 4. Sprint +50W (Pmax improvement — affects short high-power segments)
+    pd_sprint_plus = dict(pd_model)
+    pd_sprint_plus["Pmax"] = pd_model["Pmax"] + 50
+    time_sprint = _simulate_time(pd_sprint_plus, dur_params)
+    impact_sprint = (baseline_time - time_sprint) / 60.0
+
+    # 5. Nutrition optimization — reduces effective fatigue (b param, work-based decay)
+    dur_nutrition = dict(dur_params)
+    dur_nutrition["b"] = max(0.00001, dur_params.get("b", 0.001) * 0.9)
+    time_nutrition = _simulate_time(pd_model, dur_nutrition)
+    impact_nutrition = (baseline_time - time_nutrition) / 60.0
+
+    raw = [
+        ("FTP (+10W)", impact_ftp),
+        ("Durability (-2% fade)", impact_dur),
+        ("VO2max (+5W)", impact_vo2),
+        ("Sprint (+50W)", impact_sprint),
+        ("Nutrition optimization", impact_nutrition),
+    ]
+
+    def _level(impact):
+        if impact >= 1.0:
+            return "high"
+        elif impact >= 0.25:
+            return "medium"
+        else:
+            return "low"
+
+    output = [
+        {
+            "dimension": name,
+            "impact": round(max(0.0, imp), 3),
+            "level": _level(max(0.0, imp)),
+        }
+        for name, imp in raw
+    ]
+
+    return sorted(output, key=lambda x: x["impact"], reverse=True)
+
+
+def short_power_consistency(duration_s=60, days_back=365):
+    """Compute peak vs median best effort at a given duration across all rides.
+
+    Loads all activities in the lookback window, extracts the best (mean max) power
+    at `duration_s` from each ride, then reports peak, typical (median), and ratio.
+
+    A high ratio (> 1.3) indicates a consistency problem — the rider can occasionally
+    produce very high power at this duration but typically doesn't. A ratio close to 1
+    suggests the ceiling IS the typical output (capacity limited, not consistency).
+
+    Args:
+        duration_s: target duration in seconds (default 60)
+        days_back: number of days to look back (default 365)
+
+    Returns:
+        {
+            peak: float (watts),
+            typical: float (median watts),
+            ratio: float,
+            diagnosis: "consistency" if ratio > 1.3 else "capacity",
+            efforts_analyzed: int,
+            message: str,
+        }
+        Returns None if fewer than 5 efforts are found.
+    """
+    import pandas as pd
+
+    end_date = pd.Timestamp.now()
+    start_date = (end_date - pd.Timedelta(days=days_back)).strftime("%Y-%m-%d")
+
+    activities = get_activities(start=start_date)
+    if activities.empty:
+        return None
+
+    best_powers = []
+
+    for _, act in activities.iterrows():
+        records = get_records(act["id"])
+        if records.empty or "power" not in records.columns:
+            continue
+
+        power = records["power"].fillna(0).values.astype(float)
+        n = len(power)
+
+        if n < duration_s:
+            continue  # ride is shorter than target duration
+
+        # Compute mean max power at duration_s via sliding window
+        cumsum = np.concatenate([[0], np.cumsum(power)])
+        avgs = (cumsum[duration_s:] - cumsum[:n - duration_s + 1]) / duration_s
+        best = float(avgs.max())
+
+        if best > 0:
+            best_powers.append(best)
+
+    if len(best_powers) < 5:
+        logger.warning(
+            f"Only {len(best_powers)} efforts found at {duration_s}s, need at least 5"
+        )
+        return None
+
+    arr = np.array(best_powers)
+    peak = float(np.max(arr))
+    typical = float(np.median(arr))
+
+    if typical <= 0:
+        return None
+
+    ratio = round(peak / typical, 3)
+    diagnosis = "consistency" if ratio > 1.3 else "capacity"
+
+    if diagnosis == "consistency":
+        message = (
+            f"Peak {duration_s}s power ({peak:.0f}W) is {ratio:.1f}x your typical "
+            f"({typical:.0f}W). Training focus: repeatability and pacing."
+        )
+    else:
+        message = (
+            f"Peak {duration_s}s power ({peak:.0f}W) is close to typical "
+            f"({typical:.0f}W, ratio {ratio:.2f}). Training focus: raising absolute ceiling."
+        )
+
+    return {
+        "peak": round(peak, 1),
+        "typical": round(typical, 1),
+        "ratio": ratio,
+        "diagnosis": diagnosis,
+        "efforts_analyzed": len(best_powers),
+        "message": message,
     }

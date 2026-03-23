@@ -5,6 +5,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 import numpy as np
 from wko5.gap_analysis import (
     run_monte_carlo, gap_analysis, feasibility_flag,
+    opportunity_cost_analysis, short_power_consistency,
 )
 
 
@@ -161,3 +162,75 @@ def test_monte_carlo_with_posteriors():
     result = run_monte_carlo(segments, pd_model, dur_params, n_draws=50)
     assert len(result) == 1
     assert "success_probability" in result[0]
+
+
+def test_opportunity_cost_returns_none_for_missing_route():
+    """opportunity_cost_analysis should return None for a non-existent route."""
+    result = opportunity_cost_analysis(route_id=999999)
+    assert result is None
+
+
+def test_opportunity_cost_returns_none_when_no_routes():
+    """opportunity_cost_analysis should handle empty routes table gracefully."""
+    from wko5.db import get_connection
+    conn = get_connection()
+    cursor = conn.cursor()
+    # Check if routes table has any data
+    try:
+        cursor.execute("SELECT id FROM routes LIMIT 1")
+        row = cursor.fetchone()
+    except Exception:
+        row = None
+    finally:
+        conn.close()
+
+    if row is None:
+        # No routes — any route_id should return None
+        result = opportunity_cost_analysis(route_id=1)
+        assert result is None
+    else:
+        # Routes exist; just verify it doesn't crash for a missing route
+        result = opportunity_cost_analysis(route_id=999999)
+        assert result is None
+
+
+def test_short_power_consistency_returns_none_insufficient_data():
+    """short_power_consistency should return None when fewer than 5 efforts exist."""
+    from wko5.db import get_activities
+    activities = get_activities()
+    # Use an absurdly long duration so no ride has that many seconds of power data
+    result = short_power_consistency(duration_s=86400, days_back=365)
+    assert result is None
+
+
+def test_short_power_consistency_structure():
+    """short_power_consistency should return correct keys when data is available."""
+    from wko5.db import get_activities, get_records
+    activities = get_activities()
+
+    # Count rides with enough power data at 60s
+    usable = 0
+    for _, act in activities.iterrows():
+        records = get_records(act["id"])
+        if not records.empty and "power" in records.columns and len(records) >= 60:
+            power = records["power"].fillna(0).values
+            if power.max() > 0:
+                usable += 1
+        if usable >= 5:
+            break
+
+    if usable < 5:
+        # Not enough data — skip the structural check
+        return
+
+    result = short_power_consistency(duration_s=60, days_back=365)
+    assert result is not None
+    assert "peak" in result
+    assert "typical" in result
+    assert "ratio" in result
+    assert "diagnosis" in result
+    assert "efforts_analyzed" in result
+    assert "message" in result
+    assert result["diagnosis"] in ("consistency", "capacity")
+    assert result["ratio"] == round(result["peak"] / result["typical"], 3)
+    assert result["efforts_analyzed"] >= 5
