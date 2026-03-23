@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:;">
+  <title>WKO5 Dashboard</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <header class="app-header">
+    <div class="logo">
+      <svg width="28" height="28" viewBox="0 0 28 28" aria-hidden="true">
+        <circle cx="14" cy="14" r="13" fill="none" stroke="currentColor" stroke-width="2"/>
+        <path d="M7 18 L10 10 L14 16 L18 8 L21 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span>WKO5</span>
+    </div>
+
+    <nav class="tab-bar" role="tablist">
+      <button class="tab active" role="tab" data-tab="today" aria-selected="true" aria-controls="panel-today">Today</button>
+      <button class="tab" role="tab" data-tab="fitness" aria-selected="false" aria-controls="panel-fitness">Fitness</button>
+      <button class="tab" role="tab" data-tab="event-prep" aria-selected="false" aria-controls="panel-event-prep">Event Prep</button>
+      <button class="tab" role="tab" data-tab="history" aria-selected="false" aria-controls="panel-history">History</button>
+      <button class="tab" role="tab" data-tab="profile" aria-selected="false" aria-controls="panel-profile">Profile</button>
+    </nav>
+  </header>
+
+  <main class="content">
+
+    <!-- TODAY -->
+    <section class="tab-panel active" data-panel="today" id="panel-today" role="tabpanel">
+      <div class="chart-panel" data-chart="tsb-status">
+        <h3>TSB Status</h3>
+        <div class="chart-content"></div>
+      </div>
+      <div class="chart-panel" data-chart="recent-rides">
+        <h3>Recent Rides</h3>
+        <div class="chart-content"></div>
+      </div>
+      <div class="chart-panel" data-chart="clinical-flags">
+        <h3>Clinical Flags</h3>
+        <div class="chart-content"></div>
+      </div>
+      <div class="chart-panel hidden" data-chart="new-activity">
+        <h3>New Activity</h3>
+        <div class="chart-content"></div>
+      </div>
+    </section>
+
+    <!-- FITNESS -->
+    <section class="tab-panel" data-panel="fitness" id="panel-fitness" role="tabpanel">
+      <div class="chart-panel" data-chart="pmc">
+        <h3>Performance Management Chart</h3>
+        <div class="chart-content"></div>
+      </div>
+      <div class="chart-panel" data-chart="mmp">
+        <h3>MMP / Power-Duration Curve</h3>
+        <div class="recency-toggle"></div>
+        <div class="chart-content"></div>
+      </div>
+      <div class="chart-panel" data-chart="rolling-ftp">
+        <h3>Rolling FTP</h3>
+        <div class="chart-content"></div>
+      </div>
+      <div class="chart-panel" data-chart="power-profile">
+        <h3>Power Profile</h3>
+        <div class="chart-content"></div>
+      </div>
+    </section>
+
+    <!-- EVENT PREP -->
+    <section class="tab-panel" data-panel="event-prep" id="panel-event-prep" role="tabpanel">
+      <div class="chart-panel wide" data-chart="event-prep-unified">
+        <h3>Event Prep</h3>
+        <div class="chart-content"></div>
+      </div>
+    </section>
+
+    <!-- HISTORY -->
+    <section class="tab-panel" data-panel="history" id="panel-history" role="tabpanel">
+      <div class="chart-panel" data-chart="rides-table">
+        <h3>Rides</h3>
+        <div class="chart-content"></div>
+      </div>
+      <div class="chart-panel" data-chart="training-blocks">
+        <h3>Training Blocks</h3>
+        <div class="chart-content"></div>
+      </div>
+      <div class="chart-panel" data-chart="phase-timeline">
+        <h3>Phase Timeline</h3>
+        <div class="chart-content"></div>
+      </div>
+      <div class="chart-panel" data-chart="intensity-dist">
+        <h3>Intensity Distribution</h3>
+        <div class="chart-content"></div>
+      </div>
+    </section>
+
+    <!-- PROFILE -->
+    <section class="tab-panel" data-panel="profile" id="panel-profile" role="tabpanel">
+      <div class="chart-panel" data-chart="coggan-ranking">
+        <h3>Coggan Ranking</h3>
+        <div class="chart-content"></div>
+      </div>
+      <div class="chart-panel" data-chart="phenotype">
+        <h3>Phenotype</h3>
+        <div class="chart-content"></div>
+      </div>
+      <div class="chart-panel" data-chart="athlete-config">
+        <h3>Athlete Config</h3>
+        <div class="chart-content"></div>
+      </div>
+      <div class="chart-panel" data-chart="posterior-summary">
+        <h3>Posterior Summary</h3>
+        <div class="chart-content"></div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="status-bar">
+    <div class="connection-status">
+      <span class="status-dot" data-status="disconnected"></span>
+      <span class="sync-label">Last sync: --</span>
+    </div>
+    <button class="theme-toggle" data-action="toggle-theme" aria-label="Toggle theme">
+      <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
+        <path d="M8 1a7 7 0 1 0 0 14A7 7 0 0 0 8 1ZM8 13V3a5 5 0 0 1 0 10Z" fill="currentColor"/>
+      </svg>
+    </button>
+  </footer>
+
+  <script defer src="lib/d3.min.js"></script>
+  <script defer src="js/api.js"></script>
+  <script defer src="js/charts/pmc.js"></script>
+  <script defer src="js/charts/mmp.js"></script>
+  <script defer src="js/charts/ride-timeseries.js"></script>
+  <script defer src="js/charts/zones.js"></script>
+  <script defer src="js/charts/segment-profile.js"></script>
+  <script defer src="js/charts/clinical.js"></script>
+  <script defer src="lib/Sortable.min.js"></script>
+  <script defer src="js/app.js"></script>
+  <script defer src="js/panel-registry.js"></script>
+  <script defer src="js/layout-manager.js"></script>
+  <script defer src="js/dashboard.js"></script>
+</body>
+</html>
