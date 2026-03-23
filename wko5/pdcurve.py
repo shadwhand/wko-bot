@@ -202,6 +202,7 @@ def fit_pd_model(mmp):
         "mVO2max_ml_min_kg": round(vo2max_ml_min_kg, 1),
         "tau": round(float(tau), 1),
         "t0": round(float(t0), 1),
+        "sub_cp_note": "CP model may overestimate sustainable power at durations >TTE. Use durability model for efforts beyond TTE.",
     }
 
 
@@ -245,6 +246,47 @@ def rolling_ftp(window_days=90, step_days=7):
                     "TTE_min": model["TTE"],
                 })
         current += pd.Timedelta(days=step_days)
+    return pd.DataFrame(results)
+
+
+def rolling_pd_profile(window_days=90, step_days=14):
+    """Compute full PD model params at regular intervals over training history.
+
+    Steps forward from earliest date + window_days to latest date. At each
+    step, calls compute_envelope_mmp(start, end) and fit_pd_model(mmp).
+
+    Returns DataFrame with columns: date, mFTP, Pmax, FRC, TTE.
+    Returns None if insufficient data.
+    """
+    activities = get_activities()
+    if activities.empty:
+        return None
+
+    activities["start_time"] = pd.to_datetime(activities["start_time"], format="ISO8601", utc=True)
+    min_date = activities["start_time"].min()
+    max_date = activities["start_time"].max()
+
+    results = []
+    current = min_date + pd.Timedelta(days=window_days)
+    while current <= max_date:
+        start = (current - pd.Timedelta(days=window_days)).strftime("%Y-%m-%d")
+        end = current.strftime("%Y-%m-%d 23:59:59")
+        mmp = compute_envelope_mmp(start=start, end=end)
+        if len(mmp) >= 60:
+            model = fit_pd_model(mmp)
+            if model:
+                results.append({
+                    "date": current.strftime("%Y-%m-%d"),
+                    "mFTP": model["mFTP"],
+                    "Pmax": model["Pmax"],
+                    "FRC": model["FRC"],
+                    "TTE": model["TTE"],
+                })
+        current += pd.Timedelta(days=step_days)
+
+    if not results:
+        return None
+
     return pd.DataFrame(results)
 
 

@@ -6,6 +6,7 @@ import pandas as pd
 from wko5.pdcurve import (
     compute_mmp, get_cached_mmp, compute_envelope_mmp,
     fit_pd_model, power_at_durations, rolling_ftp, compare_periods,
+    rolling_pd_profile,
 )
 
 
@@ -133,3 +134,29 @@ def test_vo2max_trained_cyclist():
     # Trained cyclist at ~3.5-4.0 W/kg should be ~45-70 mL/min/kg
     assert 40 < result["mVO2max_ml_min_kg"] < 75, \
         f"mVO2max={result['mVO2max_ml_min_kg']} outside trained cyclist range"
+
+
+def test_fit_pd_model_sub_cp_note():
+    """fit_pd_model should include a sub_cp_note warning about CP model limitations beyond TTE."""
+    durations = np.arange(1, 3601)
+    synthetic = 1200 * np.exp(-durations / 15) + 20000 / (durations + 5) + 280
+    result = fit_pd_model(synthetic)
+    assert result is not None
+    assert "sub_cp_note" in result
+    assert "TTE" in result["sub_cp_note"]
+    assert isinstance(result["sub_cp_note"], str)
+    assert len(result["sub_cp_note"]) > 0
+
+
+def test_rolling_pd_profile_returns_dataframe():
+    """rolling_pd_profile should return a DataFrame with expected columns or None."""
+    result = rolling_pd_profile(window_days=90, step_days=14)
+    if result is None:
+        return  # insufficient data — acceptable
+    assert isinstance(result, pd.DataFrame)
+    for col in ("date", "mFTP", "Pmax", "FRC", "TTE"):
+        assert col in result.columns, f"Missing column: {col}"
+    assert len(result) > 0
+    # mFTP values should be in a reasonable power range
+    assert result["mFTP"].between(150, 500).all(), \
+        f"mFTP values out of range: {result['mFTP'].tolist()}"
