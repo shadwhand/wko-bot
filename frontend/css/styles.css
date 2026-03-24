@@ -1,0 +1,670 @@
+/* ============================================================
+   WKO5 Dashboard — styles.css
+   Dark-first cycling analytics dashboard
+   ============================================================ */
+
+/* ------------------------------------------------------------
+   1. CSS Custom Properties
+   ------------------------------------------------------------ */
+
+:root {
+  /* Background */
+  --bg-primary: #0d1117;
+  --bg-secondary: #161b22;
+  --bg-tertiary: #21262d;
+
+  /* Text */
+  --text-primary: #e6edf3;
+  --text-secondary: #8b949e;
+  --text-muted: #484f58;
+
+  /* Accent */
+  --accent: #58a6ff;
+  --accent-secondary: #3fb950;
+
+  /* Semantic */
+  --warning: #d29922;
+  --danger: #f85149;
+  --success: #3fb950;
+
+  /* Structure */
+  --border: #30363d;
+  --header-height: 48px;
+  --footer-height: 28px;
+
+  /* Chart palette */
+  --chart-bg: #0d1117;
+  --chart-grid: #21262d;
+  --chart-line-1: #58a6ff;   /* CTL blue */
+  --chart-line-2: #f778ba;   /* ATL pink */
+  --chart-line-3: #d29922;   /* TSB amber */
+  --chart-area-positive: rgba(63, 185, 80, 0.3);
+  --chart-area-negative: rgba(248, 81, 73, 0.3);
+
+  /* Zone colors (Coggan 7-zone) */
+  --zone-1: #8b949e;   /* Active Recovery — gray */
+  --zone-2: #58a6ff;   /* Endurance — blue */
+  --zone-3: #3fb950;   /* Tempo — green */
+  --zone-4: #d29922;   /* Threshold — yellow */
+  --zone-5: #f0883e;   /* VO2max — orange */
+  --zone-6: #f85149;   /* Anaerobic — red */
+  --zone-7: #bc8cff;   /* Neuromuscular — purple */
+
+  /* Transitions */
+  --transition-speed: 0.2s;
+}
+
+/* Light theme override */
+[data-theme="light"] {
+  --bg-primary: #ffffff;
+  --bg-secondary: #f6f8fa;
+  --bg-tertiary: #ffffff;
+  --text-primary: #1f2328;
+  --text-secondary: #656d76;
+  --text-muted: #8b949e;
+  --accent: #0969da;
+  --accent-secondary: #1a7f37;
+  --warning: #9a6700;
+  --danger: #d1242f;
+  --success: #1a7f37;
+  --border: #d0d7de;
+  --chart-bg: #ffffff;
+  --chart-grid: #d0d7de;
+  --chart-line-1: #0969da;
+  --chart-line-2: #bf3989;
+  --chart-line-3: #9a6700;
+  --chart-area-positive: rgba(26, 127, 55, 0.2);
+  --chart-area-negative: rgba(209, 36, 47, 0.2);
+}
+
+/* Auto-detect user preference */
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    --bg-primary: #ffffff;
+    --bg-secondary: #f6f8fa;
+    --bg-tertiary: #ffffff;
+    --text-primary: #1f2328;
+    --text-secondary: #656d76;
+    --text-muted: #8b949e;
+    --accent: #0969da;
+    --accent-secondary: #1a7f37;
+    --warning: #9a6700;
+    --danger: #d1242f;
+    --success: #1a7f37;
+    --border: #d0d7de;
+    --chart-bg: #ffffff;
+    --chart-grid: #d0d7de;
+    --chart-line-1: #0969da;
+    --chart-line-2: #bf3989;
+    --chart-line-3: #9a6700;
+    --chart-area-positive: rgba(26, 127, 55, 0.2);
+    --chart-area-negative: rgba(209, 36, 47, 0.2);
+  }
+}
+
+/* ------------------------------------------------------------
+   2. Reset & Base
+   ------------------------------------------------------------ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 14px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans',
+    Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji';
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  transition: color var(--transition-speed) ease,
+              background-color var(--transition-speed) ease;
+}
+
+/* ------------------------------------------------------------
+   3. Typography
+   ------------------------------------------------------------ */
+
+h1, h2, h3, h4, h5, h6 {
+  color: var(--text-primary);
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.mono,
+code {
+  font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', 'JetBrains Mono',
+    Menlo, Consolas, 'Liberation Mono', monospace;
+}
+
+/* ------------------------------------------------------------
+   4. Header / Tab Bar
+   ------------------------------------------------------------ */
+
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  height: var(--header-height);
+  background-color: var(--bg-secondary);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  gap: 4px;
+  transition: background-color var(--transition-speed) ease,
+              border-color var(--transition-speed) ease;
+}
+
+.header .logo {
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--text-primary);
+  margin-right: 16px;
+  white-space: nowrap;
+  letter-spacing: -0.02em;
+}
+
+.tab-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: var(--header-height);
+  padding: 0 14px;
+  border: none;
+  border-bottom: 3px solid transparent;
+  background: transparent;
+  color: var(--text-secondary);
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: color var(--transition-speed) ease,
+              border-color var(--transition-speed) ease;
+}
+
+.tab-btn:hover {
+  color: var(--text-primary);
+}
+
+.tab-btn.active {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+
+/* ------------------------------------------------------------
+   5. Main Content
+   ------------------------------------------------------------ */
+
+.main-content {
+  flex: 1;
+  overflow-y: auto;
+  padding-top: calc(var(--header-height) + 16px);
+  padding-bottom: calc(var(--footer-height) + 16px);
+  padding-left: 24px;
+  padding-right: 24px;
+}
+
+/* Tab panels */
+.tab-panel {
+  display: none;
+}
+
+.tab-panel.active {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 16px;
+  animation: fadeIn 0.15s ease;
+}
+
+/* ------------------------------------------------------------
+   6. Chart Panels
+   ------------------------------------------------------------ */
+
+.chart-panel {
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 16px;
+  transition: background-color var(--transition-speed) ease,
+              border-color var(--transition-speed) ease;
+}
+
+.chart-panel.wide {
+  grid-column: span 2;
+}
+
+.chart-panel h3 {
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 12px;
+}
+
+.chart-content {
+  min-height: 200px;
+  position: relative;
+}
+
+/* Loading pulse */
+.chart-panel.loading .chart-content {
+  background: linear-gradient(
+    110deg,
+    var(--bg-tertiary) 30%,
+    var(--bg-secondary) 50%,
+    var(--bg-tertiary) 70%
+  );
+  background-size: 200% 100%;
+  animation: pulse 1.4s ease-in-out infinite;
+  border-radius: 4px;
+}
+
+@keyframes pulse {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* Empty state */
+.chart-panel .empty-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+/* ------------------------------------------------------------
+   7. Tables
+   ------------------------------------------------------------ */
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+
+.data-table thead {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+.data-table th {
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
+  font-weight: 600;
+  text-align: left;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+}
+
+.data-table td {
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text-primary);
+  transition: background-color var(--transition-speed) ease;
+}
+
+.data-table td.numeric {
+  font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', 'JetBrains Mono',
+    Menlo, Consolas, monospace;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.data-table tbody tr:nth-child(even) td {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+[data-theme="light"] .data-table tbody tr:nth-child(even) td {
+  background: rgba(0, 0, 0, 0.02);
+}
+
+.data-table tbody tr:hover td {
+  background: rgba(88, 166, 255, 0.06);
+}
+
+/* ------------------------------------------------------------
+   8. Footer / Status Bar
+   ------------------------------------------------------------ */
+
+.status-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  height: var(--footer-height);
+  background: var(--bg-secondary);
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  transition: background-color var(--transition-speed) ease,
+              border-color var(--transition-speed) ease;
+}
+
+.status-bar .status-left,
+.status-bar .status-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Connection indicator */
+.connection-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--danger);
+  flex-shrink: 0;
+}
+
+.connection-dot.connected {
+  background: var(--success);
+}
+
+/* Theme toggle */
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border: none;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: color var(--transition-speed) ease;
+}
+
+.theme-toggle:hover {
+  color: var(--text-primary);
+}
+
+/* ------------------------------------------------------------
+   9. Utility Classes
+   ------------------------------------------------------------ */
+
+.hidden {
+  display: none !important;
+}
+
+.text-success {
+  color: var(--success);
+}
+
+.text-warning {
+  color: var(--warning);
+}
+
+.text-danger {
+  color: var(--danger);
+}
+
+.text-accent {
+  color: var(--accent);
+}
+
+.text-muted {
+  color: var(--text-muted);
+}
+
+.fade-in {
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* ------------------------------------------------------------
+   10. Scrollbar (dark theme)
+   ------------------------------------------------------------ */
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-primary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) var(--bg-primary);
+}
+
+/* ------------------------------------------------------------
+   11. Responsive
+   ------------------------------------------------------------ */
+
+@media (max-width: 860px) {
+  .tab-panel.active {
+    grid-template-columns: 1fr;
+  }
+
+  .chart-panel.wide {
+    grid-column: span 1;
+  }
+
+  .main-content {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+}
+
+/* ─── Panel States ─── */
+
+.panel-error {
+  border: 1px solid var(--danger);
+  border-radius: 6px;
+  padding: 16px;
+  text-align: center;
+  color: var(--danger);
+  font-size: 0.85rem;
+  background: rgba(248, 81, 73, 0.05);
+}
+
+.panel-error .retry-btn {
+  margin-top: 8px;
+  padding: 4px 12px;
+  border: 1px solid var(--danger);
+  border-radius: 4px;
+  background: transparent;
+  color: var(--danger);
+  cursor: pointer;
+  font-size: 0.8rem;
+}
+
+.panel-error .retry-btn:hover {
+  background: var(--danger);
+  color: #fff;
+}
+
+.panel-empty {
+  color: var(--text-secondary);
+  text-align: center;
+  padding: 24px;
+  font-size: 0.85rem;
+}
+
+.panel-ok {
+  border-left: 4px solid var(--success);
+  border-radius: 6px;
+  padding: 12px 16px;
+  background: rgba(63, 185, 80, 0.05);
+}
+
+.panel-placeholder {
+  color: var(--text-muted);
+  text-align: center;
+  padding: 24px;
+  font-size: 0.85rem;
+  font-style: italic;
+}
+
+/* ─── Health Flag Cards ─── */
+
+.flag-card {
+  border-radius: 6px;
+  padding: 12px 16px;
+  background: var(--bg-secondary);
+}
+
+.flag-card.red {
+  border-left: 4px solid var(--danger);
+}
+
+.flag-card.amber {
+  border-left: 4px solid var(--warning);
+}
+
+.flag-card.green {
+  border-left: 4px solid var(--success);
+}
+
+/* ─── Interactive Panel Forms ─── */
+
+.panel-form input,
+.panel-form select {
+  padding: 4px 8px;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  font-size: 0.85rem;
+  font-family: inherit;
+}
+
+.panel-form input:focus,
+.panel-form select:focus {
+  border-color: var(--accent);
+  outline: none;
+}
+
+.panel-form label {
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+  display: block;
+  margin-bottom: 2px;
+}
+
+/* ─── Chart Tooltips ─── */
+
+.chart-tooltip {
+  position: absolute;
+  pointer-events: none;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 6px 10px;
+  font-size: 0.75rem;
+  color: var(--text-primary);
+  z-index: 10;
+  white-space: nowrap;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* ─── Loading Spinner (small) ─── */
+
+.panel-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 120px;
+  color: var(--text-muted);
+}
+
+.panel-loading::after {
+  content: '';
+  width: 24px;
+  height: 24px;
+  border: 2px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ─── D3 Chart Base ─── */
+
+.chart-content svg text {
+  fill: var(--text-muted);
+}
+
+.chart-content svg .domain,
+.chart-content svg .tick line {
+  stroke: var(--chart-grid);
+}
+
+/* ─── Toast Notification ─── */
+
+.toast {
+  position: fixed;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 8px 20px;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 0.85rem;
+  z-index: 300;
+  pointer-events: none;
+}
+
+/* ─── Responsive adjustments for new panels ─── */
+
+@media (max-width: 600px) {
+  .flag-card {
+    padding: 8px 12px;
+  }
+
+  .panel-form {
+    grid-template-columns: 1fr !important;
+  }
+}
