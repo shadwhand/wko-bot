@@ -302,6 +302,105 @@ A persistent filter bar sits between the tab nav and panel area:
 - Time-aware panels (PMC, rides-table, training-blocks, etc.) re-filter from store data
 - **Critical:** When Claude changes the range via MCP `set_time_range`, the filter bar updates visibly so the user knows what changed
 
+## Visual Design
+
+### Overall Direction
+
+WKO5-depth analytics + Intervals.icu-clean UX. Dark-first, data-dense but not cluttered.
+
+### Panel Chrome
+
+Every panel uses the **structured header bar** pattern:
+- Darker header bar (`#21262d`) with white title, legend, and controls
+- Content area below with `#161b22` background
+- Header bar doubles as drag handle in edit mode
+- Alert panels add colored left border (danger/warning/success) inside content area
+- Metric-only panels (TSB, Rolling FTP) are compact with number-first layout inside the same header-bar chrome
+
+### Today Tab Layout
+
+**Dense cockpit** — big TSB hero number in a left panel (~280px) with stacked metrics (CTL, ATL, phase, clinical alert). Rides table + mini PMC sparkline on the right.
+
+### Hover Tooltips
+
+Every metric, chart value, and flag has a hover tooltip explaining:
+- What the number is (e.g., "CTL — Chronic Training Load")
+- How it's derived (e.g., "Exponentially weighted average of daily TSS, 42-day time constant")
+- What it means for training (e.g., "Higher = more fit. Typical target: 60-100 for competitive amateur")
+
+### Claude Sidebar
+
+- Persistent button in header on **every tab** ("Claude" with robot icon)
+- Collapsible right panel, 400px default, resizable via drag handle (min 300px)
+- "MCP Connected" badge when MCP bridge is active
+- "Ask Claude about this" button appears on hover over any panel
+- Shows tool usage inline (checkmarks for data reads, arrows for chart annotations)
+
+## Ride Detail View
+
+Accessed by clicking a ride in the calendar, rides table, or recent rides panel. Opens as a full-page route (`/ride/{id}`) or slide-over overlay.
+
+### Layout (Intervals.icu-style)
+
+**Header metrics bar** (full width):
+- Date, time, duration, distance, elevation
+- Intensity, Load (TSS), RPE, Feel
+- Avg/Max HR, Avg/Max Power, NP
+- Fitness (CTL), Fatigue (ATL), Form (TSB) at time of ride
+- FTP, W', kJ, Calories, CHO used
+- Variability Index, Efficiency Factor, Power/HR
+
+**Planned vs Completed** (if TP prescription exists):
+- Side-by-side: planned duration/TSS/description vs actual
+- Compliance score (duration compliance, intensity compliance)
+- Workout description from coach
+- Post-activity comments, private notes
+
+**Multi-channel time series** (stacked, synchronized x-axis):
+- Power (with zone coloring — green Z2, yellow Z4, red Z6+)
+- 30s smoothed power overlay
+- Heart rate (with zone shading)
+- W'bal (FRC remaining — green when full, red when depleted)
+- Cadence
+- Speed
+- Temperature
+- Power/HR ratio (decoupling detection)
+- Channels are customizable (show/hide, reorder, height) — start with static defaults, make customizable in later phase
+
+**Detected intervals overlay:**
+- Shaded regions on the time series marking each interval
+- Per-interval stats cards **spatially aligned to the x-axis** — each card sits directly above its corresponding time region on the chart (like Intervals.icu), not in a separate scrollable row
+- Per-interval stats: duration, avg power, avg HR, zone %, NP, VI, EF, fatigue kJ
+
+**Hover tooltips on all metrics:**
+- Every number in the header, interval cards, and chart has a hover tooltip explaining what it is, how it's derived, and what it means for training
+
+**Sub-tabs below the chart:**
+- **Timeline** — the multi-channel view (default)
+- **Power** — power-specific analysis (MMP for this ride, zone distribution)
+- **HR** — HR-specific (HR zones, decoupling, drift)
+- **Route** — Google Maps with GPS trace + elevation profile (if GPS data)
+- **Data** — raw data table (second-by-second, exportable)
+
+### Backend Support
+
+Already exists: `GET /ride/{id}` returns summary + second-by-second records (power, HR, cadence, speed, altitude) + detected intervals. `GET /ride/{id}/intervals` and `GET /ride/{id}/efforts` for detailed analysis.
+
+## Event Prep — Route Map
+
+The Event Prep tab includes a **Google Maps overlay** for route visualization:
+- Route GPS trace rendered on Google Maps with segments color-coded by demand ratio (green < 0.85, yellow 0.85-0.95, red > 0.95)
+- Clicking a segment on the map:
+  - Zooms the map into that segment
+  - Shows the elevation profile for that segment in a detail panel
+  - Displays: power required, demand ratio, grade, estimated time, W'bal at entry/exit
+  - Gap analysis result for that specific segment
+- Start/end markers on the map
+- If ride history exists for this route, show actual vs predicted overlay
+- Claude can annotate the route map with feed zone markers, danger zones, pacing targets via MCP
+
+**Google Maps API:** Requires API key (stored in env var, not hardcoded). Falls back to SVG route trace (current implementation) if key not available.
+
 ## Calendar Tab (Phase 3)
 
 Full-width calendar view:
@@ -361,6 +460,44 @@ set_time_range(start: string, end: string)
 5. Dashboard receives the annotation via MCP and renders it on the PMC chart
 6. Claude responds: "Your CTL dropped from 52 to 44 between Feb 1-15. Looking at your activities..." (continues analysis)
 
+### Annotation System
+
+Claude can annotate any chart — ride detail time series, PMC, elevation profiles, route maps.
+
+**Annotation types:**
+
+| Type | Visual | Use case |
+|------|--------|----------|
+| `region` | Shaded area spanning time range, dashed borders | Pacing errors, overcooked intervals, recovery gaps |
+| `line` | Solid vertical line at specific moment | Nutrition timing, feed zones, critical moments |
+| `dashed` | Dashed vertical line | Informational — decoupling onset, FTP crossover, W'bal depletion |
+| `point` | Circle marker at (x, y) | Specific data points |
+
+**Extended MCP tool:**
+
+```
+highlight_chart(panelId, {
+  type: 'region' | 'line' | 'dashed' | 'point',
+  channel?: 'power' | 'hr' | 'wbal' | 'cadence' | 'speed',
+  x: [start, end] | timestamp,
+  y?: number,
+  label: string,
+  color: string,
+  severity: 'danger' | 'warning' | 'info'
+})
+```
+
+**Callout cards:** Each annotation renders a floating card with:
+- Severity badge (red danger / amber warning / blue info)
+- Explanation text
+- Source label ("Claude") + timestamp
+- Dismiss X button
+- Pointer arrow connecting to the chart region
+
+**Cross-channel sync:** Annotation markers appear on ALL visible channels at the same x-position. A pacing error on the power channel also shows as a shaded region on HR, cadence, etc.
+
+**Annotation toolbar:** When annotations exist, a bar appears above the chart showing count + "Hide annotations" / "Clear all" buttons.
+
 ### Annotation Lifecycle
 
 Annotations pushed by Claude via `highlight_chart`:
@@ -370,6 +507,11 @@ Annotations pushed by Claude via `highlight_chart`:
 - "Clear all annotations" button in chart toolbar
 - Labels are always rendered via `textContent` / D3's `.text()` — never `innerHTML` (XSS prevention)
 - Labels length-bounded to 200 chars; color validated as CSS color literal
+
+**Use cases:**
+- Post-ride review: "Review my race" → Claude annotates pacing errors, nutrition gaps, decoupling
+- Pre-ride planning: Claude annotates route elevation profile with pacing targets, feed zones, danger zones
+- PMC analysis: Claude highlights CTL drops, training blocks, phase transitions
 
 ### Safety Boundary
 
