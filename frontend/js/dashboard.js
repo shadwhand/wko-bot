@@ -936,6 +936,12 @@
       return;
     }
 
+    // Empty tab state
+    if (!tabConfig.panels || tabConfig.panels.length === 0) {
+      panelContainer.innerHTML = '<div class="empty-state" style="grid-column:1/-1;padding:40px 0;">This tab has no panels. Click + to add some.</div>';
+      return;
+    }
+
     // For each panel ID in the layout config, create DOM + instantiate factory
     for (var i = 0; i < tabConfig.panels.length; i++) {
       var panelId = tabConfig.panels[i];
@@ -1513,6 +1519,190 @@
   }
 
   /* ================================================================
+   *  Edit Mode — drag/drop, add/remove panels
+   * ================================================================ */
+
+  var _sortableInstances = [];
+
+  function initEditMode() {
+    // Add X buttons to each panel
+    var panels = document.querySelectorAll('.chart-panel');
+    panels.forEach(function (panel) {
+      var removeBtn = document.createElement('button');
+      removeBtn.className = 'panel-remove-btn';
+      removeBtn.innerHTML = '&times;';
+      removeBtn.style.cssText = 'position:absolute;top:4px;right:4px;width:24px;height:24px;border-radius:50%;border:1px solid var(--border);background:var(--bg-secondary);color:var(--text-secondary);cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;z-index:5;';
+      panel.style.position = 'relative';
+      panel.appendChild(removeBtn);
+
+      removeBtn.addEventListener('click', function () {
+        var chartId = panel.getAttribute('data-chart');
+        removePanel(chartId);
+        panel.remove();
+      });
+    });
+
+    // Add "+" button at bottom of panel container
+    var activePanel = document.querySelector('.tab-panel.active .panel-container');
+    if (activePanel) {
+      var addBtn = document.createElement('button');
+      addBtn.className = 'panel-add-btn';
+      addBtn.innerHTML = '+ Add Panel';
+      addBtn.style.cssText = 'width:100%;padding:16px;border:2px dashed var(--border);border-radius:8px;background:transparent;color:var(--text-muted);cursor:pointer;font-size:0.85rem;margin-top:8px;';
+      addBtn.addEventListener('click', showAddPanelModal);
+      activePanel.appendChild(addBtn);
+
+      // Initialize SortableJS on panel container
+      if (window.Sortable) {
+        var sortable = Sortable.create(activePanel, {
+          animation: 150,
+          handle: 'h3',
+          ghostClass: 'sortable-ghost',
+          filter: '.panel-add-btn',
+          onEnd: function () { syncPanelOrder(); }
+        });
+        _sortableInstances.push(sortable);
+      }
+    }
+  }
+
+  function cleanupEditMode() {
+    // Remove edit UI elements
+    document.querySelectorAll('.panel-remove-btn').forEach(function (btn) { btn.remove(); });
+    document.querySelectorAll('.panel-add-btn').forEach(function (btn) { btn.remove(); });
+    // Destroy sortable instances
+    _sortableInstances.forEach(function (s) { s.destroy(); });
+    _sortableInstances = [];
+    // Remove modal if open
+    var modal = document.querySelector('.add-panel-modal');
+    if (modal) modal.remove();
+  }
+
+  function removePanel(panelId) {
+    var layout = WKO5Layout.loadLayout();
+    var activeTabId = window.app.activeTab;
+    var tab = layout.tabs.find(function (t) { return t.id === activeTabId; });
+    if (tab) {
+      tab.panels = tab.panels.filter(function (p) { return p !== panelId; });
+      WKO5Layout.saveLayout(layout);
+    }
+  }
+
+  function syncPanelOrder() {
+    var container = document.querySelector('.tab-panel.active .panel-container');
+    if (!container) return;
+    var panelIds = [];
+    container.querySelectorAll('.chart-panel[data-chart]').forEach(function (el) {
+      panelIds.push(el.getAttribute('data-chart'));
+    });
+    var layout = WKO5Layout.loadLayout();
+    var activeTabId = window.app.activeTab;
+    var tab = layout.tabs.find(function (t) { return t.id === activeTabId; });
+    if (tab) {
+      tab.panels = panelIds;
+      WKO5Layout.saveLayout(layout);
+    }
+  }
+
+  function addPanel(panelId) {
+    var layout = WKO5Layout.loadLayout();
+    var activeTabId = window.app.activeTab;
+    var tab = layout.tabs.find(function (t) { return t.id === activeTabId; });
+    if (tab) {
+      if (tab.panels.indexOf(panelId) === -1) {
+        tab.panels.push(panelId);
+        WKO5Layout.saveLayout(layout);
+      }
+    }
+    // Close modal and reload
+    var modal = document.querySelector('.add-panel-modal');
+    if (modal) modal.remove();
+    // Re-render current tab panels
+    _loaded[activeTabId] = false;
+    loadTab(activeTabId, window.app.api, true);
+    // Re-init edit mode UI
+    setTimeout(initEditMode, 100);
+  }
+
+  function showAddPanelModal() {
+    var existing = document.querySelector('.add-panel-modal');
+    if (existing) { existing.remove(); return; }
+
+    var catalog = WKO5Registry.getCatalog();
+    var layout = WKO5Layout.loadLayout();
+    var activeTabId = window.app.activeTab;
+    var tab = layout.tabs.find(function (t) { return t.id === activeTabId; });
+    var currentPanels = tab ? tab.panels : [];
+
+    var modal = document.createElement('div');
+    modal.className = 'add-panel-modal';
+    modal.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.6);z-index:200;display:flex;align-items:center;justify-content:center;';
+
+    var content = '<div style="background:var(--bg-secondary);border:1px solid var(--border);border-radius:8px;padding:20px;max-width:500px;width:90%;max-height:80vh;overflow-y:auto;">' +
+      '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;"><h3 style="margin:0;">Add Panel</h3><button class="modal-close" style="background:none;border:none;color:var(--text-secondary);cursor:pointer;font-size:1.2rem;">&times;</button></div>';
+
+    catalog.forEach(function (cat) {
+      content += '<div style="margin-bottom:12px;"><div style="color:var(--accent);font-size:0.75rem;font-weight:600;text-transform:uppercase;margin-bottom:6px;">' + cat.label + '</div>';
+      cat.panels.forEach(function (p) {
+        var alreadyAdded = currentPanels.indexOf(p.id) !== -1;
+        content += '<div class="add-panel-item" data-panel-id="' + p.id + '" style="padding:8px;border:1px solid var(--border);border-radius:4px;margin-bottom:4px;cursor:' + (alreadyAdded ? 'default' : 'pointer') + ';opacity:' + (alreadyAdded ? '0.4' : '1') + ';">' +
+          '<div style="font-weight:500;font-size:0.85rem;">' + p.label + '</div>' +
+          '<div style="font-size:0.75rem;color:var(--text-muted);">' + p.description + '</div>' +
+          (alreadyAdded ? '<div style="font-size:0.7rem;color:var(--text-muted);margin-top:2px;">Already added</div>' : '') +
+        '</div>';
+      });
+      content += '</div>';
+    });
+    content += '</div>';
+    modal.innerHTML = content;
+
+    document.body.appendChild(modal);
+
+    // Close handlers
+    modal.querySelector('.modal-close').addEventListener('click', function () { modal.remove(); });
+    modal.addEventListener('click', function (e) { if (e.target === modal) modal.remove(); });
+
+    // Panel selection
+    modal.querySelectorAll('.add-panel-item').forEach(function (item) {
+      item.addEventListener('click', function () {
+        var panelId = this.getAttribute('data-panel-id');
+        if (currentPanels.indexOf(panelId) === -1) {
+          addPanel(panelId);
+        }
+      });
+    });
+  }
+
+  function showToast(message) {
+    var toast = document.createElement('div');
+    toast.style.cssText = 'position:fixed;bottom:40px;left:50%;transform:translateX(-50%);padding:8px 20px;background:var(--bg-secondary);color:var(--text-primary);border:1px solid var(--border);border-radius:6px;font-size:0.85rem;z-index:300;opacity:0;transition:opacity 0.3s ease;';
+    toast.textContent = message;
+    document.body.appendChild(toast);
+    requestAnimationFrame(function () { toast.style.opacity = '1'; });
+    setTimeout(function () {
+      toast.style.opacity = '0';
+      setTimeout(function () { toast.remove(); }, 300);
+    }, 2000);
+  }
+
+  function reloadCurrentTab() {
+    var activeTabId = window.app.activeTab;
+    _loaded[activeTabId] = false;
+    loadTab(activeTabId, window.app.api, true);
+  }
+
+  function rebuildTabBar() {
+    if (!window.WKO5Layout) return;
+    var layout = WKO5Layout.loadLayout();
+    var activeTab = window.app.activeTab;
+    // Check if activeTab still exists in the new layout
+    var tabExists = layout.tabs.some(function (t) { return t.id === activeTab; });
+    if (!tabExists) activeTab = layout.tabs.length > 0 ? layout.tabs[0].id : 'today';
+    generateTabsFromLayout(layout, activeTab);
+    window.app._showTab(activeTab);
+  }
+
+  /* ================================================================
    *  Bootstrap
    * ================================================================ */
 
@@ -1537,6 +1727,67 @@
 
       // Re-run _showTab on app so it sees the new DOM
       app._showTab(activeTab);
+    }
+
+    // ── Edit mode UI ────────────────────────────────────────────
+    var header = document.querySelector('.app-header');
+    if (header) {
+      // Gear icon button
+      var editBtn = document.createElement('button');
+      editBtn.className = 'edit-mode-btn';
+      editBtn.setAttribute('aria-label', 'Edit layout');
+      editBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 16 16"><path d="M8 4.754a3.246 3.246 0 1 0 0 6.492 3.246 3.246 0 0 0 0-6.492ZM5.754 8a2.246 2.246 0 1 1 4.492 0 2.246 2.246 0 0 1-4.492 0ZM9.796 1.343c-.527-1.79-3.065-1.79-3.592 0l-.094.319a.873.873 0 0 1-1.255.52l-.292-.16c-1.64-.892-3.433.902-2.54 2.541l.159.292a.873.873 0 0 1-.52 1.255l-.319.094c-1.79.527-1.79 3.065 0 3.592l.319.094a.873.873 0 0 1 .52 1.255l-.16.292c-.892 1.64.901 3.434 2.541 2.54l.292-.159a.873.873 0 0 1 1.255.52l.094.319c.527 1.79 3.065 1.79 3.592 0l.094-.319a.873.873 0 0 1 1.255-.52l.292.16c1.64.893 3.434-.902 2.54-2.541l-.159-.292a.873.873 0 0 1 .52-1.255l.319-.094c1.79-.527 1.79-3.065 0-3.592l-.319-.094a.873.873 0 0 1-.52-1.255l.16-.292c.893-1.64-.902-3.433-2.541-2.54l-.292.159a.873.873 0 0 1-1.255-.52l-.094-.319Z" fill="currentColor"/></svg>';
+      editBtn.style.cssText = 'margin-left:auto;padding:6px;background:transparent;border:none;color:var(--text-secondary);cursor:pointer;display:flex;align-items:center;';
+      header.appendChild(editBtn);
+
+      // Done / Cancel / Reset controls
+      var editControls = document.createElement('div');
+      editControls.className = 'edit-controls hidden';
+      editControls.style.cssText = 'margin-left:auto;display:flex;gap:6px;';
+      editControls.innerHTML =
+        '<button class="edit-done" style="padding:4px 12px;background:var(--success);color:#fff;border:none;border-radius:4px;cursor:pointer;font-size:0.8rem;">Done</button>' +
+        '<button class="edit-cancel" style="padding:4px 12px;background:var(--bg-secondary);color:var(--text-secondary);border:1px solid var(--border);border-radius:4px;cursor:pointer;font-size:0.8rem;">Cancel</button>' +
+        '<button class="edit-reset" style="padding:4px 12px;background:transparent;color:var(--text-muted);border:1px solid var(--border);border-radius:4px;cursor:pointer;font-size:0.75rem;">Reset</button>';
+      header.appendChild(editControls);
+
+      // Click handlers
+      editBtn.addEventListener('click', function () {
+        WKO5Layout.enterEditMode();
+        editBtn.classList.add('hidden');
+        editControls.classList.remove('hidden');
+        initEditMode();
+      });
+
+      editControls.querySelector('.edit-done').addEventListener('click', function () {
+        WKO5Layout.exitEditMode(true);
+        editControls.classList.add('hidden');
+        editBtn.classList.remove('hidden');
+        cleanupEditMode();
+        reloadCurrentTab();
+        showToast('Layout saved');
+      });
+
+      editControls.querySelector('.edit-cancel').addEventListener('click', function () {
+        WKO5Layout.exitEditMode(false);
+        editControls.classList.add('hidden');
+        editBtn.classList.remove('hidden');
+        cleanupEditMode();
+        reloadCurrentTab();
+        showToast('Changes discarded');
+      });
+
+      editControls.querySelector('.edit-reset').addEventListener('click', function () {
+        if (confirm('Reset layout to default?')) {
+          WKO5Layout.resetLayout();
+          WKO5Layout.exitEditMode(false);
+          editControls.classList.add('hidden');
+          editBtn.classList.remove('hidden');
+          cleanupEditMode();
+          rebuildTabBar();
+          reloadCurrentTab();
+          showToast('Layout reset to default');
+        }
+      });
     }
 
     // Initialize D3 chart components (backward compatibility)

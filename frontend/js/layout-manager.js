@@ -95,6 +95,45 @@
     return loadLayout();
   }
 
+  /* ================================================================
+   *  Edit mode state management
+   * ================================================================ */
+
+  /** Snapshot of layout before edits, used for cancel */
+  var _snapshot = null;
+
+  /**
+   * Enter edit mode — snapshot the current layout for cancel support.
+   */
+  function enterEditMode() {
+    _snapshot = JSON.parse(JSON.stringify(loadLayout()));
+    document.body.classList.add('editing');
+  }
+
+  /**
+   * Exit edit mode.
+   * @param {boolean} save - true to keep changes, false to restore snapshot
+   */
+  function exitEditMode(save) {
+    document.body.classList.remove('editing');
+    if (save) {
+      // Layout was already modified in place, just persist
+      var layout = loadLayout();
+      saveLayout(layout);
+    } else {
+      // Restore snapshot
+      if (_snapshot) saveLayout(_snapshot);
+    }
+    _snapshot = null;
+  }
+
+  /**
+   * Check if currently in edit mode.
+   */
+  function isEditing() {
+    return document.body.classList.contains('editing');
+  }
+
   // Export
   window.WKO5Layout = {
     PRESETS: PRESETS,
@@ -103,5 +142,8 @@
     loadLayout: loadLayout,
     saveLayout: saveLayout,
     resetLayout: resetLayout,
+    enterEditMode: enterEditMode,
+    exitEditMode: exitEditMode,
+    isEditing: isEditing,
   };
 })();

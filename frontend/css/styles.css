@@ -521,6 +521,41 @@ code {
   color: #fff;
 }
 
+/* ------------------------------------------------------------
+   12. Edit Mode
+   ------------------------------------------------------------ */
+
+body.editing .chart-panel {
+  outline: 2px dashed var(--border);
+  outline-offset: -2px;
+}
+
+body.editing .chart-panel h3 {
+  cursor: grab;
+}
+
+body.editing .chart-panel h3:active {
+  cursor: grabbing;
+}
+
+.sortable-ghost {
+  opacity: 0.4;
+  background: var(--accent) !important;
+}
+
+.sortable-drag {
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.panel-remove-btn:hover {
+  color: var(--danger) !important;
+  border-color: var(--danger) !important;
+}
+
+.add-panel-item:hover:not([style*="opacity: 0.4"]) {
+  background: var(--bg-tertiary);
+}
+
 .panel-empty {
   color: var(--text-secondary);
   text-align: center;
