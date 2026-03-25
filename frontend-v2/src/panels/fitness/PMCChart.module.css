@@ -1,0 +1,23 @@
+/* frontend-v2/src/panels/fitness/PMCChart.module.css */
+.wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.tooltip {
+  position: absolute;
+  pointer-events: none;
+  background: var(--bg-tertiary, #21262d);
+  border: 1px solid var(--border, #30363d);
+  border-radius: 4px;
+  padding: 6px 10px;
+  font-size: 12px;
+  color: var(--text-primary, #e6edf3);
+  display: none;
+  z-index: 10;
+  white-space: nowrap;
+}
+
+.tooltip.visible {
+  display: block;
+}
