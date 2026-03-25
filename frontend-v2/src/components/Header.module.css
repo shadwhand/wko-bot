@@ -1,0 +1,101 @@
+.header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 0 16px;
+  height: 48px;
+  background: var(--color-bg-header, #21262d);
+  border-bottom: 1px solid var(--color-border, #30363d);
+}
+
+.brand {
+  flex-shrink: 0;
+}
+
+.logo {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--color-accent, #58a6ff);
+  letter-spacing: -0.5px;
+}
+
+.tabBar {
+  display: flex;
+  gap: 2px;
+  flex: 1;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.tabBar::-webkit-scrollbar {
+  display: none;
+}
+
+.tab {
+  padding: 8px 14px;
+  border: none;
+  background: transparent;
+  color: var(--color-text-secondary, #8b949e);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  border-radius: 6px 6px 0 0;
+  white-space: nowrap;
+  border-bottom: 2px solid transparent;
+  transition: color 0.15s, border-color 0.15s;
+}
+
+.tab:hover {
+  color: var(--color-text-primary, #e6edf3);
+}
+
+.tab.active {
+  color: var(--color-text-primary, #e6edf3);
+  border-bottom-color: var(--color-accent, #58a6ff);
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.stale {
+  font-size: 12px;
+  color: var(--color-text-secondary, #8b949e);
+}
+
+.staleWarn {
+  color: var(--color-warning, #d29922);
+}
+
+.gearButton {
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--color-text-secondary, #8b949e);
+  font-size: 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.gearButton:hover {
+  background: var(--color-bg-tertiary, #30363d);
+  color: var(--color-text-primary, #e6edf3);
+}
+
+.claudeButton {
+  padding: 6px 12px;
+  border: 1px solid var(--color-border, #30363d);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--color-text-secondary, #8b949e);
+  font-size: 12px;
+  cursor: not-allowed;
+  opacity: 0.5;
+}

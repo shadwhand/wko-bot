@@ -1,0 +1,59 @@
+.filterBar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 16px;
+  background: var(--color-bg-secondary, #0d1117);
+  border-bottom: 1px solid var(--color-border, #30363d);
+  font-size: 13px;
+}
+
+.label {
+  color: var(--color-text-secondary, #8b949e);
+  font-weight: 500;
+}
+
+.rangeDisplay {
+  color: var(--color-text-primary, #e6edf3);
+  font-weight: 500;
+  margin-right: 8px;
+}
+
+.dateInput {
+  padding: 4px 8px;
+  border: 1px solid var(--color-border, #30363d);
+  border-radius: 4px;
+  background: var(--color-bg-primary, #161b22);
+  color: var(--color-text-primary, #e6edf3);
+  font-size: 12px;
+}
+
+.separator {
+  color: var(--color-text-secondary, #8b949e);
+}
+
+.applyButton,
+.resetButton {
+  padding: 4px 10px;
+  border: 1px solid var(--color-border, #30363d);
+  border-radius: 4px;
+  background: var(--color-bg-secondary, #21262d);
+  color: var(--color-text-primary, #e6edf3);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.applyButton:hover,
+.resetButton:hover {
+  background: var(--color-bg-tertiary, #30363d);
+}
+
+.applyButton:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.resetButton {
+  color: var(--color-warning, #d29922);
+  border-color: var(--color-warning, #d29922);
+}
