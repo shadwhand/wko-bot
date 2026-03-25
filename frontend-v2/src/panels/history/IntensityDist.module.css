@@ -1,0 +1,22 @@
+.container { display: flex; flex-direction: column; gap: 8px; }
+.zoneRow { display: flex; align-items: center; gap: 8px; }
+.zoneLabel {
+  width: 140px; flex-shrink: 0;
+  font-size: 12px; color: var(--color-text-primary, #e6edf3);
+}
+.barContainer {
+  flex: 1; height: 22px;
+  background: var(--color-bg-secondary, #21262d);
+  border-radius: 4px; overflow: hidden;
+}
+.bar { height: 100%; border-radius: 4px; transition: width 0.3s ease; }
+.pct {
+  width: 50px; text-align: right;
+  font-size: 13px; font-weight: 600;
+  color: var(--color-text-primary, #e6edf3);
+}
+.meta {
+  font-size: 11px;
+  color: var(--color-text-secondary, #8b949e);
+  margin-top: 4px;
+}
