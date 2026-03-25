@@ -24,16 +24,7 @@ export function Phenotype() {
       context="Sprinter = high 5s/1min relative to FTP. TTer = high 20min/60min relative to sprint."
     >
       <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-        {sl.phenotype && (
-          <div style={{
-            fontSize: '20px',
-            fontWeight: 700,
-            color: 'var(--color-accent, #58a6ff)',
-          }}>
-            {sl.phenotype}
-          </div>
-        )}
-        {sl.strengths && sl.strengths.length > 0 && (
+        {sl.strength && (
           <div>
             <div style={{
               fontSize: '11px',
@@ -42,16 +33,17 @@ export function Phenotype() {
               textTransform: 'uppercase',
               marginBottom: '4px',
             }}>
-              Strengths
+              Strength
             </div>
-            {sl.strengths.map((s: string, i: number) => (
-              <div key={i} style={{ fontSize: '13px', color: 'var(--color-text-primary)' }}>
-                {s}
-              </div>
-            ))}
+            <div style={{ fontSize: '15px', fontWeight: 600, color: 'var(--color-text-primary)' }}>
+              {sl.strength.label}
+            </div>
+            <div style={{ fontSize: '12px', color: 'var(--color-text-secondary, #8b949e)' }}>
+              {sl.strength.category}
+            </div>
           </div>
         )}
-        {sl.limiters && sl.limiters.length > 0 && (
+        {sl.limiter && (
           <div>
             <div style={{
               fontSize: '11px',
@@ -60,13 +52,14 @@ export function Phenotype() {
               textTransform: 'uppercase',
               marginBottom: '4px',
             }}>
-              Limiters
+              Limiter
             </div>
-            {sl.limiters.map((l: string, i: number) => (
-              <div key={i} style={{ fontSize: '13px', color: 'var(--color-text-primary)' }}>
-                {l}
-              </div>
-            ))}
+            <div style={{ fontSize: '15px', fontWeight: 600, color: 'var(--color-text-primary)' }}>
+              {sl.limiter.label}
+            </div>
+            <div style={{ fontSize: '12px', color: 'var(--color-text-secondary, #8b949e)' }}>
+              {sl.limiter.category}
+            </div>
           </div>
         )}
       </div>

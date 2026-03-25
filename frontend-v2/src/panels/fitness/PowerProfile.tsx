@@ -19,11 +19,11 @@ const RANKING_LABELS: Record<string, string> = {
 }
 
 const DURATIONS = [
-  { key: '5s', label: '5s', tooltip: 'Peak 5-second power — neuromuscular / sprint' },
-  { key: '1min', label: '1min', tooltip: 'Peak 1-minute power — anaerobic capacity' },
-  { key: '5min', label: '5min', tooltip: 'Peak 5-minute power — VO2max' },
-  { key: '20min', label: '20min', tooltip: 'Peak 20-minute power — threshold estimate' },
-  { key: '60min', label: '60min', tooltip: 'Peak 60-minute power — functional threshold' },
+  { key: '5', label: '5s', tooltip: 'Peak 5-second power — neuromuscular / sprint' },
+  { key: '60', label: '1min', tooltip: 'Peak 1-minute power — anaerobic capacity' },
+  { key: '300', label: '5min', tooltip: 'Peak 5-minute power — VO2max' },
+  { key: '1200', label: '20min', tooltip: 'Peak 20-minute power — threshold estimate' },
+  { key: '3600', label: '60min', tooltip: 'Peak 60-minute power — functional threshold' },
 ]
 
 export function PowerProfile() {

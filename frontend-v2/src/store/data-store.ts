@@ -202,6 +202,7 @@ export const useDataStore = create<DataStore>()((set, get) => ({
       tracked(set, 'performanceTrend', api.getPerformanceTrend, (d) => ({
         performanceTrend: d.data,
       })),
+      tracked(set, 'routes', api.getRoutes, (d) => ({ routes: d })),
     ]
     await Promise.allSettled(fetches)
   },

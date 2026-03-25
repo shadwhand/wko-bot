@@ -14,13 +14,13 @@ import styles from './RollingPd.module.css';
 const CHART_HEIGHT = 200;
 const MARGIN = { top: 10, right: 20, bottom: 30, left: 50 };
 
-type SeriesKey = 'mFTP' | 'Pmax' | 'FRC' | 'TTE_min';
+type SeriesKey = 'mFTP' | 'Pmax' | 'FRC' | 'TTE';
 
 const SERIES: { key: SeriesKey; color: string; label: string }[] = [
   { key: 'mFTP', color: '#58a6ff', label: 'mFTP' },
   { key: 'Pmax', color: '#f778ba', label: 'Pmax' },
   { key: 'FRC', color: '#d29922', label: 'FRC' },
-  { key: 'TTE_min', color: '#3fb950', label: 'TTE' },
+  { key: 'TTE', color: '#3fb950', label: 'TTE' },
 ];
 
 export function RollingPd() {
@@ -28,7 +28,7 @@ export function RollingPd() {
   const loading = useDataStore(s => s.loading.has('rollingPd'));
   const error = useDataStore(s => s.errors['rollingPd']);
   const [visible, setVisible] = useState<Record<string, boolean>>({
-    mFTP: true, Pmax: false, FRC: false, TTE_min: false,
+    mFTP: true, Pmax: false, FRC: false, TTE: false,
   });
 
   if (loading) return <PanelSkeleton />;

@@ -74,9 +74,15 @@ export interface CogganRanking {
   [duration: string]: string
 }
 
+export interface StrengthLimiterEntry {
+  duration: number
+  label: string
+  category: string
+}
+
 export interface StrengthsLimiters {
-  strengths: string[]
-  limiters: string[]
+  strength: StrengthLimiterEntry
+  limiter: StrengthLimiterEntry
 }
 
 export interface ProfileResponse {
@@ -202,7 +208,7 @@ export interface RollingPdRow {
   mFTP: number
   Pmax: number
   FRC: number
-  TTE_min: number
+  TTE: number
 }
 
 export interface RollingPdResponse {

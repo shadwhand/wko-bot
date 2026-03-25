@@ -15,6 +15,7 @@ export function RidesTable() {
   const loading = useDataStore(s => s.loading.has('activities'))
   const error = useDataStore(s => s.errors['activities'])
   const globalTimeRange = useDataStore(s => s.globalTimeRange)
+  const setSelectedRide = useDataStore(s => s.setSelectedRide)
 
   const [search, setSearch] = useState('')
   const [sortKey, setSortKey] = useState<SortKey>('start_time')
@@ -103,7 +104,7 @@ export function RidesTable() {
         </thead>
         <tbody>
           {pageData.map((a: any) => (
-            <tr key={a.id} className={styles.row}>
+            <tr key={a.id} className={styles.row} onClick={() => setSelectedRide(a.id)} style={{ cursor: 'pointer' }}>
               <td>{new Date(a.start_time).toLocaleDateString()}</td>
               <td>{a.sub_sport ?? 'ride'}</td>
               <td>{formatDuration(a.total_elapsed_time)}</td>
