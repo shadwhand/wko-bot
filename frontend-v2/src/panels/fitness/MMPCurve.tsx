@@ -1,7 +1,8 @@
 // frontend-v2/src/panels/fitness/MMPCurve.tsx
-import { useRef, useCallback, useState } from 'react';
+import { useRef, useCallback, useState, useEffect } from 'react';
 import * as d3 from 'd3';
 import { useDataStore } from '../../store/data-store';
+import { getModel } from '../../api/client';
 import { ChartContainer } from '../../shared/ChartContainer';
 import { COLORS } from '../../shared/tokens';
 import {
@@ -39,14 +40,60 @@ const ZONES = [
   { label: 'END', from: 1200, to: Infinity, color: COLORS.muted },
 ];
 
-export function MMPCurve() {
-  const model = useDataStore(s => s.model);
-  const loading = useDataStore(s => s.loading.has('model'));
-  const error = useDataStore(s => s.errors['model']);
-  const [recency, setRecency] = useState(90);
+/** Default days value used by the store's fetchCore(). */
+const DEFAULT_DAYS = 90;
 
-  if (loading) return <PanelSkeleton />;
-  if (error) return <PanelError message={error} />;
+export function MMPCurve() {
+  const storeModel = useDataStore(s => s.model);
+  const storeLoading = useDataStore(s => s.loading.has('model'));
+  const storeError = useDataStore(s => s.errors['model']);
+  const [recency, setRecency] = useState(DEFAULT_DAYS);
+
+  // Local state for non-default recency fetches
+  const [localModel, setLocalModel] = useState<ModelResult | null>(null);
+  const [localLoading, setLocalLoading] = useState(false);
+  const [localError, setLocalError] = useState<string | null>(null);
+
+  // Fetch model with the selected days param when recency changes
+  useEffect(() => {
+    // For the default value, use the store's already-fetched model
+    if (recency === DEFAULT_DAYS) {
+      setLocalModel(null);
+      setLocalError(null);
+      return;
+    }
+
+    let cancelled = false;
+    setLocalLoading(true);
+    setLocalError(null);
+
+    getModel(recency)
+      .then(data => {
+        if (!cancelled) {
+          setLocalModel(data);
+        }
+      })
+      .catch(err => {
+        if (!cancelled) {
+          setLocalError(err instanceof Error ? err.message : String(err));
+        }
+      })
+      .finally(() => {
+        if (!cancelled) {
+          setLocalLoading(false);
+        }
+      });
+
+    return () => { cancelled = true; };
+  }, [recency]);
+
+  // Resolve which model / loading / error to use
+  const model = recency === DEFAULT_DAYS ? storeModel : localModel ?? storeModel;
+  const loading = recency === DEFAULT_DAYS ? storeLoading : localLoading;
+  const error = recency === DEFAULT_DAYS ? storeError : localError;
+
+  if (storeLoading && !storeModel) return <PanelSkeleton />;
+  if (error && !model) return <PanelError message={error} />;
   if (!model || !model.mmp || !model.mmp.length) {
     return <PanelEmpty message="No MMP data available" />;
   }
@@ -64,17 +111,21 @@ export function MMPCurve() {
           </button>
         ))}
       </div>
-      <MMPCurveInner model={model} recencyDays={recency} />
+      {loading && (
+        <div className={styles.loadingOverlay}>
+          <span className={styles.spinner} />
+        </div>
+      )}
+      <MMPCurveInner model={model} />
     </div>
   );
 }
 
 interface MMPCurveInnerProps {
   model: ModelResult;
-  recencyDays: number;
 }
 
-function MMPCurveInner({ model, recencyDays: _recencyDays }: MMPCurveInnerProps) {
+function MMPCurveInner({ model }: MMPCurveInnerProps) {
   const tooltipRef = useRef<HTMLDivElement>(null);
   const [tooltipContent, setTooltipContent] = useState('');
   const [tooltipVisible, setTooltipVisible] = useState(false);
