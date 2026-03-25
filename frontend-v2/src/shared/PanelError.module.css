@@ -1,0 +1,41 @@
+.error {
+  padding: 16px;
+  text-align: center;
+  border: 1px solid var(--danger);
+  border-radius: var(--radius-md);
+  background: var(--bg-secondary);
+}
+
+.icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--danger);
+  color: white;
+  font-weight: 700;
+  font-size: var(--font-size-md);
+  margin-bottom: 8px;
+}
+
+.message {
+  color: var(--text-secondary);
+  font-size: var(--font-size-sm);
+  margin-bottom: 12px;
+}
+
+.retry {
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-sm);
+  padding: 6px 16px;
+  color: var(--text-primary);
+  font-size: var(--font-size-sm);
+  transition: background var(--transition-fast);
+}
+
+.retry:hover {
+  background: var(--bg-hover);
+}
