@@ -1,0 +1,21 @@
+/* frontend-v2/src/panels/fitness/RollingPd.module.css */
+.wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.legend {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px;
+  font-size: 0.75rem;
+}
+
+.legendBtn {
+  padding: 3px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: inherit;
+  font-family: inherit;
+  transition: all 0.15s;
+}

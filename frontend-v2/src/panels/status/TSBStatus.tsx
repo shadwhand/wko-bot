@@ -4,6 +4,8 @@ import { PanelError } from '../../shared/PanelError'
 import { PanelEmpty } from '../../shared/PanelEmpty'
 import { Metric } from '../../shared/Metric'
 import { MetricBig } from '../../shared/MetricBig'
+import { Tooltip } from '../../components/Tooltip'
+import { registerPanel } from '../../layout/PanelRegistry'
 import { tsbColor, tsbLabel, COLORS } from '../../shared/tokens'
 import styles from './TSBStatus.module.css'
 
@@ -26,16 +28,46 @@ export function TSBStatus() {
         </span>
       </div>
       <div className={styles.hero}>
-        <MetricBig
-          value={fitness.TSB}
+        <Tooltip
           label="TSB"
-          color={tsbColor(fitness.TSB)}
-        />
+          fullName="Training Stress Balance (TSB)"
+          derivation="CTL minus ATL. Positive = fresh, negative = fatigued."
+          context="Race-ready zone: +5 to +25. Below -20 = high overreach risk."
+        >
+          <MetricBig
+            value={fitness.TSB}
+            label="TSB"
+            color={tsbColor(fitness.TSB)}
+          />
+        </Tooltip>
       </div>
       <div className={styles.row}>
-        <Metric value={fitness.CTL} label="CTL" color={COLORS.ctl} />
-        <Metric value={fitness.ATL} label="ATL" color={COLORS.atl} />
+        <Tooltip
+          label="CTL"
+          fullName="Chronic Training Load (CTL)"
+          derivation="Exponentially weighted average of daily TSS, 42-day time constant."
+          context="Higher = more fit. Typical target: 60-100 for competitive amateur."
+        >
+          <Metric value={fitness.CTL} label="CTL" color={COLORS.ctl} />
+        </Tooltip>
+        <Tooltip
+          label="ATL"
+          fullName="Acute Training Load (ATL)"
+          derivation="Exponentially weighted average of daily TSS, 7-day time constant."
+          context="Higher = more fatigued. Spikes indicate recent hard training."
+        >
+          <Metric value={fitness.ATL} label="ATL" color={COLORS.atl} />
+        </Tooltip>
       </div>
     </div>
   )
 }
+
+registerPanel({
+  id: 'tsb-status',
+  label: 'TSB Status',
+  category: 'status',
+  description: 'Current form (TSB), fitness (CTL), fatigue (ATL)',
+  component: TSBStatus,
+  dataKeys: ['fitness'],
+})
