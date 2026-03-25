@@ -1,0 +1,40 @@
+/* frontend-v2/src/ride/RideTimeSeries.module.css */
+.wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.controls {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.channelBtn {
+  padding: 3px 10px;
+  font-size: 0.75rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.15s;
+}
+
+.tooltip {
+  position: absolute;
+  pointer-events: none;
+  background: var(--bg-secondary, #161b22);
+  border: 1px solid var(--border, #30363d);
+  border-radius: 6px;
+  padding: 8px 10px;
+  font-size: 0.75rem;
+  z-index: 10;
+  color: var(--text-primary, #e6edf3);
+  white-space: nowrap;
+  display: none;
+}
+
+.tooltip.visible {
+  display: block;
+}

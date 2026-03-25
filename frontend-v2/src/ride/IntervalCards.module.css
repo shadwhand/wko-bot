@@ -1,0 +1,28 @@
+/* frontend-v2/src/ride/IntervalCards.module.css */
+.container {
+  position: relative;
+  width: 100%;
+  min-height: 60px;
+  margin-bottom: 4px;
+}
+
+.card {
+  position: absolute;
+  top: 0;
+  background: var(--bg-tertiary, #21262d);
+  border: 1px solid var(--border, #30363d);
+  border-radius: 4px;
+  padding: 4px 6px;
+  font-size: 0.65rem;
+  color: var(--text-secondary, #8b949e);
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  min-width: 40px;
+}
+
+.power {
+  font-family: 'SF Mono', 'Fira Code', monospace;
+  font-weight: 600;
+  color: var(--accent, #58a6ff);
+}
