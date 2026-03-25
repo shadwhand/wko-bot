@@ -1,0 +1,33 @@
+/* frontend-v2/src/panels/fitness/FtpGrowth.module.css */
+.wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  gap: 8px;
+  margin-bottom: 12px;
+  font-size: 0.8rem;
+}
+
+.card {
+  text-align: center;
+}
+
+.value {
+  font-family: 'SF Mono', 'Fira Code', monospace;
+  font-size: 1.4rem;
+  font-weight: 600;
+}
+
+.label {
+  color: var(--text-secondary, #8b949e);
+}
+
+.fallback {
+  color: var(--text-muted, #484f58);
+  font-size: 0.8rem;
+  text-align: center;
+}
