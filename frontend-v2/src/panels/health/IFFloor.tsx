@@ -14,7 +14,10 @@ export function IFFloor() {
   if (error) return <PanelError message={error} />
   if (!flags) return <PanelEmpty message="No clinical data" />
 
-  const flag = (flags.flags ?? []).find((f) => f.name === 'if_floor')
+  const flag = (flags.flags ?? []).find((f) => {
+    const n = f.name.toLowerCase().replace(/[\s\-]+/g, '_')
+    return n === 'if_floor' || n === 'intensity_floor'
+  })
   if (!flag) return <PanelEmpty message="IF Floor check not available" />
 
   return (

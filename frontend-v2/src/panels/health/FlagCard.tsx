@@ -14,15 +14,25 @@ interface FlagCardProps {
   }
 }
 
+/** Convert SCREAMING_SNAKE or snake_case to Title Case */
+function cleanName(raw: string): string {
+  return raw
+    .replace(/[_-]+/g, ' ')
+    .replace(/\b\w/g, c => c.toUpperCase())
+}
+
 export function FlagCard({ name, status, value, threshold, detail, tooltip }: FlagCardProps) {
+  const displayName = cleanName(name)
+  const displayValue = (value === '--' || value === '') ? (detail || 'No data') : value
+
   return (
-    <Tooltip label={name} {...tooltip}>
+    <Tooltip label={displayName} {...tooltip}>
       <div className={`${styles.card} ${styles[status]}`}>
         <div className={styles.header}>
           <span className={styles.statusDot} />
-          <span className={styles.name}>{name}</span>
+          <span className={styles.name}>{displayName}</span>
         </div>
-        <div className={styles.value}>{value}</div>
+        <div className={styles.value}>{displayValue}</div>
         {threshold != null && (
           <div className={styles.threshold}>
             Threshold: {threshold}

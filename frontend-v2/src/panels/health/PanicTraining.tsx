@@ -14,14 +14,27 @@ export function PanicTraining() {
   if (error) return <PanelError message={error} />
   if (!flags) return <PanelEmpty message="No clinical data" />
 
-  const flag = (flags.flags ?? []).find((f) => f.name === 'panic_training')
+  const flag = (flags.flags ?? []).find((f) => {
+    const n = f.name.toLowerCase().replace(/[\s\-]+/g, '_')
+    return n === 'panic_training'
+  })
   if (!flag) return <PanelEmpty message="Panic training check not available" />
+
+  // Format value: handle numeric TSS, raw "--" placeholder, and raw SCREAMING_SNAKE names
+  let displayValue: string
+  if (typeof flag.value === 'number') {
+    displayValue = `${flag.value.toFixed(0)} TSS/wk`
+  } else if (!flag.value || flag.value === '--') {
+    displayValue = flag.detail || 'No data'
+  } else {
+    displayValue = flag.value
+  }
 
   return (
     <FlagCard
       name="Panic Training"
       status={flag.status}
-      value={typeof flag.value === 'number' ? `${flag.value.toFixed(0)} TSS/wk` : flag.value}
+      value={displayValue}
       detail={flag.detail}
       tooltip={{
         fullName: 'Panic Training Detection',

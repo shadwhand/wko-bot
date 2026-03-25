@@ -1,6 +1,11 @@
 .wrapper {
   position: relative;
   display: inline-block;
+  z-index: 1;
+}
+
+.wrapper:hover {
+  z-index: 200;
 }
 
 .tooltip {
