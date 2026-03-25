@@ -1,0 +1,98 @@
+/* frontend-v2/src/shared/AnnotationOverlay.module.css */
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 8px;
+  background: var(--bg-tertiary, #21262d);
+  border-radius: 4px;
+  margin-bottom: 4px;
+  font-size: 0.75rem;
+}
+
+.badge {
+  background: var(--accent, #58a6ff);
+  color: #000;
+  padding: 1px 6px;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 0.7rem;
+}
+
+.toolbarBtn {
+  background: transparent;
+  border: 1px solid var(--border, #30363d);
+  border-radius: 4px;
+  color: var(--text-secondary, #8b949e);
+  padding: 2px 8px;
+  cursor: pointer;
+  font-size: inherit;
+  font-family: inherit;
+}
+
+.toolbarBtn:hover {
+  border-color: var(--text-muted, #484f58);
+  color: var(--text-primary, #e6edf3);
+}
+
+.calloutCard {
+  position: relative;
+  background: var(--bg-tertiary, #21262d);
+  border: 1px solid var(--border, #30363d);
+  border-radius: 6px;
+  padding: 8px 12px;
+  font-size: 0.75rem;
+  color: var(--text-primary, #e6edf3);
+  max-width: 220px;
+  z-index: 20;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  margin-bottom: 4px;
+}
+
+.calloutSeverity {
+  display: inline-block;
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-size: 0.65rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  margin-right: 4px;
+}
+
+.danger {
+  background: rgba(248, 81, 73, 0.15);
+  color: var(--danger, #f85149);
+}
+
+.warning {
+  background: rgba(210, 153, 34, 0.15);
+  color: var(--warning, #d29922);
+}
+
+.info {
+  background: rgba(88, 166, 255, 0.15);
+  color: var(--accent, #58a6ff);
+}
+
+.calloutSource {
+  color: var(--text-muted, #484f58);
+  font-size: 0.65rem;
+  margin-top: 4px;
+}
+
+.dismissBtn {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  background: none;
+  border: none;
+  color: var(--text-muted, #484f58);
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 1;
+  padding: 0 2px;
+}
+
+.dismissBtn:hover {
+  color: var(--text-primary, #e6edf3);
+}

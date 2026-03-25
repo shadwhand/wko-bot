@@ -212,21 +212,27 @@ export const useDataStore = create<DataStore>()((set, get) => ({
   setTimeRange: (range) => set(() => ({ globalTimeRange: range })),
 
   addAnnotation: (panelId, annotation) =>
-    set((s) => ({
-      annotations: {
-        ...s.annotations,
-        [panelId]: [...(s.annotations[panelId] ?? []), annotation],
-      },
-    })),
+    set((s) => {
+      const truncatedLabel = annotation.label.length > 200
+        ? annotation.label.slice(0, 200) + '...'
+        : annotation.label;
+      const safe = { ...annotation, label: truncatedLabel };
+      const existing = s.annotations[panelId] || [];
+      return {
+        annotations: {
+          ...s.annotations,
+          [panelId]: [...existing, safe],
+        },
+      };
+    }),
 
   clearAnnotations: (panelId) =>
     set((s) => {
       if (panelId) {
-        const next = { ...s.annotations }
-        delete next[panelId]
-        return { annotations: next }
+        const { [panelId]: _, ...rest } = s.annotations;
+        return { annotations: rest };
       }
-      return { annotations: {} }
+      return { annotations: {} };
     }),
 
   refresh: async () => {
