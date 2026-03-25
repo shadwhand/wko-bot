@@ -1,19 +1,14 @@
 .wrapper {
   position: relative;
   display: inline-block;
-  z-index: 1;
 }
 
-.wrapper:hover {
-  z-index: 200;
-}
-
+/* Portal tooltip — rendered at document.body, above all panels */
 .tooltip {
-  position: absolute;
-  bottom: calc(100% + 8px);
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 100;
+  /* top/left set inline via JS bounding-rect calc */
+  transform: translateX(-50%) translateY(-100%);
+  margin-top: -8px;
+  z-index: 10000;
   background: var(--color-bg-overlay, #2d333b);
   border: 1px solid var(--color-border, #444c56);
   border-radius: 6px;

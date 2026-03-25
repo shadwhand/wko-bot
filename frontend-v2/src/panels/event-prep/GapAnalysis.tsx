@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { useDataStore } from '../../store/data-store'
 import { PanelSkeleton } from '../../shared/PanelSkeleton'
 import { PanelError } from '../../shared/PanelError'
@@ -13,6 +14,14 @@ export function GapAnalysis() {
   )
   const loading = useDataStore(s => s.loading.has('routeDetail'))
   const error = useDataStore(s => s.errors['routeDetail'])
+  const fetchRouteDetail = useDataStore(s => s.fetchRouteDetail)
+
+  // Fetch route detail when selectedRouteId changes
+  useEffect(() => {
+    if (selectedRouteId != null && !routeDetail) {
+      fetchRouteDetail(selectedRouteId)
+    }
+  }, [selectedRouteId, routeDetail, fetchRouteDetail])
 
   if (!selectedRouteId) {
     return <PanelEmpty message="Select a route to see gap analysis" />

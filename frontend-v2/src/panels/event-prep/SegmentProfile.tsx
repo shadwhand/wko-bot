@@ -1,5 +1,5 @@
 // frontend-v2/src/panels/event-prep/SegmentProfile.tsx
-import { useRef, useCallback, useState } from 'react';
+import { useRef, useCallback, useState, useEffect } from 'react';
 import * as d3 from 'd3';
 import { useDataStore } from '../../store/data-store';
 import { ChartContainer } from '../../shared/ChartContainer';
@@ -33,22 +33,44 @@ interface Segment {
  * When route detail data is available (with elevation_profile and segments),
  * it renders the elevation area chart with demand-colored segment overlays.
  *
- * The route detail store slice is keyed by route ID. When unavailable,
- * the component shows a prompt to select a route.
+ * The route detail store slice is keyed by route ID. Fetches automatically
+ * when selectedRouteId changes.
  */
 export function SegmentProfile() {
   const selectedRouteId = useDataStore(s => s.selectedRouteId);
-  const loading = useDataStore(s => s.loading.has('routes'));
-  const error = useDataStore(s => s.errors['routes']);
+  const routeDetail = useDataStore(s =>
+    s.selectedRouteId != null ? s.routeDetail[s.selectedRouteId] : null
+  );
+  const loading = useDataStore(s => s.loading.has('routeDetail'));
+  const error = useDataStore(s => s.errors['routeDetail']);
+  const fetchRouteDetail = useDataStore(s => s.fetchRouteDetail);
+
+  // Fetch route detail when selectedRouteId changes
+  useEffect(() => {
+    if (selectedRouteId != null && !routeDetail) {
+      fetchRouteDetail(selectedRouteId);
+    }
+  }, [selectedRouteId, routeDetail, fetchRouteDetail]);
 
   if (!selectedRouteId) return <PanelEmpty message="Select a route to see elevation profile" />;
   if (loading) return <PanelSkeleton />;
   if (error) return <PanelError message={error} />;
 
-  // Route detail data would be fetched and stored when selectedRouteId changes.
-  // For now, show empty state if no detail data is loaded.
-  // When route detail API is wired up, this will read from the store.
-  return <PanelEmpty message="No elevation data for selected route" />;
+  // Render the chart if we have elevation data, otherwise show empty state
+  const elevProfile = routeDetail?.elevation_profile ?? routeDetail?.points;
+  const segments = routeDetail?.segments;
+  if (!elevProfile || elevProfile.length === 0) {
+    return <PanelEmpty message="No elevation data for selected route" />;
+  }
+
+  return (
+    <SegmentProfileChart
+      elevationProfile={elevProfile}
+      segments={segments ?? []}
+      totalKm={routeDetail?.distance_km ?? 0}
+      totalElevation={routeDetail?.elevation_m ?? 0}
+    />
+  );
 }
 
 /** Standalone inner chart -- exported for use when data is directly available. */
@@ -252,5 +274,5 @@ registerPanel({
   category: 'event-prep',
   description: 'Elevation profile with demand-colored segment overlays',
   component: SegmentProfile,
-  dataKeys: ['routes'],
+  dataKeys: ['selectedRouteId', 'routeDetail'],
 });

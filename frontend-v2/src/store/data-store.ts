@@ -67,6 +67,7 @@ export interface DataStore {
   fetchCore: () => Promise<void>
   fetchSecondary: () => Promise<void>
   fetchRide: (id: number) => Promise<void>
+  fetchRouteDetail: (routeId: number) => Promise<void>
   setSelectedRide: (id: number | null) => void
   setSelectedRoute: (id: number | null) => void
   setTimeRange: (range: { start: string; end: string } | null) => void
@@ -213,9 +214,23 @@ export const useDataStore = create<DataStore>()((set, get) => ({
     }))
   },
 
+  fetchRouteDetail: async (routeId: number) => {
+    // Skip if already loaded
+    if (get().routeDetail[routeId]) return
+    await tracked(set, 'routeDetail', () => api.getRouteDetail(routeId), (d) => ({
+      routeDetail: { ...get().routeDetail, [routeId]: d },
+    }))
+  },
+
   setSelectedRide: (id) => set(() => ({ selectedRideId: id })),
 
-  setSelectedRoute: (id) => set(() => ({ selectedRouteId: id })),
+  setSelectedRoute: (id) => {
+    set(() => ({ selectedRouteId: id }))
+    // Cascade: fetch route detail when a route is selected
+    if (id != null) {
+      get().fetchRouteDetail(id)
+    }
+  },
 
   setTimeRange: (range) => set(() => ({ globalTimeRange: range })),
 
