@@ -1,0 +1,58 @@
+/* frontend-v2/src/ride/RideDetail.module.css */
+.page {
+  padding: 16px 24px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.backLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--text-secondary, #8b949e);
+  text-decoration: none;
+  font-size: 0.85rem;
+  margin-bottom: 12px;
+  cursor: pointer;
+  background: none;
+  border: none;
+  font-family: inherit;
+  padding: 0;
+}
+
+.backLink:hover {
+  color: var(--text-primary, #e6edf3);
+}
+
+.title {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: var(--text-primary, #e6edf3);
+  margin-bottom: 4px;
+}
+
+.subtitle {
+  font-size: 0.85rem;
+  color: var(--text-muted, #484f58);
+  margin-bottom: 16px;
+}
+
+.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  color: var(--text-muted, #484f58);
+}
+
+.errorBox {
+  padding: 24px;
+  text-align: center;
+  color: var(--danger, #f85149);
+}
+
+.placeholder {
+  color: var(--text-muted, #484f58);
+  padding: 24px;
+  text-align: center;
+}

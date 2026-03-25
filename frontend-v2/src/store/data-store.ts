@@ -50,6 +50,7 @@ export interface DataStore {
 
   // Cross-panel state
   selectedRouteId: number | null
+  selectedRideId: number | null
   athleteSlug: string
   globalTimeRange: { start: string; end: string } | null
 
@@ -66,6 +67,7 @@ export interface DataStore {
   fetchCore: () => Promise<void>
   fetchSecondary: () => Promise<void>
   fetchRide: (id: number) => Promise<void>
+  setSelectedRide: (id: number | null) => void
   setSelectedRoute: (id: number | null) => void
   setTimeRange: (range: { start: string; end: string } | null) => void
   addAnnotation: (panelId: string, annotation: Annotation) => void
@@ -157,6 +159,7 @@ export const useDataStore = create<DataStore>()((set, get) => ({
 
   // Cross-panel
   selectedRouteId: null,
+  selectedRideId: null,
   athleteSlug: 'default',
   globalTimeRange: null,
 
@@ -208,6 +211,8 @@ export const useDataStore = create<DataStore>()((set, get) => ({
       rides: { ...get().rides, [id]: d },
     }))
   },
+
+  setSelectedRide: (id) => set(() => ({ selectedRideId: id })),
 
   setSelectedRoute: (id) => set(() => ({ selectedRouteId: id })),
 

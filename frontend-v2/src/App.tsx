@@ -8,6 +8,7 @@ import { EditMode } from './layout/EditMode'
 import { WarmupScreen } from './startup/WarmupScreen'
 import { useStartup } from './startup/useStartup'
 import { useAutoRefresh } from './startup/useAutoRefresh'
+import { RideDetail } from './ride/RideDetail'
 
 // Register all panels (side-effect imports)
 import './panels'
@@ -41,6 +42,23 @@ export function App() {
 /** Inner shell — only renders after layout store is initialized */
 function AppShell() {
   const editMode = useLayoutStore(s => s.editMode)
+  const selectedRideId = useDataStore(s => s.selectedRideId)
+  const setSelectedRide = useDataStore(s => s.setSelectedRide)
+
+  // State-based routing: if a ride is selected, show RideDetail instead of main layout
+  if (selectedRideId != null) {
+    return (
+      <div className={styles.app}>
+        <Header />
+        <main className={styles.main}>
+          <RideDetail
+            rideId={selectedRideId}
+            onBack={() => setSelectedRide(null)}
+          />
+        </main>
+      </div>
+    )
+  }
 
   return (
     <div className={styles.app}>
