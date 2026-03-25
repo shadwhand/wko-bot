@@ -16,6 +16,7 @@ import styles from './PMCChart.module.css';
 const PANEL_ID = 'pmc-chart';
 const CHART_HEIGHT = 280;
 const MARGIN = { top: 20, right: 50, bottom: 30, left: 50 };
+const EMPTY_ANNOTATIONS: Annotation[] = [];
 
 /** Chart line colors consistent with the original PMC chart */
 const LINE_COLORS = {
@@ -28,7 +29,7 @@ export function PMCChart() {
   const pmc = useDataStore(s => s.pmc);
   const loading = useDataStore(s => s.loading.has('pmc'));
   const error = useDataStore(s => s.errors['pmc']);
-  const annotations = useDataStore(s => s.annotations[PANEL_ID] || []);
+  const annotations = useDataStore(s => s.annotations[PANEL_ID] ?? EMPTY_ANNOTATIONS);
   const addAnnotation = useDataStore(s => s.addAnnotation);
 
   if (loading) return <PanelSkeleton />;
