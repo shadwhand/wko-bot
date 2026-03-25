@@ -1,0 +1,37 @@
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  height: 28px;
+  background: var(--bg-secondary);
+  border-top: 1px solid var(--border-primary);
+  font-size: var(--font-size-xs);
+  flex-shrink: 0;
+}
+
+.left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.right {
+  color: var(--text-tertiary);
+}
+
+.loading {
+  color: var(--accent-blue);
+}
+
+.errors {
+  color: var(--danger);
+}
+
+.connected {
+  color: var(--success);
+}
+
+.version {
+  color: var(--text-tertiary);
+}
