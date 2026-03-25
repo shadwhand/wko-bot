@@ -3,6 +3,7 @@ import { useRef, useCallback, useState } from 'react';
 import * as d3 from 'd3';
 import { useDataStore } from '../../store/data-store';
 import { ChartContainer } from '../../shared/ChartContainer';
+import { AnnotationOverlay, renderAnnotationsSvg } from '../../shared/AnnotationOverlay';
 import { COLORS, AXIS } from '../../shared/tokens';
 import { styleAxis, drawGridY, tooltipLeft, findNearest } from '../../shared/chart-utils';
 import { PanelSkeleton } from '../../shared/PanelSkeleton';
@@ -28,14 +29,44 @@ export function PMCChart() {
   const loading = useDataStore(s => s.loading.has('pmc'));
   const error = useDataStore(s => s.errors['pmc']);
   const annotations = useDataStore(s => s.annotations[PANEL_ID] || []);
+  const addAnnotation = useDataStore(s => s.addAnnotation);
 
   if (loading) return <PanelSkeleton />;
   if (error) return <PanelError message={error} />;
   if (!pmc || !pmc.length) return <PanelEmpty message="No PMC data available" />;
 
+  const pushTestAnnotation = () => {
+    addAnnotation(PANEL_ID, {
+      id: `test-${Date.now()}`,
+      source: 'claude',
+      type: 'region',
+      x: [
+        // Use recent dates from the PMC data
+        pmc[Math.max(0, pmc.length - 60)]?.date || '2026-01-01',
+        pmc[Math.max(0, pmc.length - 45)]?.date || '2026-01-15',
+      ],
+      label: 'CTL plateau — recovery block detected',
+      color: '#f85149',
+      timestamp: new Date().toISOString(),
+    } as Annotation);
+  };
+
   return (
     <div className={styles.wrapper}>
+      <AnnotationOverlay panelId={PANEL_ID} annotations={annotations} />
       <PMCChartInner data={pmc} annotations={annotations} />
+      {/* Temporary test button — remove before production */}
+      <button
+        onClick={pushTestAnnotation}
+        style={{
+          position: 'absolute', bottom: 8, right: 8,
+          fontSize: '0.7rem', padding: '3px 8px',
+          background: 'var(--bg-tertiary)', border: '1px solid var(--border)',
+          borderRadius: 4, color: 'var(--text-secondary)', cursor: 'pointer',
+        }}
+      >
+        + Test Annotation
+      </button>
     </div>
   );
 }
@@ -55,6 +86,8 @@ interface ParsedRow {
 
 function PMCChartInner({ data, annotations }: PMCChartInnerProps) {
   const tooltipRef = useRef<HTMLDivElement>(null);
+  const annotationsRef = useRef(annotations);
+  annotationsRef.current = annotations;
   const [tooltipContent, setTooltipContent] = useState('');
   const [tooltipVisible, setTooltipVisible] = useState(false);
   const [tooltipPos, setTooltipPos] = useState({ left: 0, top: 0 });
@@ -229,49 +262,16 @@ function PMCChartInner({ data, annotations }: PMCChartInnerProps) {
       .call(d3.axisRight(yScaleRight).ticks(6));
     styleAxis(yAxisRightG as unknown as d3.Selection<SVGGElement, unknown, null, undefined>);
 
-    // Annotation rendering (reads from store.annotations)
-    // Annotations are rendered as vertical lines/regions on the time axis
-    if (annotations.length > 0) {
-      const annoG = content.append('g').attr('class', 'annotations');
-      annotations.forEach(anno => {
-        if (anno.type === 'line' && typeof anno.x === 'string') {
-          const d = parseDate(anno.x);
-          if (d) {
-            const cx = xScale(d);
-            annoG.append('line')
-              .attr('x1', cx).attr('x2', cx)
-              .attr('y1', 0).attr('y2', innerH)
-              .style('stroke', anno.color)
-              .style('stroke-width', 2)
-              .style('stroke-dasharray', '6,4');
-            annoG.append('text')
-              .attr('x', cx + 4).attr('y', 12)
-              .text(anno.label)
-              .style('fill', anno.color)
-              .style('font-size', '10px');
-          }
-        } else if (anno.type === 'region' && Array.isArray(anno.x)) {
-          const d0 = parseDate(anno.x[0]);
-          const d1 = parseDate(anno.x[1]);
-          if (d0 && d1) {
-            const x0 = xScale(d0);
-            const x1 = xScale(d1);
-            annoG.append('rect')
-              .attr('x', Math.min(x0, x1))
-              .attr('y', 0)
-              .attr('width', Math.abs(x1 - x0))
-              .attr('height', innerH)
-              .style('fill', anno.color)
-              .style('opacity', 0.15);
-            annoG.append('text')
-              .attr('x', (x0 + x1) / 2).attr('y', 12)
-              .attr('text-anchor', 'middle')
-              .text(anno.label)
-              .style('fill', anno.color)
-              .style('font-size', '10px');
-          }
-        }
-      });
+    // Annotation SVG overlays (via shared renderAnnotationsSvg helper)
+    if (annotationsRef.current.length > 0) {
+      const annotGroup = content.append('g').attr('class', 'annotations');
+      renderAnnotationsSvg(
+        annotGroup as unknown as d3.Selection<SVGGElement, unknown, null, undefined>,
+        annotationsRef.current,
+        xScale,
+        yScaleRight,
+        innerH,
+      );
     }
 
     // Crosshair + hover overlay
