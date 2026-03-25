@@ -1,0 +1,192 @@
+.editContainer {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 16px;
+  background: var(--color-accent-bg, #0d419d33);
+  border-bottom: 1px solid var(--color-accent, #58a6ff);
+}
+
+.toolbarLabel {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-accent, #58a6ff);
+}
+
+.toolbarActions {
+  display: flex;
+  gap: 8px;
+}
+
+.resetButton,
+.cancelButton,
+.doneButton {
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.resetButton {
+  border: 1px solid var(--color-danger, #f85149);
+  background: transparent;
+  color: var(--color-danger, #f85149);
+}
+
+.resetButton:hover {
+  background: var(--color-danger-bg, #da36331a);
+}
+
+.cancelButton {
+  border: 1px solid var(--color-border, #30363d);
+  background: transparent;
+  color: var(--color-text-primary, #e6edf3);
+}
+
+.cancelButton:hover {
+  background: var(--color-bg-tertiary, #30363d);
+}
+
+.doneButton {
+  border: none;
+  background: var(--color-accent, #58a6ff);
+  color: #fff;
+}
+
+.doneButton:hover {
+  background: var(--color-accent-hover, #79c0ff);
+}
+
+/* Editable tab bar */
+.editTabBar {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 4px 16px;
+  background: var(--color-bg-header, #21262d);
+  border-bottom: 1px solid var(--color-border, #30363d);
+  overflow-x: auto;
+}
+
+.editTab {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  border: 1px dashed var(--color-border, #30363d);
+}
+
+.activeEditTab {
+  border-color: var(--color-accent, #58a6ff);
+  background: var(--color-accent-bg, #0d419d33);
+}
+
+.tabButton {
+  border: none;
+  background: transparent;
+  color: var(--color-text-primary, #e6edf3);
+  font-size: 13px;
+  cursor: pointer;
+  padding: 2px 4px;
+}
+
+.tabNameInput {
+  background: var(--color-bg-primary, #161b22);
+  border: 1px solid var(--color-accent, #58a6ff);
+  border-radius: 4px;
+  color: var(--color-text-primary, #e6edf3);
+  font-size: 13px;
+  padding: 2px 6px;
+  width: 120px;
+}
+
+.tabRemove {
+  width: 20px;
+  height: 20px;
+  border: none;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--color-text-secondary, #8b949e);
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tabRemove:hover {
+  background: var(--color-danger-bg, #da36331a);
+  color: var(--color-danger, #f85149);
+}
+
+.addTabButton {
+  width: 28px;
+  height: 28px;
+  border: 1px dashed var(--color-border, #30363d);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--color-text-secondary, #8b949e);
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.addTabButton:hover {
+  border-color: var(--color-accent, #58a6ff);
+  color: var(--color-accent, #58a6ff);
+}
+
+/* Panel grid in edit mode */
+.panelGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+  max-width: 1400px;
+  margin: 0 auto;
+  flex: 1;
+}
+
+/* Add panel area */
+.addPanelArea {
+  display: flex;
+  justify-content: center;
+  padding: 16px;
+}
+
+.addPanelButton {
+  padding: 10px 24px;
+  border: 2px dashed var(--color-border, #30363d);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--color-text-secondary, #8b949e);
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.addPanelButton:hover {
+  border-color: var(--color-accent, #58a6ff);
+  color: var(--color-accent, #58a6ff);
+}
+
+.placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 60px;
+  color: var(--color-text-secondary, #8b949e);
+  font-size: 13px;
+  font-style: italic;
+}
