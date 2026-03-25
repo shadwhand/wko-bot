@@ -49,6 +49,7 @@ router = APIRouter(prefix="/api")
 # Simple in-memory cache — data only changes on Garmin sync or model update
 _cache = {}
 _CACHE_TTL = 300  # 5 minutes
+_data_version = 1
 
 
 def _cached(key, fn, ttl=_CACHE_TTL):
@@ -63,7 +64,9 @@ def _cached(key, fn, ttl=_CACHE_TTL):
 
 def _invalidate_cache():
     """Clear all cached data (call after sync or model update)."""
+    global _data_version
     _cache.clear()
+    _data_version += 1
 
 
 # Warmup state — tracks precompute results
@@ -128,6 +131,7 @@ def health():
         "status": "ok",
         "cache_warm": _warmup_status["done"],
         "warmup_errors": _warmup_status["errors"] if _warmup_status["errors"] else None,
+        "data_version": _data_version,
     }
 
 
