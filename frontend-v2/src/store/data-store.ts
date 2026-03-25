@@ -46,6 +46,7 @@ export interface DataStore {
   // On-demand (keyed by ID)
   rides: Record<number, RideDetail>
   routes: RouteListItem[]
+  routeDetail: Record<number, any>
 
   // Cross-panel state
   selectedRouteId: number | null
@@ -152,6 +153,7 @@ export const useDataStore = create<DataStore>()((set, get) => ({
   // On-demand
   rides: {},
   routes: [],
+  routeDetail: {},
 
   // Cross-panel
   selectedRouteId: null,

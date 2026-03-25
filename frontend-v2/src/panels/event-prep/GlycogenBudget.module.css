@@ -1,0 +1,68 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.field label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--color-text-secondary, #8b949e);
+}
+
+.field input {
+  padding: 6px 8px;
+  border: 1px solid var(--color-border, #30363d);
+  border-radius: 4px;
+  background: var(--color-bg-primary, #161b22);
+  color: var(--color-text-primary, #e6edf3);
+  font-size: 13px;
+  width: 100px;
+}
+
+.computing {
+  font-size: 13px;
+  color: var(--color-text-secondary, #8b949e);
+  font-style: italic;
+}
+
+.results {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+.recommendation {
+  width: 100%;
+  font-size: 13px;
+  color: var(--color-text-secondary, #8b949e);
+  line-height: 1.4;
+  padding: 8px 0;
+  border-top: 1px solid var(--color-border, #30363d);
+}
+
+.chartPlaceholder {
+  width: 100%;
+  height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px dashed var(--color-border, #30363d);
+  border-radius: 6px;
+  color: var(--color-text-secondary, #8b949e);
+  font-size: 13px;
+  font-style: italic;
+}
