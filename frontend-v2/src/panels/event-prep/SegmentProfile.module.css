@@ -1,0 +1,33 @@
+/* frontend-v2/src/panels/event-prep/SegmentProfile.module.css */
+.wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.summaryBar {
+  display: flex;
+  gap: 24px;
+  padding-top: 10px;
+  font-size: 0.8rem;
+  color: var(--text-secondary, #8b949e);
+  flex-wrap: wrap;
+}
+
+.tooltip {
+  position: absolute;
+  pointer-events: none;
+  background: var(--bg-secondary, #161b22);
+  border: 1px solid var(--border, #30363d);
+  border-radius: 6px;
+  padding: 10px 14px;
+  font-size: 0.8rem;
+  color: var(--text-primary, #e6edf3);
+  display: none;
+  z-index: 1000;
+  max-width: 220px;
+  line-height: 1.5;
+}
+
+.tooltip.visible {
+  display: block;
+}
