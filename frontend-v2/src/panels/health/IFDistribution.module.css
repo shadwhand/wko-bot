@@ -1,0 +1,13 @@
+/* frontend-v2/src/panels/health/IFDistribution.module.css */
+.wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.summary {
+  display: flex;
+  gap: 16px;
+  margin-top: 8px;
+  font-size: 0.8rem;
+  flex-wrap: wrap;
+}
