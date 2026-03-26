@@ -12,6 +12,11 @@ def set_token(token: str):
     _token = token
 
 
+def get_token_value() -> str | None:
+    """Return the current auth token (for runtime config endpoint)."""
+    return _token
+
+
 def verify_token(credentials: HTTPAuthorizationCredentials = Security(security)):
     if _token is None:
         raise HTTPException(status_code=503, detail="Auth not configured")

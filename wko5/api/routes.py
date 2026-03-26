@@ -1,19 +1,49 @@
 """API route definitions."""
 
 import math
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException, Request
 from fastapi.responses import JSONResponse
 import json
-from wko5.api.auth import verify_token
+import numpy as np
+from wko5.api.auth import verify_token, get_token_value
 
 
 class _NanSafeEncoder(json.JSONEncoder):
-    """JSON encoder that converts NaN/Inf to None."""
+    """JSON encoder that converts NaN/Inf/numpy types to JSON-safe values."""
     def default(self, obj):
+        if isinstance(obj, np.bool_):
+            return bool(obj)
+        if isinstance(obj, np.integer):
+            return int(obj)
+        if isinstance(obj, np.floating):
+            if np.isnan(obj) or np.isinf(obj):
+                return None
+            return float(obj)
+        if isinstance(obj, np.ndarray):
+            return obj.tolist()
         return super().default(obj)
 
     def encode(self, o):
         return super().encode(_sanitize_nans(o))
+
+
+def convert_numpy(obj):
+    """Recursively convert numpy types to Python natives for JSON serialization."""
+    if isinstance(obj, dict):
+        return {k: convert_numpy(v) for k, v in obj.items()}
+    elif isinstance(obj, (list, tuple)):
+        return [convert_numpy(item) for item in obj]
+    elif isinstance(obj, np.bool_):
+        return bool(obj)
+    elif isinstance(obj, np.integer):
+        return int(obj)
+    elif isinstance(obj, np.floating):
+        if np.isnan(obj) or np.isinf(obj):
+            return None
+        return float(obj)
+    elif isinstance(obj, np.ndarray):
+        return convert_numpy(obj.tolist())
+    return obj
 
 
 def _sanitize_nans(obj):
@@ -146,6 +176,15 @@ def warmup_status():
     }
 
 
+@router.get("/runtime")
+def runtime_config(request: Request):
+    """Return runtime config for frontend bootstrap. Localhost only, no auth."""
+    host = request.client.host if request.client else ""
+    if host not in ("127.0.0.1", "localhost", "::1"):
+        raise HTTPException(status_code=403, detail="Localhost only")
+    return {"token": get_token_value()}
+
+
 @router.get("/config", dependencies=[Depends(verify_token)])
 def config():
     return get_config()
@@ -253,12 +292,22 @@ def profile(days: int = 90):
 
 @router.get("/ride/{activity_id}", dependencies=[Depends(verify_token)])
 def ride(activity_id: int, include_records: bool = True):
-    summary = ride_summary(activity_id)
-    if not summary:
+    # Use raw DB row so field names match the frontend RideSummary type
+    # (id, filename, sport, start_time, normalized_power, etc.)
+    from wko5.db import get_connection, get_records
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM activities WHERE id = ?", (activity_id,))
+    row = cursor.fetchone()
+    if not row:
+        conn.close()
         return {"error": "Activity not found"}
+    columns = [desc[0] for desc in cursor.description]
+    summary = _sanitize_nans(dict(zip(columns, row)))
+    conn.close()
+
     result = {"summary": summary}
     if include_records:
-        from wko5.db import get_records
         records_df = get_records(activity_id)
         if not records_df.empty:
             result["records"] = _sanitize_nans(

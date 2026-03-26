@@ -33,13 +33,13 @@ import {
 /** Base URL — empty string means same-origin (Vite proxy handles /api). */
 const BASE_URL = ''
 
-/** Resolve bearer token from meta tag, then localStorage. */
+/** Resolve bearer token from meta tag, URL param, or localStorage. */
 function resolveToken(): string | null {
-  // Try <meta name="wko5-token" content="...">
+  // 1. Try <meta name="wko5-token" content="...">
   const meta = document.querySelector<HTMLMetaElement>('meta[name="wko5-token"]')
   if (meta?.content) return meta.content
 
-  // Try URL param (legacy v1 compat) — save and strip
+  // 2. Try URL param (legacy v1 compat) — save and strip
   try {
     const params = new URLSearchParams(window.location.search)
     const urlToken = params.get('token')
@@ -54,14 +54,15 @@ function resolveToken(): string | null {
     // URL parsing may fail in test environments
   }
 
+  // 3. Try localStorage
   return localStorage.getItem('wko5_token')
 }
 
-let _token: string | null = null
+let _token: string | null | undefined = undefined
 
 /** Get the current auth token, resolving lazily on first call. */
 export function getToken(): string | null {
-  if (_token === null) {
+  if (_token === undefined) {
     _token = resolveToken()
   }
   return _token
@@ -75,6 +76,29 @@ export function setToken(token: string): void {
   } catch {
     // localStorage may be unavailable
   }
+}
+
+/**
+ * Bootstrap token from /api/runtime (localhost-only, no auth required).
+ * Call once during app startup before any authenticated API calls.
+ * Returns true if a token was obtained.
+ */
+export async function bootstrapToken(): Promise<boolean> {
+  // Already have a token — skip
+  if (getToken()) return true
+
+  try {
+    const res = await fetch(`${BASE_URL}/api/runtime`)
+    if (!res.ok) return false
+    const data = (await res.json()) as { token?: string }
+    if (data.token) {
+      setToken(data.token)
+      return true
+    }
+  } catch {
+    // Backend may not be reachable yet — caller can retry
+  }
+  return false
 }
 
 // ─── Generic fetch wrapper ────────────────────────────────────────

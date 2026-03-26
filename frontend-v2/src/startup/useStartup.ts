@@ -1,6 +1,6 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import { type WarmupStatusResponse } from '../api/types'
-import { getWarmupStatus } from '../api/client'
+import { getWarmupStatus, bootstrapToken } from '../api/client'
 import { useDataStore } from '../store/data-store'
 
 export type StartupPhase = 'warming' | 'loading' | 'ready' | 'error'
@@ -20,25 +20,27 @@ export function useStartup(): StartupState {
   const fetchCore = useDataStore((s) => s.fetchCore)
   const fetchSecondary = useDataStore((s) => s.fetchSecondary)
   const checkForUpdates = useDataStore((s) => s.checkForUpdates)
-  const pollingRef = useRef(false)
-
   useEffect(() => {
-    if (pollingRef.current) return
-    pollingRef.current = true
-
     let cancelled = false
     let timeoutId: ReturnType<typeof setTimeout>
 
     async function pollWarmup() {
       try {
+        // Bootstrap auth token from /api/runtime (localhost-only, no auth)
+        await bootstrapToken()
+
+        console.log('[startup] polling warmup...')
         const status = await getWarmupStatus()
+        console.log('[startup] warmup response:', status.done, status.running, 'cancelled:', cancelled)
         if (cancelled) return
         setWarmupStatus(status)
 
         if (status.done) {
           // Warmup complete — fetch core data
+          console.log('[startup] warmup done, fetching core...')
           setPhase('loading')
           await fetchCore()
+          console.log('[startup] fetchCore complete')
           if (cancelled) return
 
           // Record initial data version
@@ -54,6 +56,7 @@ export function useStartup(): StartupState {
         // Still warming — poll again
         timeoutId = setTimeout(pollWarmup, POLL_INTERVAL_MS)
       } catch (err) {
+        console.error('[startup] error:', err)
         if (cancelled) return
         setError(err instanceof Error ? err.message : 'Connection failed')
         setPhase('error')
