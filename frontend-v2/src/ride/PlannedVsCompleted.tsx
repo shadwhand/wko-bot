@@ -12,7 +12,7 @@ interface Props {
  * The planned field is optional and comes from TrainingPeaks import.
  */
 export function PlannedVsCompleted({ ride }: Props) {
-  const summary = ride.summary as Record<string, unknown> | undefined;
+  const summary = ride.summary as unknown as Record<string, unknown> | undefined;
   const planned = summary?.planned as
     | { description?: string; duration?: number; tss?: number }
     | undefined;

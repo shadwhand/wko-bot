@@ -72,6 +72,10 @@ def detect_intervals(activity_id, min_power_pct=0.9, min_duration=30, ftp=None):
     power = records["power"].fillna(0)
     smoothed = power.rolling(window=10, min_periods=1).mean()
 
+    # Use elapsed_seconds if available, otherwise fall back to index (1-sec approx)
+    has_elapsed = "elapsed_seconds" in records.columns and records["elapsed_seconds"].notna().any()
+    elapsed = records["elapsed_seconds"].values if has_elapsed else np.arange(len(records), dtype=float)
+
     intervals = []
     in_interval = False
     start_idx = 0
@@ -81,36 +85,36 @@ def detect_intervals(activity_id, min_power_pct=0.9, min_duration=30, ftp=None):
             in_interval = True
             start_idx = i
         elif p < threshold and in_interval:
-            duration = i - start_idx
-            if duration >= min_duration:
+            duration_idx = i - start_idx
+            if duration_idx >= min_duration:
                 segment = power.iloc[start_idx:i]
                 hr_segment = records["heart_rate"].iloc[start_idx:i].dropna()
-                cad_segment = records["cadence"].iloc[start_idx:i].dropna()
+                start_sec = float(elapsed[start_idx]) if not np.isnan(elapsed[start_idx]) else float(start_idx)
+                end_sec = float(elapsed[i]) if not np.isnan(elapsed[i]) else float(i)
                 intervals.append({
-                    "start_idx": start_idx,
-                    "end_idx": i,
-                    "duration_s": duration,
+                    "start": start_sec,
+                    "end": end_sec,
+                    "duration": round(end_sec - start_sec),
                     "avg_power": round(float(segment.mean()), 1),
                     "max_power": int(segment.max()),
                     "avg_hr": round(float(hr_segment.mean()), 1) if len(hr_segment) > 0 else None,
-                    "avg_cadence": round(float(cad_segment.mean()), 1) if len(cad_segment) > 0 else None,
                 })
             in_interval = False
 
     if in_interval:
-        duration = len(smoothed) - start_idx
-        if duration >= min_duration:
+        duration_idx = len(smoothed) - start_idx
+        if duration_idx >= min_duration:
             segment = power.iloc[start_idx:]
             hr_segment = records["heart_rate"].iloc[start_idx:].dropna()
-            cad_segment = records["cadence"].iloc[start_idx:].dropna()
+            start_sec = float(elapsed[start_idx]) if not np.isnan(elapsed[start_idx]) else float(start_idx)
+            end_sec = float(elapsed[-1]) if not np.isnan(elapsed[-1]) else float(len(smoothed))
             intervals.append({
-                "start_idx": start_idx,
-                "end_idx": len(smoothed),
-                "duration_s": duration,
+                "start": start_sec,
+                "end": end_sec,
+                "duration": round(end_sec - start_sec),
                 "avg_power": round(float(segment.mean()), 1),
                 "max_power": int(segment.max()),
                 "avg_hr": round(float(hr_segment.mean()), 1) if len(hr_segment) > 0 else None,
-                "avg_cadence": round(float(cad_segment.mean()), 1) if len(cad_segment) > 0 else None,
             })
 
     return intervals
