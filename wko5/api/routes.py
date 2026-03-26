@@ -615,3 +615,125 @@ def get_fresh_baseline():
 def get_short_power_consistency():
     from wko5.gap_analysis import short_power_consistency
     return _sanitize_nans(short_power_consistency() or {})
+
+
+# ── Composite Endpoints ──────────────────────────────────────────────────────
+
+def _find_linked_activity(route_id):
+    """Find the most recent activity linked to a route."""
+    from wko5.db import get_connection
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    # Check for route_links table first, fall back to activity_routes
+    cursor.execute(
+        "SELECT name FROM sqlite_master WHERE type='table' AND name IN ('route_links', 'activity_routes')"
+    )
+    link_tables = {row[0] for row in cursor.fetchall()}
+
+    activity_id = None
+    if "route_links" in link_tables:
+        cursor.execute(
+            "SELECT activity_id FROM route_links WHERE route_id = ? LIMIT 1", (route_id,)
+        )
+        row = cursor.fetchone()
+        if row:
+            activity_id = row[0]
+    elif "activity_routes" in link_tables:
+        cursor.execute(
+            "SELECT activity_id FROM activity_routes WHERE route_id = ? LIMIT 1", (route_id,)
+        )
+        row = cursor.fetchone()
+        if row:
+            activity_id = row[0]
+    conn.close()
+    return activity_id
+
+
+@router.get("/route-analysis/{route_id}", dependencies=[Depends(verify_token)])
+def route_analysis(route_id: int, n_draws: int = 200):
+    """Composite endpoint: route detail + demand + gap analysis + opportunity cost.
+
+    Each sub-call is try/caught independently so one failure doesn't kill the response.
+    """
+    result = {}
+
+    # Route detail (required — 404 if not found)
+    try:
+        route = get_route(route_id)
+        if not route:
+            raise HTTPException(status_code=404, detail="Route not found")
+        route["history"] = get_route_history(route_id)
+        route["plans"] = get_ride_plans(route_id)
+        # Include route points
+        from wko5.db import get_connection
+        conn = get_connection()
+        cursor = conn.cursor()
+        cursor.execute(
+            "SELECT lat, lon, elevation, cumulative_distance_m FROM route_points "
+            "WHERE route_id = ? ORDER BY point_order", (route_id,)
+        )
+        route["points"] = [
+            {"lat": r[0], "lon": r[1], "elevation": r[2], "km": round(r[3] / 1000, 2) if r[3] else 0}
+            for r in cursor.fetchall()
+        ]
+        conn.close()
+        result["route"] = _sanitize_nans(route)
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=404, detail=f"Route not found: {e}")
+
+    # Find linked activity for demand + gap analysis
+    activity_id = _find_linked_activity(route_id)
+
+    # Demand profile (optional — may fail for routes without linked activities or segments)
+    try:
+        if activity_id is None:
+            result["demand"] = {"segments": [], "summary": {}, "error": "No linked activity found"}
+        else:
+            ride_segments = _get_segments(activity_id)
+            if not ride_segments["segments"]:
+                result["demand"] = {"segments": [], "summary": {}, "error": "No segments found"}
+            else:
+                pd_model = _get_pd_model()
+                dur_params = _get_durability()
+                if pd_model is None or dur_params is None:
+                    result["demand"] = {"segments": [], "summary": ride_segments.get("summary", {}),
+                                        "error": "PD model or durability model unavailable"}
+                else:
+                    profile = build_demand_profile(ride_segments["segments"], pd_model, dur_params)
+                    result["demand"] = convert_numpy(_sanitize_nans(
+                        {"segments": profile, "summary": ride_segments["summary"]}
+                    ))
+    except Exception as e:
+        result["demand"] = {"error": str(e), "segments": []}
+
+    # Gap analysis (optional — may fail if PD model can't fit)
+    try:
+        if activity_id is None:
+            result["gap_analysis"] = {"error": "No linked activity found"}
+        else:
+            ride_segments = _get_segments(activity_id)
+            if not ride_segments["segments"]:
+                result["gap_analysis"] = {"error": "No segments found"}
+            else:
+                pd_model = _get_pd_model()
+                dur_params = _get_durability()
+                if pd_model is None or dur_params is None:
+                    result["gap_analysis"] = {"error": "PD model or durability model unavailable"}
+                else:
+                    gap = gap_analysis(ride_segments["segments"], pd_model, dur_params, n_draws=n_draws)
+                    result["gap_analysis"] = convert_numpy(_sanitize_nans(gap)) if gap else None
+    except Exception as e:
+        result["gap_analysis"] = {"error": str(e)}
+
+    # Opportunity cost (optional — may return empty)
+    try:
+        from wko5.gap_analysis import opportunity_cost_analysis
+        opp = opportunity_cost_analysis(route_id)
+        result["opportunity_cost"] = convert_numpy(_sanitize_nans(opp)) if opp else []
+    except Exception as e:
+        result["opportunity_cost"] = {"error": str(e)}
+
+    return result
