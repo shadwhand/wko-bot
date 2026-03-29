@@ -1,6 +1,7 @@
 """Power Duration Model — MMP curve, PD model fitting, physiological parameter estimation."""
 
 import logging
+import os
 
 import numpy as np
 import pandas as pd
@@ -49,11 +50,27 @@ def _ensure_mmp_cache_table(conn):
     conn.commit()
 
 
+MMP_CACHE_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "mmp_cache")
+
+
 def get_cached_mmp(activity_id):
-    """Get MMP for an activity, using cache if available."""
+    """Get MMP for an activity, using Parquet cache if available, then SQLite, then compute."""
+    import pandas as pd
+
+    # Try Parquet cache first
+    parquet_path = os.path.join(MMP_CACHE_DIR, f"{activity_id}.parquet")
+    if os.path.exists(parquet_path):
+        try:
+            df = pd.read_parquet(parquet_path)
+            if not df.empty:
+                cached = np.array(df["max_avg_power"].values, dtype=float)
+                return np.minimum.accumulate(cached)
+        except Exception:
+            pass
+
+    # Try SQLite cache
     conn = get_connection()
     _ensure_mmp_cache_table(conn)
-
     cursor = conn.cursor()
     cursor.execute(
         "SELECT duration_s, max_avg_power FROM mmp_cache WHERE activity_id = ? ORDER BY duration_s",
@@ -66,6 +83,7 @@ def get_cached_mmp(activity_id):
         cached = np.array([r[1] for r in rows])
         return np.minimum.accumulate(cached)
 
+    # Compute and cache to Parquet
     records = get_records(activity_id)
     if records.empty or "power" not in records.columns:
         conn.close()
@@ -73,12 +91,14 @@ def get_cached_mmp(activity_id):
 
     mmp = compute_mmp(records["power"])
 
-    data = [(activity_id, d + 1, float(mmp[d])) for d in range(len(mmp))]
-    conn.executemany(
-        "INSERT OR REPLACE INTO mmp_cache (activity_id, duration_s, max_avg_power) VALUES (?, ?, ?)",
-        data,
-    )
-    conn.commit()
+    # Save to Parquet cache
+    os.makedirs(MMP_CACHE_DIR, exist_ok=True)
+    cache_df = pd.DataFrame({
+        "duration_s": np.arange(1, len(mmp) + 1, dtype=np.int32),
+        "max_avg_power": mmp.astype(np.float32),
+    })
+    cache_df.to_parquet(parquet_path, engine="pyarrow", compression="zstd", index=False)
+
     conn.close()
     return mmp
 

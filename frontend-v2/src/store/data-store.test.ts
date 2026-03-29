@@ -21,6 +21,12 @@ vi.mock('../api/client', () => ({
   getPerformanceTrend: vi.fn().mockResolvedValue({ data: [] }),
   getHealth: vi.fn().mockResolvedValue({ status: 'ok', cache_warm: true, data_version: 1 }),
   getRide: vi.fn().mockResolvedValue({ summary: {}, records: [], intervals: [] }),
+  getRouteAnalysis: vi.fn().mockResolvedValue({
+    route: { id: 42, name: 'Test Route', distance_km: 100, elevation_m: 1500, source: 'rwgps', history: [], plans: [], points: [] },
+    demand: { segments: [], summary: {} },
+    gap_analysis: { feasible: true, bottleneck: null },
+    opportunity_cost: [],
+  }),
 }))
 
 beforeEach(() => {

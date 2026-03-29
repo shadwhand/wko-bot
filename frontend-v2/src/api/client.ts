@@ -24,6 +24,7 @@ import {
   type RideDetail,
   type RouteListItem,
   type RouteDetail,
+  type RouteAnalysisResponse,
   type GlycogenBudgetRequest,
   type GlycogenBudgetResponse,
 } from './types'
@@ -241,6 +242,10 @@ export async function getRoutes(): Promise<RouteListItem[]> {
 
 export async function getRouteDetail(routeId: number): Promise<RouteDetail> {
   return fetchApi<RouteDetail>(`/routes/${routeId}`)
+}
+
+export async function getRouteAnalysis(routeId: number): Promise<RouteAnalysisResponse> {
+  return fetchApi<RouteAnalysisResponse>(`/route-analysis/${routeId}`)
 }
 
 // ─── Analysis endpoints ───────────────────────────────────────────

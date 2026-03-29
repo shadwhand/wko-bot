@@ -9,15 +9,18 @@ vi.mock('../../store/data-store', () => ({
 import { useDataStore } from '../../store/data-store'
 const mockUseDataStore = vi.mocked(useDataStore)
 
+const mockStore = {
+  selectedRouteId: null as number | null,
+  routeAnalysis: {} as Record<number, any>,
+  loading: new Set<string>(),
+  errors: {} as Record<string, string>,
+  fetchRouteAnalysis: vi.fn(),
+}
+
 describe('GapAnalysis', () => {
   it('shows "select a route" when no route selected', () => {
     mockUseDataStore.mockImplementation((selector: any) =>
-      selector({
-        selectedRouteId: null,
-        routeDetail: {},
-        loading: new Set(),
-        errors: {},
-      })
+      selector({ ...mockStore, selectedRouteId: null })
     )
     render(<GapAnalysis />)
     expect(screen.getByText(/select a route/i)).toBeInTheDocument()
@@ -26,14 +29,13 @@ describe('GapAnalysis', () => {
   it('shows feasible result', () => {
     mockUseDataStore.mockImplementation((selector: any) =>
       selector({
+        ...mockStore,
         selectedRouteId: 1,
-        routeDetail: {
+        routeAnalysis: {
           1: {
             gap_analysis: { feasible: true, bottleneck: null, margin: 0.12, message: 'Good to go' },
           },
         },
-        loading: new Set(),
-        errors: {},
       })
     )
     render(<GapAnalysis />)
@@ -44,18 +46,33 @@ describe('GapAnalysis', () => {
   it('shows not feasible with bottleneck', () => {
     mockUseDataStore.mockImplementation((selector: any) =>
       selector({
+        ...mockStore,
         selectedRouteId: 1,
-        routeDetail: {
+        routeAnalysis: {
           1: {
             gap_analysis: { feasible: false, bottleneck: '5min power', margin: -0.08 },
           },
         },
-        loading: new Set(),
-        errors: {},
       })
     )
     render(<GapAnalysis />)
     expect(screen.getByText('Not Feasible')).toBeInTheDocument()
     expect(screen.getByText(/5min power/)).toBeInTheDocument()
+  })
+
+  it('shows error when gap_analysis has error field', () => {
+    mockUseDataStore.mockImplementation((selector: any) =>
+      selector({
+        ...mockStore,
+        selectedRouteId: 1,
+        routeAnalysis: {
+          1: {
+            gap_analysis: { error: 'PD model fit failed' },
+          },
+        },
+      })
+    )
+    render(<GapAnalysis />)
+    expect(screen.getByText(/PD model fit failed/)).toBeInTheDocument()
   })
 })

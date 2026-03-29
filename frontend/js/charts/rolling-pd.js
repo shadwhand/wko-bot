@@ -9,7 +9,10 @@
     var colors = { mFTP: '#58a6ff', Pmax: '#f778ba', FRC: '#d29922', TTE: '#3fb950' };
 
     function render(data) {
-      if (!data || !data.snapshots || !data.snapshots.length) {
+      // API returns {data: [...]} or {snapshots: [...]} or just [...]
+      var snapshots = data && (data.snapshots || data.data);
+      if (Array.isArray(data)) snapshots = data;
+      if (!snapshots || !snapshots.length) {
         container.innerHTML = '<div class="panel-error">No rolling PD data</div>'; return;
       }
       container.innerHTML = '';
@@ -23,8 +26,7 @@
       legendHtml += '</div>';
       container.insertAdjacentHTML('beforeend', legendHtml);
 
-      // Chart
-      var snapshots = data.snapshots;
+      // Chart — use normalized snapshots
       var width = container.getBoundingClientRect().width || 500;
       var height = 200;
       var margin = { top: 10, right: 20, bottom: 30, left: 50 };

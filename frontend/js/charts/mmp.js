@@ -464,7 +464,8 @@ window.MMPChart = MMPChart;
 
 if (window.WKO5Registry) {
   WKO5Registry.registerFactory('mmp', function (container, api) {
-    var chart = new MMPChart(container);
+    if (!container.id) container.id = 'mmp-panel-' + Date.now();
+    var chart = new MMPChart('#' + container.id);
     api.getModel().then(function (data) {
       if (data) chart.render(data);
     }).catch(function (err) {

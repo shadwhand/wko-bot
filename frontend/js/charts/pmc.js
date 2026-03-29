@@ -443,7 +443,8 @@ window.PMCChart = PMCChart;
 
 if (window.WKO5Registry) {
   WKO5Registry.registerFactory('pmc', function (container, api) {
-    var chart = new PMCChart(container);
+    if (!container.id) container.id = 'pmc-panel-' + Date.now();
+    var chart = new PMCChart('#' + container.id);
     api.getFitness().then(function (data) {
       if (data) chart.render(data);
     }).catch(function (err) {

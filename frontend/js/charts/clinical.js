@@ -251,7 +251,8 @@ window.ClinicalDashboard = ClinicalDashboard;
 
 if (window.WKO5Registry) {
   WKO5Registry.registerFactory('clinical-flags', function (container, api) {
-    var chart = new ClinicalDashboard(container);
+    if (!container.id) container.id = 'clinical-panel-' + Date.now();
+    var chart = new ClinicalDashboard('#' + container.id);
     api.getClinicalFlags().then(function (data) {
       if (data) chart.render(data);
     }).catch(function (err) {

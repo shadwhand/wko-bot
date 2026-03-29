@@ -317,7 +317,8 @@ window.SegmentProfileChart = SegmentProfileChart;
 
 if (window.WKO5Registry) {
   WKO5Registry.registerFactory('segment-profile', function (container) {
-    var chart = new SegmentProfileChart(container);
+    if (!container.id) container.id = 'segment-panel-' + Date.now();
+    var chart = new SegmentProfileChart('#' + container.id);
     container.innerHTML = '<div class="panel-placeholder">Select a ride to view segment profile.</div>';
     return {
       destroy: function () { chart.destroy(); },

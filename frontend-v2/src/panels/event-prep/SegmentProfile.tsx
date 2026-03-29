@@ -38,27 +38,28 @@ interface Segment {
  */
 export function SegmentProfile() {
   const selectedRouteId = useDataStore(s => s.selectedRouteId);
-  const routeDetail = useDataStore(s =>
-    s.selectedRouteId != null ? s.routeDetail[s.selectedRouteId] : null
+  const routeAnalysis = useDataStore(s =>
+    s.selectedRouteId != null ? s.routeAnalysis[s.selectedRouteId] : null
   );
-  const loading = useDataStore(s => s.loading.has('routeDetail'));
-  const error = useDataStore(s => s.errors['routeDetail']);
-  const fetchRouteDetail = useDataStore(s => s.fetchRouteDetail);
+  const loading = useDataStore(s => s.loading.has('routeAnalysis'));
+  const error = useDataStore(s => s.errors['routeAnalysis']);
+  const fetchRouteAnalysis = useDataStore(s => s.fetchRouteAnalysis);
 
-  // Fetch route detail when selectedRouteId changes
+  // Fetch route analysis when selectedRouteId changes
   useEffect(() => {
-    if (selectedRouteId != null && !routeDetail) {
-      fetchRouteDetail(selectedRouteId);
+    if (selectedRouteId != null && !routeAnalysis) {
+      fetchRouteAnalysis(selectedRouteId);
     }
-  }, [selectedRouteId, routeDetail, fetchRouteDetail]);
+  }, [selectedRouteId, routeAnalysis, fetchRouteAnalysis]);
 
   if (!selectedRouteId) return <PanelEmpty message="Select a route to see elevation profile" />;
   if (loading) return <PanelSkeleton />;
   if (error) return <PanelError message={error} />;
 
-  // Render the chart if we have elevation data, otherwise show empty state
-  const elevProfile = routeDetail?.elevation_profile ?? routeDetail?.points;
-  const segments = routeDetail?.segments;
+  // Read elevation from route.points, segments from demand.segments
+  const route = routeAnalysis?.route;
+  const elevProfile = route?.points;
+  const segments = routeAnalysis?.demand?.segments;
   if (!elevProfile || elevProfile.length === 0) {
     return <PanelEmpty message="No elevation data for selected route" />;
   }
@@ -67,8 +68,8 @@ export function SegmentProfile() {
     <SegmentProfileChart
       elevationProfile={elevProfile}
       segments={segments ?? []}
-      totalKm={routeDetail?.distance_km ?? 0}
-      totalElevation={routeDetail?.elevation_m ?? 0}
+      totalKm={route?.distance_km ?? 0}
+      totalElevation={route?.elevation_m ?? 0}
     />
   );
 }
@@ -274,5 +275,5 @@ registerPanel({
   category: 'event-prep',
   description: 'Elevation profile with demand-colored segment overlays',
   component: SegmentProfile,
-  dataKeys: ['selectedRouteId', 'routeDetail'],
+  dataKeys: ['selectedRouteId', 'routeAnalysis'],
 });

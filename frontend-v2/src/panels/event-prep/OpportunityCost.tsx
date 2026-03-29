@@ -9,30 +9,40 @@ import styles from './OpportunityCost.module.css'
 
 export function OpportunityCost() {
   const selectedRouteId = useDataStore(s => s.selectedRouteId)
-  const routeDetail = useDataStore(s =>
-    s.selectedRouteId != null ? s.routeDetail[s.selectedRouteId] : null
+  const routeAnalysis = useDataStore(s =>
+    s.selectedRouteId != null ? s.routeAnalysis[s.selectedRouteId] : null
   )
-  const loading = useDataStore(s => s.loading.has('routeDetail'))
-  const error = useDataStore(s => s.errors['routeDetail'])
-  const fetchRouteDetail = useDataStore(s => s.fetchRouteDetail)
+  const loading = useDataStore(s => s.loading.has('routeAnalysis'))
+  const error = useDataStore(s => s.errors['routeAnalysis'])
+  const fetchRouteAnalysis = useDataStore(s => s.fetchRouteAnalysis)
 
-  // Fetch route detail when selectedRouteId changes
+  // Fetch route analysis when selectedRouteId changes
   useEffect(() => {
-    if (selectedRouteId != null && !routeDetail) {
-      fetchRouteDetail(selectedRouteId)
+    if (selectedRouteId != null && !routeAnalysis) {
+      fetchRouteAnalysis(selectedRouteId)
     }
-  }, [selectedRouteId, routeDetail, fetchRouteDetail])
+  }, [selectedRouteId, routeAnalysis, fetchRouteAnalysis])
 
   if (!selectedRouteId) {
     return <PanelEmpty message="Select a route to see opportunity cost" />
   }
   if (loading) return <PanelSkeleton />
   if (error) return <PanelError message={error} />
-  if (!routeDetail?.opportunity_cost) {
+
+  const oppData = routeAnalysis?.opportunity_cost
+  if (!oppData) {
+    return <PanelEmpty message="No opportunity cost data" />
+  }
+  // Handle error object vs array
+  if (!Array.isArray(oppData)) {
+    if (oppData.error) return <PanelError message={oppData.error} />
+    return <PanelEmpty message="No opportunity cost data" />
+  }
+  if (oppData.length === 0) {
     return <PanelEmpty message="No opportunity cost data" />
   }
 
-  const items = routeDetail.opportunity_cost
+  const items = oppData
   // Find max value for bar scaling
   const maxImpact = Math.max(...items.map((i: any) => Math.abs(i.impact ?? i.value ?? 0)), 1)
 
@@ -81,5 +91,5 @@ registerPanel({
   category: 'event-prep',
   description: 'Ranked training priorities — horizontal bar chart',
   component: OpportunityCost,
-  dataKeys: ['selectedRouteId', 'routeDetail'],
+  dataKeys: ['selectedRouteId', 'routeAnalysis'],
 })

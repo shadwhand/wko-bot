@@ -9,30 +9,35 @@ import styles from './GapAnalysis.module.css'
 
 export function GapAnalysis() {
   const selectedRouteId = useDataStore(s => s.selectedRouteId)
-  const routeDetail = useDataStore(s =>
-    s.selectedRouteId != null ? s.routeDetail[s.selectedRouteId] : null
+  const routeAnalysis = useDataStore(s =>
+    s.selectedRouteId != null ? s.routeAnalysis[s.selectedRouteId] : null
   )
-  const loading = useDataStore(s => s.loading.has('routeDetail'))
-  const error = useDataStore(s => s.errors['routeDetail'])
-  const fetchRouteDetail = useDataStore(s => s.fetchRouteDetail)
+  const loading = useDataStore(s => s.loading.has('routeAnalysis'))
+  const error = useDataStore(s => s.errors['routeAnalysis'])
+  const fetchRouteAnalysis = useDataStore(s => s.fetchRouteAnalysis)
 
-  // Fetch route detail when selectedRouteId changes
+  // Fetch route analysis when selectedRouteId changes
   useEffect(() => {
-    if (selectedRouteId != null && !routeDetail) {
-      fetchRouteDetail(selectedRouteId)
+    if (selectedRouteId != null && !routeAnalysis) {
+      fetchRouteAnalysis(selectedRouteId)
     }
-  }, [selectedRouteId, routeDetail, fetchRouteDetail])
+  }, [selectedRouteId, routeAnalysis, fetchRouteAnalysis])
 
   if (!selectedRouteId) {
     return <PanelEmpty message="Select a route to see gap analysis" />
   }
   if (loading) return <PanelSkeleton />
   if (error) return <PanelError message={error} />
-  if (!routeDetail?.gap_analysis) {
+
+  const gapData = routeAnalysis?.gap_analysis
+  if (!gapData) {
     return <PanelEmpty message="No gap analysis data for this route" />
   }
+  if (gapData.error) {
+    return <PanelError message={gapData.error} />
+  }
 
-  const gap = routeDetail.gap_analysis
+  const gap = gapData
   const feasible = gap.feasible
 
   return (
@@ -74,5 +79,5 @@ registerPanel({
   category: 'event-prep',
   description: 'Feasible/not feasible card with bottleneck identification',
   component: GapAnalysis,
-  dataKeys: ['selectedRouteId', 'routeDetail'],
+  dataKeys: ['selectedRouteId', 'routeAnalysis'],
 })

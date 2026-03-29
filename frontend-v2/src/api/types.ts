@@ -391,6 +391,15 @@ export interface RouteDetail {
   points: RoutePoint[]
 }
 
+// ─── /route-analysis/{id} (composite) ────────────────────────────
+
+export interface RouteAnalysisResponse {
+  route: RouteDetail
+  demand: { segments: any[]; summary?: any; error?: string }
+  gap_analysis: { feasible?: boolean; bottleneck?: string; margin?: number; message?: string; error?: string } | null
+  opportunity_cost: any[] | { error?: string }
+}
+
 // ─── /glycogen-budget (POST) ──────────────────────────────────────
 
 export interface GlycogenBudgetRequest {

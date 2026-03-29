@@ -16,6 +16,7 @@ import type {
   PerformanceTrendRow,
   RideDetail,
   RouteListItem,
+  RouteAnalysisResponse,
   Annotation,
   HealthResponse,
 } from '../api/types'
@@ -46,7 +47,7 @@ export interface DataStore {
   // On-demand (keyed by ID)
   rides: Record<number, RideDetail>
   routes: RouteListItem[]
-  routeDetail: Record<number, any>
+  routeAnalysis: Record<number, RouteAnalysisResponse>
 
   // Cross-panel state
   selectedRouteId: number | null
@@ -67,7 +68,7 @@ export interface DataStore {
   fetchCore: () => Promise<void>
   fetchSecondary: () => Promise<void>
   fetchRide: (id: number) => Promise<void>
-  fetchRouteDetail: (routeId: number) => Promise<void>
+  fetchRouteAnalysis: (routeId: number) => Promise<void>
   setSelectedRide: (id: number | null) => void
   setSelectedRoute: (id: number | null) => void
   setTimeRange: (range: { start: string; end: string } | null) => void
@@ -156,7 +157,7 @@ export const useDataStore = create<DataStore>()((set, get) => ({
   // On-demand
   rides: {},
   routes: [],
-  routeDetail: {},
+  routeAnalysis: {},
 
   // Cross-panel
   selectedRouteId: null,
@@ -214,11 +215,11 @@ export const useDataStore = create<DataStore>()((set, get) => ({
     }))
   },
 
-  fetchRouteDetail: async (routeId: number) => {
+  fetchRouteAnalysis: async (routeId: number) => {
     // Skip if already loaded
-    if (get().routeDetail[routeId]) return
-    await tracked(set, 'routeDetail', () => api.getRouteDetail(routeId), (d) => ({
-      routeDetail: { ...get().routeDetail, [routeId]: d },
+    if (get().routeAnalysis[routeId]) return
+    await tracked(set, 'routeAnalysis', () => api.getRouteAnalysis(routeId), (d) => ({
+      routeAnalysis: { ...get().routeAnalysis, [routeId]: d },
     }))
   },
 
@@ -226,9 +227,9 @@ export const useDataStore = create<DataStore>()((set, get) => ({
 
   setSelectedRoute: (id) => {
     set(() => ({ selectedRouteId: id }))
-    // Cascade: fetch route detail when a route is selected
+    // Cascade: fetch route analysis when a route is selected
     if (id != null) {
-      get().fetchRouteDetail(id)
+      get().fetchRouteAnalysis(id)
     }
   },
 

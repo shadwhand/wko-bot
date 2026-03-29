@@ -188,7 +188,13 @@
     if (!container) return;
     if (!data) { showError(container, 'No FTP data'); return; }
 
-    var ftp = data.current_ftp || data.ftp || data.value;
+    // API may return an array [{date, mFTP, ...}] or an object {current_ftp, ftp, value}
+    var ftp;
+    if (Array.isArray(data) && data.length > 0) {
+      ftp = data[data.length - 1].mFTP || data[data.length - 1].ftp;
+    } else {
+      ftp = data.current_ftp || data.ftp || data.value;
+    }
     container.innerHTML =
       '<div style="text-align:center;padding:16px 0;">' +
         '<div class="mono text-accent" style="font-size:2.5rem;font-weight:700;">' +
@@ -660,10 +666,11 @@
     });
 
     WKO5Registry.registerFactory('clinical-alert', function (container, api) {
+      if (!container.id) container.id = 'clinical-alert-' + Date.now();
       api.getClinicalFlags().then(function (flags) {
         if (flags && typeof ClinicalDashboard !== 'undefined') {
           try {
-            var cd = new ClinicalDashboard(container);
+            var cd = new ClinicalDashboard('#' + container.id);
             cd.render(flags);
           } catch (_) {
             container.innerHTML = '<div class="empty-state">' + (flags ? 'Clinical flags loaded' : 'No clinical flags') + '</div>';
@@ -680,7 +687,7 @@
           api.getClinicalFlags().then(function (flags) {
             if (flags && typeof ClinicalDashboard !== 'undefined') {
               try {
-                var cd = new ClinicalDashboard(container);
+                var cd = new ClinicalDashboard('#' + container.id);
                 cd.render(flags);
               } catch (_) {
                 container.innerHTML = '<div class="empty-state">Clinical flags loaded</div>';
@@ -1937,7 +1944,11 @@
         }
         detailsEl.innerHTML = lines.join('<br>');
 
-        if (status.done) {
+        // Proceed when done OR when the essential 4 tasks are ready
+        var essentialReady = status.results &&
+          status.results.fitness && status.results.pmc &&
+          status.results.model_90 && status.results.profile_90;
+        if (status.done || essentialReady) {
           finish();
         } else {
           setTimeout(poll, 1000);
