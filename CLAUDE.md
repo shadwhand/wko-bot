@@ -41,7 +41,7 @@ All training science claims use: **[R]** research-backed, **[E]** experience-bas
 
 ## Stack
 
-- **Backend:** FastAPI (`wko5/api/`), SQLite, Stan (Bayesian models)
+- **Backend:** FastAPI (`wko5/api/`), DuckDB, Stan (Bayesian models)
 - **Frontend:** Vanilla JS + D3 (`frontend/`)
 - **Search:** qmd v2.1.0 (`.qmd/qmd.yml`)
-- **Config:** `wko5/config.py` (athlete settings in SQLite)
+- **Config:** `wko5/config.py` (athlete settings in DuckDB)

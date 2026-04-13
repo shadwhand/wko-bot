@@ -71,9 +71,8 @@ def _get_cached_tss(activity_id, activity_row, ftp=None):
     conn = get_connection()
     _ensure_tss_cache_table(conn)
 
-    cursor = conn.cursor()
-    cursor.execute("SELECT tss FROM tss_cache WHERE activity_id = ?", (activity_id,))
-    row = cursor.fetchone()
+    result = conn.execute("SELECT tss FROM tss_cache WHERE activity_id = ?", [activity_id])
+    row = result.fetchone()
     if row:
         conn.close()
         return float(row[0])

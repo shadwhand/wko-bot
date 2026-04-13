@@ -71,12 +71,11 @@ def get_cached_mmp(activity_id):
     # Try SQLite cache
     conn = get_connection()
     _ensure_mmp_cache_table(conn)
-    cursor = conn.cursor()
-    cursor.execute(
+    result = conn.execute(
         "SELECT duration_s, max_avg_power FROM mmp_cache WHERE activity_id = ? ORDER BY duration_s",
-        (activity_id,),
+        [activity_id],
     )
-    rows = cursor.fetchall()
+    rows = result.fetchall()
 
     if rows:
         conn.close()

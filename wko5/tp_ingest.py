@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 
 TP_TABLE_DDL = """
 CREATE TABLE IF NOT EXISTS tp_workouts (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    id INTEGER PRIMARY KEY,
     workout_day TEXT NOT NULL,
     title TEXT,
     workout_type TEXT,
@@ -174,11 +174,8 @@ def _match_activities(conn):
     conn.commit()
 
     # Count matches
-    cursor = conn.cursor()
-    cursor.execute("SELECT COUNT(*) FROM tp_workouts WHERE activity_id IS NOT NULL")
-    matched = cursor.fetchone()[0]
-    cursor.execute("SELECT COUNT(*) FROM tp_workouts WHERE workout_type = 'Bike'")
-    total_bike = cursor.fetchone()[0]
+    matched = conn.execute("SELECT COUNT(*) FROM tp_workouts WHERE activity_id IS NOT NULL").fetchone()[0]
+    total_bike = conn.execute("SELECT COUNT(*) FROM tp_workouts WHERE workout_type = 'Bike'").fetchone()[0]
     logger.info(f"Matched {matched}/{total_bike} bike workouts to activities")
 
 
@@ -199,7 +196,7 @@ def get_tp_workouts(start=None, end=None):
         params.append(end)
     query += " ORDER BY workout_day"
 
-    df = pd.read_sql_query(query, conn, params=params)
+    df = conn.execute(query, params).df()
     conn.close()
     return df
 
@@ -243,6 +240,6 @@ def match_tp_to_activities(start=None, end=None):
         params.append(end)
     query += " ORDER BY tp.workout_day"
 
-    df = pd.read_sql_query(query, conn, params=params)
+    df = conn.execute(query, params).df()
     conn.close()
     return df

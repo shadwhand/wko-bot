@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 
 PHASES_TABLE_DDL = """
 CREATE TABLE IF NOT EXISTS training_phases (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    id INTEGER PRIMARY KEY,
     start_date TEXT NOT NULL,
     end_date TEXT NOT NULL,
     phase TEXT NOT NULL,
@@ -302,10 +302,9 @@ def get_training_phases(start=None, end=None):
         params.append(end)
     query += " ORDER BY start_date"
 
-    cursor = conn.cursor()
-    cursor.execute(query, params)
-    columns = [desc[0] for desc in cursor.description]
-    rows = [dict(zip(columns, row)) for row in cursor.fetchall()]
+    result = conn.execute(query, params)
+    columns = [desc[0] for desc in result.description]
+    rows = [dict(zip(columns, row)) for row in result.fetchall()]
     conn.close()
     return rows
 

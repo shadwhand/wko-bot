@@ -5,6 +5,7 @@ fit-files/
 wko5/cycling_power.db
 wko5/cycling_power.db-shm
 wko5/cycling_power.db-wal
+wko5/cycling_power.duckdb*
 notebooks/.ipynb_checkpoints/
 __pycache__/
 *.pyc

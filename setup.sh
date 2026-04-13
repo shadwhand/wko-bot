@@ -16,7 +16,7 @@ else
 fi
 source .venv/bin/activate
 echo "  Installing Python dependencies..."
-pip install -q numpy pandas scipy matplotlib fitdecode garth httpx fastapi uvicorn cmdstanpy
+pip install -q numpy pandas scipy matplotlib fitdecode garth httpx fastapi uvicorn cmdstanpy duckdb
 echo "  ✓ Python environment ready"
 echo ""
 
@@ -48,7 +48,7 @@ set_config('sex', '$SEX')
 set_config('max_hr', $MAX_HR)
 set_config('ftp_manual', $FTP)
 set_config('bike_weight_kg', $BIKE_WEIGHT)
-print('  ✓ Config saved to wko5/cycling_power.db')
+print('  ✓ Config saved to wko5/cycling_power.duckdb')
 "
 echo ""
 

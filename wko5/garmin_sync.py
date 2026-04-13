@@ -14,7 +14,7 @@ Usage:
 import argparse
 import io
 import os
-import sqlite3
+import duckdb
 from datetime import datetime, timedelta
 from getpass import getpass
 
@@ -22,7 +22,7 @@ import fitdecode
 import garth
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
-DB_PATH = os.path.join(SCRIPT_DIR, "cycling_power.db")
+DB_PATH = os.path.join(SCRIPT_DIR, "cycling_power.duckdb")
 FIT_DIR = os.path.join(SCRIPT_DIR, "..", "fit-files")
 GARTH_DIR = os.path.expanduser("~/.garth")
 
@@ -50,9 +50,7 @@ def login():
 
 def get_latest_activity_date(conn):
     """Get the most recent activity date in the DB."""
-    cursor = conn.cursor()
-    cursor.execute("SELECT MAX(start_time) FROM activities")
-    row = cursor.fetchone()
+    row = conn.execute("SELECT MAX(start_time) FROM activities").fetchone()
     if row and row[0]:
         try:
             return datetime.fromisoformat(str(row[0]).replace("Z", "+00:00")).date()
@@ -183,16 +181,15 @@ def ingest_fit_bytes(fit_bytes, filename, conn):
     if not has_power:
         return False
 
-    cursor = conn.cursor()
+    conn.begin()
     cols = list(session_data.keys())
-    cursor.execute(
-        f"INSERT INTO activities ({','.join(cols)}) VALUES ({','.join('?' for _ in cols)})",
+    activity_id = conn.execute(
+        f"INSERT INTO activities ({','.join(cols)}) VALUES ({','.join('?' for _ in cols)}) RETURNING rowid",
         [session_data[c] for c in cols],
-    )
-    activity_id = cursor.lastrowid
+    ).fetchone()[0]
 
     for r in records:
-        cursor.execute(
+        conn.execute(
             "INSERT INTO records (activity_id, timestamp, elapsed_seconds, power, heart_rate, "
             "cadence, speed, altitude, temperature, latitude, longitude, distance) "
             "VALUES (?,?,?,?,?,?,?,?,?,?,?,?)",
@@ -202,7 +199,7 @@ def ingest_fit_bytes(fit_bytes, filename, conn):
         )
 
     for lap in laps:
-        cursor.execute(
+        conn.execute(
             "INSERT INTO laps (activity_id, lap_number, start_time, total_elapsed_time, "
             "total_timer_time, total_distance, avg_power, max_power, avg_heart_rate, "
             "max_heart_rate, avg_cadence, avg_speed, total_ascent, total_calories, intensity) "
@@ -224,7 +221,7 @@ def main():
     parser.add_argument("--save-fit", action="store_true", help="Also save FIT files to fit-files/")
     args = parser.parse_args()
 
-    conn = sqlite3.connect(DB_PATH)
+    conn = duckdb.connect(DB_PATH)
 
     # Determine start date
     if args.from_date:
@@ -239,9 +236,7 @@ def main():
     print(f"Syncing activities from {start_date} to {end_date}")
 
     # Get existing filenames to avoid duplicates
-    cursor = conn.cursor()
-    cursor.execute("SELECT filename FROM activities")
-    existing_filenames = {row[0] for row in cursor.fetchall()}
+    existing_filenames = {row[0] for row in conn.execute("SELECT filename FROM activities").fetchall()}
 
     # Login and fetch activities
     login()
@@ -289,8 +284,7 @@ def main():
 
     print(f"\nDone: {synced} synced, {skipped} already in DB, {no_power} skipped (no power)")
 
-    cursor.execute("SELECT COUNT(*) FROM activities")
-    total = cursor.fetchone()[0]
+    total = conn.execute("SELECT COUNT(*) FROM activities").fetchone()[0]
     print(f"Total activities in DB: {total}")
 
     conn.close()

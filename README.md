@@ -1,6 +1,6 @@
 # WKO5 Analyzer
 
-A Python library for WKO5-style cycling power analysis built on a local SQLite database of Garmin FIT file data. Includes a power duration model, training load tracking (CTL/ATL/TSB), individualized training zones, ride analysis, power profiling, and Jupyter notebooks for visualization.
+A Python library for WKO5-style cycling power analysis built on a local DuckDB database of Garmin FIT file data. Includes a power duration model, training load tracking (CTL/ATL/TSB), individualized training zones, ride analysis, power profiling, and Jupyter notebooks for visualization.
 
 ## Quick Start
 
@@ -19,7 +19,7 @@ Or follow the manual steps below.
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate
-pip install numpy pandas scipy matplotlib fitdecode garth httpx
+pip install numpy pandas scipy matplotlib fitdecode garth httpx duckdb
 ```
 
 ### 2. Get your data
@@ -79,7 +79,7 @@ If you have FIT files from any source (Garmin export, Wahoo, Hammerhead, etc.):
 python wko5/ingest_missing.py
 ```
 
-This scans all FIT files, identifies cycling activities with power data, and ingests them into `wko5/cycling_power.db`.
+This scans all FIT files, identifies cycling activities with power data, and ingests them into `wko5/cycling_power.duckdb`.
 
 ### 3. Use the library
 
@@ -153,7 +153,7 @@ jupyter notebook
 
 ## Database Schema
 
-The SQLite database (`wko5/cycling_power.db`) has the following tables:
+DuckDB database (`wko5/cycling_power.duckdb`) with the following tables:
 
 - **activities** — one row per ride (session summary: power, HR, cadence, distance, elevation, TSS, NP, IF)
 - **records** — per-second data (power, HR, cadence, speed, altitude, temperature, GPS)
@@ -273,4 +273,5 @@ See `docs/research/wiki/SCHEMA.md` for the full Karpathy-style wiki workflow (in
 - scipy
 - matplotlib
 - fitdecode
+- duckdb
 - httpx (for knowledge client)

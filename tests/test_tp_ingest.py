@@ -2,7 +2,7 @@
 import sys, os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
-import sqlite3
+import duckdb
 import pandas as pd
 from wko5.tp_ingest import ingest_tp_csv, get_tp_workouts, match_tp_to_activities
 from wko5.db import get_connection

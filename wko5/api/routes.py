@@ -296,13 +296,12 @@ def ride(activity_id: int, include_records: bool = True):
     # (id, filename, sport, start_time, normalized_power, etc.)
     from wko5.db import get_connection, get_records
     conn = get_connection()
-    cursor = conn.cursor()
-    cursor.execute("SELECT * FROM activities WHERE id = ?", (activity_id,))
-    row = cursor.fetchone()
+    result = conn.execute("SELECT * FROM activities WHERE id = ?", [activity_id])
+    row = result.fetchone()
     if not row:
         conn.close()
         return {"error": "Activity not found"}
-    columns = [desc[0] for desc in cursor.description]
+    columns = [desc[0] for desc in result.description]
     summary = _sanitize_nans(dict(zip(columns, row)))
     conn.close()
 
@@ -523,14 +522,13 @@ def route_detail(route_id: int, include_points: bool = True):
     if include_points:
         from wko5.db import get_connection
         conn = get_connection()
-        cursor = conn.cursor()
-        cursor.execute(
+        result = conn.execute(
             "SELECT lat, lon, elevation, cumulative_distance_m FROM route_points "
-            "WHERE route_id = ? ORDER BY point_order", (route_id,)
+            "WHERE route_id = ? ORDER BY point_order", [route_id]
         )
         route["points"] = [
             {"lat": r[0], "lon": r[1], "elevation": r[2], "km": round(r[3] / 1000, 2) if r[3] else 0}
-            for r in cursor.fetchall()
+            for r in result.fetchall()
         ]
         conn.close()
     return _sanitize_nans(route)
@@ -623,27 +621,24 @@ def _find_linked_activity(route_id):
     """Find the most recent activity linked to a route."""
     from wko5.db import get_connection
     conn = get_connection()
-    cursor = conn.cursor()
 
     # Check for route_links table first, fall back to activity_routes
-    cursor.execute(
-        "SELECT name FROM sqlite_master WHERE type='table' AND name IN ('route_links', 'activity_routes')"
+    tbl_result = conn.execute(
+        "SELECT table_name FROM information_schema.tables WHERE table_name IN ('route_links', 'activity_routes')"
     )
-    link_tables = {row[0] for row in cursor.fetchall()}
+    link_tables = {row[0] for row in tbl_result.fetchall()}
 
     activity_id = None
     if "route_links" in link_tables:
-        cursor.execute(
-            "SELECT activity_id FROM route_links WHERE route_id = ? LIMIT 1", (route_id,)
-        )
-        row = cursor.fetchone()
+        row = conn.execute(
+            "SELECT activity_id FROM route_links WHERE route_id = ? LIMIT 1", [route_id]
+        ).fetchone()
         if row:
             activity_id = row[0]
     elif "activity_routes" in link_tables:
-        cursor.execute(
-            "SELECT activity_id FROM activity_routes WHERE route_id = ? LIMIT 1", (route_id,)
-        )
-        row = cursor.fetchone()
+        row = conn.execute(
+            "SELECT activity_id FROM activity_routes WHERE route_id = ? LIMIT 1", [route_id]
+        ).fetchone()
         if row:
             activity_id = row[0]
     conn.close()
@@ -668,14 +663,13 @@ def route_analysis(route_id: int, n_draws: int = 200):
         # Include route points
         from wko5.db import get_connection
         conn = get_connection()
-        cursor = conn.cursor()
-        cursor.execute(
+        pts_result = conn.execute(
             "SELECT lat, lon, elevation, cumulative_distance_m FROM route_points "
-            "WHERE route_id = ? ORDER BY point_order", (route_id,)
+            "WHERE route_id = ? ORDER BY point_order", [route_id]
         )
         route["points"] = [
             {"lat": r[0], "lon": r[1], "elevation": r[2], "km": round(r[3] / 1000, 2) if r[3] else 0}
-            for r in cursor.fetchall()
+            for r in pts_result.fetchall()
         ]
         conn.close()
         result["route"] = _sanitize_nans(route)

@@ -3,10 +3,10 @@
 
 import os
 import sys
-import sqlite3
+import duckdb
 import fitdecode
 
-DB_PATH = os.path.join(os.path.dirname(__file__), "cycling_power.db")
+DB_PATH = os.path.join(os.path.dirname(__file__), "cycling_power.duckdb")
 FIT_DIR = os.path.join(os.path.dirname(__file__), "..", "fit-files")
 
 def safe_get(msg, field, default=None):
@@ -115,23 +115,22 @@ def ingest_file(filepath, conn):
     if not session_data:
         return False
 
-    cursor = conn.cursor()
+    conn.begin()
     cols = list(session_data.keys())
-    cursor.execute(
-        f"INSERT INTO activities ({','.join(cols)}) VALUES ({','.join('?' for _ in cols)})",
+    activity_id = conn.execute(
+        f"INSERT INTO activities ({','.join(cols)}) VALUES ({','.join('?' for _ in cols)}) RETURNING rowid",
         [session_data[c] for c in cols],
-    )
-    activity_id = cursor.lastrowid
+    ).fetchone()[0]
 
     if records:
         for r in records:
-            cursor.execute(
+            conn.execute(
                 "INSERT INTO records (activity_id, timestamp, elapsed_seconds, power, heart_rate, cadence, speed, altitude, temperature, latitude, longitude, distance) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)",
                 (activity_id, r["timestamp"], r["elapsed_seconds"], r["power"], r["heart_rate"], r["cadence"], r["speed"], r["altitude"], r["temperature"], r["latitude"], r["longitude"], r["distance"]),
             )
 
     for lap in laps:
-        cursor.execute(
+        conn.execute(
             "INSERT INTO laps (activity_id, lap_number, start_time, total_elapsed_time, total_timer_time, total_distance, avg_power, max_power, avg_heart_rate, max_heart_rate, avg_cadence, avg_speed, total_ascent, total_calories, intensity) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
             (activity_id, lap["lap_number"], lap["start_time"], lap["total_elapsed_time"], lap["total_timer_time"], lap["total_distance"], lap["avg_power"], lap["max_power"], lap["avg_heart_rate"], lap["max_heart_rate"], lap["avg_cadence"], lap["avg_speed"], lap["total_ascent"], lap["total_calories"], lap["intensity"]),
         )
@@ -141,12 +140,10 @@ def ingest_file(filepath, conn):
 
 
 def main():
-    conn = sqlite3.connect(DB_PATH)
+    conn = duckdb.connect(DB_PATH)
 
     # Get already-ingested filenames
-    cursor = conn.cursor()
-    cursor.execute("SELECT filename FROM activities")
-    existing = {row[0] for row in cursor.fetchall()}
+    existing = {row[0] for row in conn.execute("SELECT filename FROM activities").fetchall()}
     print(f"Already in DB: {len(existing)} activities")
 
     # Scan all FIT files
@@ -187,10 +184,8 @@ def main():
     print(f"\nIngestion complete: {ingested} new activities, {failed} failed")
 
     # Updated totals
-    cursor.execute("SELECT COUNT(*) FROM activities")
-    total_activities = cursor.fetchone()[0]
-    cursor.execute("SELECT COUNT(*) FROM records")
-    total_records = cursor.fetchone()[0]
+    total_activities = conn.execute("SELECT COUNT(*) FROM activities").fetchone()[0]
+    total_records = conn.execute("SELECT COUNT(*) FROM records").fetchone()[0]
     print(f"DB now has: {total_activities} activities, {total_records} records")
 
     # Phase 2: Clean up non-cycling FIT files

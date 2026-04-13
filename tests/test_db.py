@@ -11,7 +11,7 @@ def test_constants():
     assert WEIGHT_KG == 78.0
     assert FTP_DEFAULT == 292
     assert FTP_RANGE == (285, 299)
-    assert "cycling_power.db" in DB_PATH
+    assert "cycling_power.duckdb" in DB_PATH
 
 def test_get_connection():
     conn = get_connection()

@@ -26,7 +26,7 @@ EARTH_RADIUS_M = 6371000
 
 ROUTES_DDL = """
 CREATE TABLE IF NOT EXISTS routes (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    id INTEGER PRIMARY KEY,
     name TEXT NOT NULL,
     source_file TEXT,
     total_distance_m REAL,
@@ -34,11 +34,11 @@ CREATE TABLE IF NOT EXISTS routes (
     point_count INTEGER,
     bbox_lat_min REAL, bbox_lat_max REAL,
     bbox_lon_min REAL, bbox_lon_max REAL,
-    created_at TEXT DEFAULT (datetime('now'))
+    created_at TEXT DEFAULT (current_timestamp)
 );
 
 CREATE TABLE IF NOT EXISTS route_points (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    id INTEGER PRIMARY KEY,
     route_id INTEGER NOT NULL,
     point_order INTEGER NOT NULL,
     lat REAL NOT NULL,
@@ -49,7 +49,7 @@ CREATE TABLE IF NOT EXISTS route_points (
 );
 
 CREATE TABLE IF NOT EXISTS ride_plans (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    id INTEGER PRIMARY KEY,
     route_id INTEGER NOT NULL,
     name TEXT,
     target_riding_hours REAL,
@@ -60,7 +60,7 @@ CREATE TABLE IF NOT EXISTS ride_plans (
     baseline_intake_g_hr REAL,
     starting_glycogen_g REAL,
     result_json TEXT,
-    created_at TEXT DEFAULT (datetime('now')),
+    created_at TEXT DEFAULT (current_timestamp),
     FOREIGN KEY (route_id) REFERENCES routes(id) ON DELETE CASCADE
 );
 
@@ -78,7 +78,10 @@ CREATE TABLE IF NOT EXISTS activity_routes (
 
 def _ensure_tables(conn):
     """Create route tables if they don't exist."""
-    conn.executescript(ROUTES_DDL)
+    for stmt in ROUTES_DDL.split(';'):
+        stmt = stmt.strip()
+        if stmt:
+            conn.execute(stmt)
 
 
 def semicircles_to_degrees(semicircles):
@@ -188,25 +191,25 @@ def save_route(gpx_path, name=None):
     _ensure_tables(conn)
 
     # Insert route
-    cursor = conn.cursor()
-    cursor.execute("""
+    result = conn.execute("""
         INSERT INTO routes (name, source_file, total_distance_m, total_elevation_m,
                            point_count, bbox_lat_min, bbox_lat_max, bbox_lon_min, bbox_lon_max)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-    """, (
+        RETURNING rowid
+    """, [
         name, os.path.basename(gpx_path), total_distance, total_elevation,
         len(downsampled),
         float(lats.min()), float(lats.max()),
         float(lons.min()), float(lons.max()),
-    ))
-    route_id = cursor.lastrowid
+    ])
+    route_id = result.fetchone()[0]
 
     # Insert downsampled points
     for i, (lat, lon, cum_dist) in enumerate(downsampled):
-        cursor.execute("""
+        conn.execute("""
             INSERT INTO route_points (route_id, point_order, lat, lon, cumulative_distance_m)
             VALUES (?, ?, ?, ?, ?)
-        """, (route_id, i, lat, lon, cum_dist))
+        """, [route_id, i, lat, lon, cum_dist])
 
     conn.commit()
     conn.close()
@@ -219,14 +222,13 @@ def get_route(route_id):
     """Get a stored route by ID."""
     conn = get_connection()
     _ensure_tables(conn)
-    cursor = conn.cursor()
-    cursor.execute("SELECT * FROM routes WHERE id = ?", (route_id,))
-    row = cursor.fetchone()
+    result = conn.execute("SELECT * FROM routes WHERE id = ?", [route_id])
+    row = result.fetchone()
     if row is None:
         conn.close()
         return None
 
-    columns = [desc[0] for desc in cursor.description]
+    columns = [desc[0] for desc in result.description]
     route = dict(zip(columns, row))
     conn.close()
     return route
@@ -236,10 +238,9 @@ def get_all_routes():
     """Get all stored routes."""
     conn = get_connection()
     _ensure_tables(conn)
-    cursor = conn.cursor()
-    cursor.execute("SELECT * FROM routes ORDER BY created_at DESC")
-    columns = [desc[0] for desc in cursor.description]
-    routes = [dict(zip(columns, row)) for row in cursor.fetchall()]
+    result = conn.execute("SELECT * FROM routes ORDER BY created_at DESC")
+    columns = [desc[0] for desc in result.description]
+    routes = [dict(zip(columns, row)) for row in result.fetchall()]
     conn.close()
     return routes
 
@@ -258,12 +259,11 @@ def delete_route(route_id):
 
 def _get_route_points(route_id, conn):
     """Get downsampled points for a route as numpy array [[lat, lon], ...]."""
-    cursor = conn.cursor()
-    cursor.execute(
+    result = conn.execute(
         "SELECT lat, lon FROM route_points WHERE route_id = ? ORDER BY point_order",
-        (route_id,)
+        [route_id]
     )
-    points = np.array(cursor.fetchall())
+    points = np.array(result.fetchall())
     return points
 
 
@@ -322,13 +322,12 @@ def _get_activity_track(activity_id, conn, target_spacing_m=1000):
     Converts Garmin semicircles to degrees and downsamples.
     Returns numpy array of shape (n, 2) with [lat, lon] or None if no GPS data.
     """
-    cursor = conn.cursor()
-    cursor.execute("""
+    result = conn.execute("""
         SELECT latitude, longitude FROM records
         WHERE activity_id = ? AND latitude IS NOT NULL AND latitude != 0
         ORDER BY rowid
-    """, (activity_id,))
-    rows = cursor.fetchall()
+    """, [activity_id])
+    rows = result.fetchall()
 
     if len(rows) < 10:
         return None
@@ -366,20 +365,19 @@ def find_similar_routes(gpx_path, threshold_m=2000):
 
     conn = get_connection()
     _ensure_tables(conn)
-    cursor = conn.cursor()
 
     # Bounding box pre-filter
-    cursor.execute("""
+    result = conn.execute("""
         SELECT id, name, total_distance_m, bbox_lat_min, bbox_lat_max, bbox_lon_min, bbox_lon_max
         FROM routes
         WHERE bbox_lat_max >= ? AND bbox_lat_min <= ?
         AND bbox_lon_max >= ? AND bbox_lon_min <= ?
-    """, (
+    """, [
         query_bbox[0] - bbox_margin, query_bbox[1] + bbox_margin,
         query_bbox[2] - bbox_margin, query_bbox[3] + bbox_margin,
-    ))
+    ])
 
-    candidates = cursor.fetchall()
+    candidates = result.fetchall()
     matches = []
 
     for route_id, name, dist_m, *_ in candidates:
@@ -410,10 +408,9 @@ def link_activities_to_routes(threshold_m=2000):
     """
     conn = get_connection()
     _ensure_tables(conn)
-    cursor = conn.cursor()
 
-    cursor.execute("SELECT id, name, bbox_lat_min, bbox_lat_max, bbox_lon_min, bbox_lon_max FROM routes")
-    routes = cursor.fetchall()
+    result = conn.execute("SELECT id, name, bbox_lat_min, bbox_lat_max, bbox_lon_min, bbox_lon_max FROM routes")
+    routes = result.fetchall()
 
     total_links = 0
     db_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "cycling_power.db")
@@ -433,11 +430,11 @@ def link_activities_to_routes(threshold_m=2000):
                 threshold_m=threshold_m, spacing_m=1000.0,
             )
             for act_id, fd in matches:
-                cursor.execute(
+                check = conn.execute(
                     "SELECT 1 FROM activity_routes WHERE activity_id = ? AND route_id = ?",
-                    (act_id, route_id)
+                    [act_id, route_id]
                 )
-                if cursor.fetchone():
+                if check.fetchone():
                     continue
                 confidence = max(0, 1.0 - fd / threshold_m)
                 conn.execute("""
@@ -448,19 +445,19 @@ def link_activities_to_routes(threshold_m=2000):
                 logger.info(f"Linked activity {act_id} to route '{route_name}' (Frechet={fd:.0f}m)")
         else:
             # Python fallback: slower but works without Rust
-            cursor.execute("""
+            act_result = conn.execute("""
                 SELECT DISTINCT a.id FROM activities a
                 JOIN records r ON r.activity_id = a.id
                 WHERE r.latitude IS NOT NULL AND r.latitude != 0
             """)
-            activity_ids = [row[0] for row in cursor.fetchall()]
+            activity_ids = [row[0] for row in act_result.fetchall()]
 
             for act_id in activity_ids:
-                cursor.execute(
+                check = conn.execute(
                     "SELECT 1 FROM activity_routes WHERE activity_id = ? AND route_id = ?",
-                    (act_id, route_id)
+                    [act_id, route_id]
                 )
-                if cursor.fetchone():
+                if check.fetchone():
                     continue
 
                 act_track = _get_activity_track(act_id, conn)
@@ -498,9 +495,8 @@ def get_route_history(route_id):
     """
     conn = get_connection()
     _ensure_tables(conn)
-    cursor = conn.cursor()
 
-    cursor.execute("""
+    result = conn.execute("""
         SELECT
             ar.activity_id, ar.frechet_distance_m, ar.match_confidence,
             a.start_time, a.total_timer_time, a.total_distance, a.avg_power,
@@ -510,20 +506,20 @@ def get_route_history(route_id):
         JOIN activities a ON ar.activity_id = a.id
         WHERE ar.route_id = ?
         ORDER BY a.start_time DESC
-    """, (route_id,))
+    """, [route_id])
 
-    columns = [desc[0] for desc in cursor.description]
-    history = [dict(zip(columns, row)) for row in cursor.fetchall()]
+    columns = [desc[0] for desc in result.description]
+    history = [dict(zip(columns, row)) for row in result.fetchall()]
 
     # Enrich with TP data if available
     try:
         for ride in history:
             date = str(ride.get("start_time", ""))[:10]
-            cursor.execute("""
+            tp_result = conn.execute("""
                 SELECT title, workout_description, coach_comments, athlete_comments, rpe, feeling
                 FROM tp_workouts WHERE workout_day = ? LIMIT 1
-            """, (date,))
-            tp_row = cursor.fetchone()
+            """, [date])
+            tp_row = tp_result.fetchone()
             if tp_row:
                 ride["tp_title"] = tp_row[0]
                 ride["tp_description"] = tp_row[1]
@@ -548,19 +544,19 @@ def save_ride_plan(route_id, name, target_riding_hours, rest_hours=0,
     """
     conn = get_connection()
     _ensure_tables(conn)
-    cursor = conn.cursor()
-    cursor.execute("""
+    result = conn.execute("""
         INSERT INTO ride_plans (route_id, name, target_riding_hours, rest_hours,
                                cda, drafting_pct, drafting_savings,
                                baseline_intake_g_hr, starting_glycogen_g, result_json)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    """, (
+        RETURNING rowid
+    """, [
         route_id, name, target_riding_hours, rest_hours,
         cda, drafting_pct, drafting_savings,
         baseline_intake_g_hr, starting_glycogen_g,
         json.dumps(result_json) if result_json else None,
-    ))
-    plan_id = cursor.lastrowid
+    ])
+    plan_id = result.fetchone()[0]
     conn.commit()
     conn.close()
     return plan_id
@@ -570,10 +566,9 @@ def get_ride_plans(route_id):
     """Get all ride plans for a route."""
     conn = get_connection()
     _ensure_tables(conn)
-    cursor = conn.cursor()
-    cursor.execute("SELECT * FROM ride_plans WHERE route_id = ? ORDER BY created_at DESC", (route_id,))
-    columns = [desc[0] for desc in cursor.description]
-    plans = [dict(zip(columns, row)) for row in cursor.fetchall()]
+    result = conn.execute("SELECT * FROM ride_plans WHERE route_id = ? ORDER BY created_at DESC", [route_id])
+    columns = [desc[0] for desc in result.description]
+    plans = [dict(zip(columns, row)) for row in result.fetchall()]
     for plan in plans:
         if plan.get("result_json") and isinstance(plan["result_json"], str):
             try:

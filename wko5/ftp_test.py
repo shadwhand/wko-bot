@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 
 FTP_TESTS_DDL = """
 CREATE TABLE IF NOT EXISTS ftp_tests (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    id INTEGER PRIMARY KEY,
     activity_id INTEGER,
     test_date TEXT NOT NULL,
     ftp_watts REAL NOT NULL,
@@ -131,17 +131,16 @@ def detect_ftp_tests_from_tp():
     """
     conn = get_connection()
     _ensure_table(conn)
-    cursor = conn.cursor()
 
     # Find TP workouts with FTP in title that have matched activities
     try:
-        cursor.execute("""
+        tp_result = conn.execute("""
             SELECT tp.workout_day, tp.title, tp.activity_id, tp.athlete_comments
             FROM tp_workouts tp
             WHERE tp.title LIKE '%FTP%' AND tp.activity_id IS NOT NULL
             ORDER BY tp.workout_day
         """)
-        tp_tests = cursor.fetchall()
+        tp_tests = tp_result.fetchall()
     except Exception:
         conn.close()
         return []
@@ -149,10 +148,10 @@ def detect_ftp_tests_from_tp():
     results = []
     for workout_day, title, activity_id, comments in tp_tests:
         # Skip if already extracted
-        cursor.execute(
-            "SELECT 1 FROM ftp_tests WHERE activity_id = ?", (activity_id,)
+        check = conn.execute(
+            "SELECT 1 FROM ftp_tests WHERE activity_id = ?", [activity_id]
         )
-        if cursor.fetchone():
+        if check.fetchone():
             continue
 
         test_result = extract_ftp_test(activity_id)
@@ -186,10 +185,9 @@ def get_ftp_history():
     """Get all stored FTP test results, ordered by date."""
     conn = get_connection()
     _ensure_table(conn)
-    cursor = conn.cursor()
-    cursor.execute("SELECT * FROM ftp_tests ORDER BY test_date")
-    columns = [desc[0] for desc in cursor.description]
-    rows = [dict(zip(columns, row)) for row in cursor.fetchall()]
+    result = conn.execute("SELECT * FROM ftp_tests ORDER BY test_date")
+    columns = [desc[0] for desc in result.description]
+    rows = [dict(zip(columns, row)) for row in result.fetchall()]
     conn.close()
     return rows
 
@@ -198,16 +196,15 @@ def get_latest_ftp_test():
     """Get the most recent FTP test result."""
     conn = get_connection()
     _ensure_table(conn)
-    cursor = conn.cursor()
-    cursor.execute("SELECT * FROM ftp_tests ORDER BY test_date DESC LIMIT 1")
-    row = cursor.fetchone()
+    result = conn.execute("SELECT * FROM ftp_tests ORDER BY test_date DESC LIMIT 1")
+    row = result.fetchone()
     if row is None:
         conn.close()
         return None
-    columns = [desc[0] for desc in cursor.description]
-    result = dict(zip(columns, row))
+    columns = [desc[0] for desc in result.description]
+    out = dict(zip(columns, row))
     conn.close()
-    return result
+    return out
 
 
 def ftp_prior_strength(test_date_str=None):

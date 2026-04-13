@@ -23,7 +23,7 @@ STAN_DIR = Path(__file__).parent / "stan"
 POSTERIOR_DDL = """
 CREATE TABLE IF NOT EXISTS posterior_samples (
     model_type TEXT NOT NULL,
-    fitted_at TEXT NOT NULL DEFAULT (datetime('now')),
+    fitted_at TEXT NOT NULL DEFAULT (current_timestamp),
     param_name TEXT NOT NULL,
     n_samples INTEGER,
     samples BLOB,
@@ -73,12 +73,11 @@ def load_posterior_samples(model_type):
     """
     conn = get_connection()
     conn.execute(POSTERIOR_DDL)
-    cursor = conn.cursor()
-    cursor.execute(
+    result = conn.execute(
         "SELECT param_name, n_samples, samples FROM posterior_samples WHERE model_type = ?",
-        (model_type,)
+        [model_type]
     )
-    rows = cursor.fetchall()
+    rows = result.fetchall()
     conn.close()
 
     if not rows:

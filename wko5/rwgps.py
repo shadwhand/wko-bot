@@ -77,24 +77,24 @@ def import_rwgps_route(rwgps_route_id):
 
     conn = get_connection()
     _ensure_tables(conn)
-    cursor = conn.cursor()
 
-    cursor.execute("""
+    insert_result = conn.execute("""
         INSERT INTO routes (name, source_file, total_distance_m, total_elevation_m,
                            point_count, bbox_lat_min, bbox_lat_max, bbox_lon_min, bbox_lon_max)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-    """, (
+        RETURNING rowid
+    """, [
         name, f"rwgps_{rwgps_route_id}", distance, elevation,
         len(ds), float(lats.min()), float(lats.max()),
         float(lons.min()), float(lons.max()),
-    ))
-    route_id = cursor.lastrowid
+    ])
+    route_id = insert_result.fetchone()[0]
 
     for i, (lat, lon, cum_dist) in enumerate(ds):
-        cursor.execute("""
+        conn.execute("""
             INSERT INTO route_points (route_id, point_order, lat, lon, cumulative_distance_m)
             VALUES (?, ?, ?, ?, ?)
-        """, (route_id, i, lat, lon, cum_dist))
+        """, [route_id, i, lat, lon, cum_dist])
 
     conn.commit()
     conn.close()
@@ -113,9 +113,8 @@ def import_all_rwgps_routes():
 
     conn = get_connection()
     _ensure_tables(conn)
-    cursor = conn.cursor()
-    cursor.execute("SELECT source_file FROM routes WHERE source_file LIKE 'rwgps_%'")
-    existing = {row[0] for row in cursor.fetchall()}
+    result = conn.execute("SELECT source_file FROM routes WHERE source_file LIKE 'rwgps_%'")
+    existing = {row[0] for row in result.fetchall()}
     conn.close()
 
     imported = 0

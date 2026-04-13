@@ -15,13 +15,12 @@ logger = logging.getLogger(__name__)
 
 def ride_summary(activity_id):
     conn = get_connection()
-    cursor = conn.cursor()
-    cursor.execute("SELECT * FROM activities WHERE id = ?", (activity_id,))
-    row = cursor.fetchone()
+    result = conn.execute("SELECT * FROM activities WHERE id = ?", [activity_id])
+    row = result.fetchone()
     if not row:
         conn.close()
         return {}
-    columns = [desc[0] for desc in cursor.description]
+    columns = [desc[0] for desc in result.description]
     act = dict(zip(columns, row))
     conn.close()
 
@@ -122,10 +121,10 @@ def detect_intervals(activity_id, min_power_pct=0.9, min_duration=30, ftp=None):
 
 def lap_analysis(activity_id):
     conn = get_connection()
-    df = pd.read_sql_query(
+    df = conn.execute(
         "SELECT * FROM laps WHERE activity_id = ? ORDER BY lap_number",
-        conn, params=(activity_id,),
-    )
+        [activity_id],
+    ).df()
     conn.close()
     return df
 

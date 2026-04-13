@@ -19,7 +19,7 @@ Usage:
 import argparse
 import json
 import os
-import sqlite3
+import duckdb
 import sys
 import time
 import webbrowser
@@ -31,8 +31,7 @@ import httpx
 import pandas as pd
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
-DB_PATH = os.path.join(SCRIPT_DIR, "cycling_power.db")
-RECORDS_DIR = os.path.join(SCRIPT_DIR, "records")
+DB_PATH = os.path.join(SCRIPT_DIR, "cycling_power.duckdb")
 TOKEN_DIR = os.path.expanduser("~/.strava_tokens")
 TOKEN_FILE = os.path.join(TOKEN_DIR, "tokens.json")
 CREDS_FILE = os.path.join(TOKEN_DIR, "credentials.json")
@@ -285,15 +284,14 @@ def ingest_activity(act, streams, laps, conn):
         "total_work": act.get("kilojoules"),
     }
 
-    cursor = conn.cursor()
+    conn.begin()
     cols = list(session_data.keys())
-    cursor.execute(
-        f"INSERT INTO activities ({','.join(cols)}) VALUES ({','.join('?' for _ in cols)})",
+    activity_id = conn.execute(
+        f"INSERT INTO activities ({','.join(cols)}) VALUES ({','.join('?' for _ in cols)}) RETURNING rowid",
         [session_data[c] for c in cols],
-    )
-    activity_id = cursor.lastrowid
+    ).fetchone()[0]
 
-    # Write per-second records to Parquet (matches migrated storage format)
+    # Build per-second records and INSERT via DataFrame
     n = len(time_stream)
     start_dt = datetime.fromisoformat(start_time.replace("Z", "+00:00"))
 
@@ -303,6 +301,7 @@ def ingest_activity(act, streams, laps, conn):
         ts = (start_dt + timedelta(seconds=elapsed)).isoformat() if elapsed is not None else None
         latlng = latlng_stream[i] if i < len(latlng_stream) else None
         records.append({
+            "activity_id": activity_id,
             "timestamp": ts,
             "elapsed_seconds": elapsed,
             "power": power_stream[i] if i < len(power_stream) else None,
@@ -317,15 +316,11 @@ def ingest_activity(act, streams, laps, conn):
         })
 
     if records:
-        os.makedirs(RECORDS_DIR, exist_ok=True)
         df = pd.DataFrame(records)
-        df.to_parquet(
-            os.path.join(RECORDS_DIR, f"{activity_id}.parquet"),
-            engine="pyarrow", compression="zstd", index=False,
-        )
+        conn.execute("INSERT INTO records SELECT * FROM df")
 
     for j, lap in enumerate(laps):
-        cursor.execute(
+        conn.execute(
             "INSERT INTO laps (activity_id, lap_number, start_time, total_elapsed_time, "
             "total_timer_time, total_distance, avg_power, max_power, avg_heart_rate, "
             "max_heart_rate, avg_cadence, avg_speed, total_ascent, total_calories, intensity) "
@@ -357,9 +352,7 @@ def ingest_activity(act, streams, laps, conn):
 
 def get_latest_activity_date(conn):
     """Get the most recent activity date in the DB."""
-    cursor = conn.cursor()
-    cursor.execute("SELECT MAX(start_time) FROM activities")
-    row = cursor.fetchone()
+    row = conn.execute("SELECT MAX(start_time) FROM activities").fetchone()
     if row and row[0]:
         try:
             return datetime.fromisoformat(str(row[0]).replace("Z", "+00:00")).date()
@@ -374,7 +367,7 @@ def main():
     parser.add_argument("--from", dest="from_date", help="Sync from date (YYYY-MM-DD)")
     args = parser.parse_args()
 
-    conn = sqlite3.connect(DB_PATH)
+    conn = duckdb.connect(DB_PATH)
 
     if args.from_date:
         start_date = datetime.strptime(args.from_date, "%Y-%m-%d").date()
@@ -390,9 +383,7 @@ def main():
     after_epoch = int(datetime.combine(start_date, datetime.min.time()).timestamp())
     before_epoch = int(datetime.combine(end_date, datetime.max.time()).timestamp())
 
-    cursor = conn.cursor()
-    cursor.execute("SELECT filename FROM activities")
-    existing = {row[0] for row in cursor.fetchall()}
+    existing = {row[0] for row in conn.execute("SELECT filename FROM activities").fetchall()}
 
     token = login()
     activities = fetch_cycling_activities(token, after_epoch, before_epoch)
@@ -425,8 +416,7 @@ def main():
 
     print(f"\nDone: {synced} synced, {skipped} already in DB, {no_power} skipped (no power)")
 
-    cursor.execute("SELECT COUNT(*) FROM activities")
-    total = cursor.fetchone()[0]
+    total = conn.execute("SELECT COUNT(*) FROM activities").fetchone()[0]
     print(f"Total activities in DB: {total}")
     conn.close()
 

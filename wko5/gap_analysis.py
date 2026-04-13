@@ -264,25 +264,24 @@ def opportunity_cost_analysis(route_id):
 
     # Find activities linked to this route via activity_routes table
     conn = get_connection()
-    cursor = conn.cursor()
 
     # Check for route_links table first, fall back to activity_routes
-    cursor.execute(
-        "SELECT name FROM sqlite_master WHERE type='table' AND name IN ('route_links', 'activity_routes')"
+    tbl_result = conn.execute(
+        "SELECT table_name FROM information_schema.tables WHERE table_name IN ('route_links', 'activity_routes')"
     )
-    link_tables = {row[0] for row in cursor.fetchall()}
+    link_tables = {row[0] for row in tbl_result.fetchall()}
 
     linked_activity_ids = []
     if "route_links" in link_tables:
-        cursor.execute(
-            "SELECT activity_id FROM route_links WHERE route_id = ?", (route_id,)
+        result = conn.execute(
+            "SELECT activity_id FROM route_links WHERE route_id = ?", [route_id]
         )
-        linked_activity_ids = [row[0] for row in cursor.fetchall()]
+        linked_activity_ids = [row[0] for row in result.fetchall()]
     elif "activity_routes" in link_tables:
-        cursor.execute(
-            "SELECT activity_id FROM activity_routes WHERE route_id = ?", (route_id,)
+        result = conn.execute(
+            "SELECT activity_id FROM activity_routes WHERE route_id = ?", [route_id]
         )
-        linked_activity_ids = [row[0] for row in cursor.fetchall()]
+        linked_activity_ids = [row[0] for row in result.fetchall()]
     conn.close()
 
     if not linked_activity_ids:

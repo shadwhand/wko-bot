@@ -1,7 +1,6 @@
 """Athlete configuration — single-row config table replacing hardcoded constants."""
 
 import logging
-import sqlite3
 from wko5.db import get_connection
 
 logger = logging.getLogger(__name__)
@@ -56,9 +55,8 @@ def init_config_table():
             {columns}
         )
     """)
-    cursor = conn.cursor()
-    cursor.execute("SELECT COUNT(*) FROM athlete_config")
-    if cursor.fetchone()[0] == 0:
+    result = conn.execute("SELECT COUNT(*) FROM athlete_config")
+    if result.fetchone()[0] == 0:
         cols = ", ".join(DEFAULTS.keys())
         placeholders = ", ".join("?" for _ in DEFAULTS)
         conn.execute(
@@ -78,16 +76,15 @@ def get_config():
 
     conn = get_connection()
     try:
-        cursor = conn.cursor()
-        cursor.execute("SELECT * FROM athlete_config WHERE id = 1")
-        row = cursor.fetchone()
+        result = conn.execute("SELECT * FROM athlete_config WHERE id = 1")
+        row = result.fetchone()
         if row is None:
             conn.close()
             init_config_table()
             return get_config()
-        columns = [desc[0] for desc in cursor.description]
+        columns = [d[0] for d in result.description]
         _config_cache = dict(zip(columns, row))
-    except sqlite3.OperationalError:
+    except Exception:
         conn.close()
         init_config_table()
         return get_config()
