@@ -28,9 +28,11 @@ from http.server import HTTPServer, BaseHTTPRequestHandler
 from urllib.parse import urlparse, parse_qs
 
 import httpx
+import pandas as pd
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 DB_PATH = os.path.join(SCRIPT_DIR, "cycling_power.db")
+RECORDS_DIR = os.path.join(SCRIPT_DIR, "records")
 TOKEN_DIR = os.path.expanduser("~/.strava_tokens")
 TOKEN_FILE = os.path.join(TOKEN_DIR, "tokens.json")
 CREDS_FILE = os.path.join(TOKEN_DIR, "credentials.json")
@@ -291,34 +293,35 @@ def ingest_activity(act, streams, laps, conn):
     )
     activity_id = cursor.lastrowid
 
+    # Write per-second records to Parquet (matches migrated storage format)
     n = len(time_stream)
     start_dt = datetime.fromisoformat(start_time.replace("Z", "+00:00"))
 
+    records = []
     for i in range(n):
         elapsed = time_stream[i] if i < len(time_stream) else None
         ts = (start_dt + timedelta(seconds=elapsed)).isoformat() if elapsed is not None else None
         latlng = latlng_stream[i] if i < len(latlng_stream) else None
-        lat = latlng[0] if latlng else None
-        lng = latlng[1] if latlng else None
+        records.append({
+            "timestamp": ts,
+            "elapsed_seconds": elapsed,
+            "power": power_stream[i] if i < len(power_stream) else None,
+            "heart_rate": hr_stream[i] if i < len(hr_stream) else None,
+            "cadence": cadence_stream[i] if i < len(cadence_stream) else None,
+            "speed": speed_stream[i] if i < len(speed_stream) else None,
+            "altitude": altitude_stream[i] if i < len(altitude_stream) else None,
+            "temperature": temp_stream[i] if i < len(temp_stream) else None,
+            "latitude": latlng[0] if latlng else None,
+            "longitude": latlng[1] if latlng else None,
+            "distance": distance_stream[i] if i < len(distance_stream) else None,
+        })
 
-        cursor.execute(
-            "INSERT INTO records (activity_id, timestamp, elapsed_seconds, power, heart_rate, "
-            "cadence, speed, altitude, temperature, latitude, longitude, distance) "
-            "VALUES (?,?,?,?,?,?,?,?,?,?,?,?)",
-            (
-                activity_id,
-                ts,
-                elapsed,
-                power_stream[i] if i < len(power_stream) else None,
-                hr_stream[i] if i < len(hr_stream) else None,
-                cadence_stream[i] if i < len(cadence_stream) else None,
-                speed_stream[i] if i < len(speed_stream) else None,
-                altitude_stream[i] if i < len(altitude_stream) else None,
-                temp_stream[i] if i < len(temp_stream) else None,
-                lat,
-                lng,
-                distance_stream[i] if i < len(distance_stream) else None,
-            ),
+    if records:
+        os.makedirs(RECORDS_DIR, exist_ok=True)
+        df = pd.DataFrame(records)
+        df.to_parquet(
+            os.path.join(RECORDS_DIR, f"{activity_id}.parquet"),
+            engine="pyarrow", compression="zstd", index=False,
         )
 
     for j, lap in enumerate(laps):
