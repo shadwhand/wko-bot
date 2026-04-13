@@ -750,3 +750,25 @@ def knowledge_search(q: str, collections: str | None = None, limit: int = 10):
     if result is None:
         raise HTTPException(503, "Knowledge service unavailable")
     return result
+
+
+# ---------------------------------------------------------------------------
+# Local LLM Q&A (omlx + wiki)
+# ---------------------------------------------------------------------------
+
+from wko5.local_llm import ask as local_ask, list_models as local_models
+
+
+@router.get("/ask", dependencies=[Depends(verify_token)])
+def ask_question(q: str, mode: str = "local"):
+    """Wiki-grounded Q&A via local LLM. Modes: local, prefetch, hybrid."""
+    result = local_ask(q, mode=mode)
+    if result.get("error"):
+        raise HTTPException(503, result["error"])
+    return result
+
+
+@router.get("/local-models", dependencies=[Depends(verify_token)])
+def get_local_models():
+    """List available models on the local omlx server."""
+    return {"models": local_models()}
