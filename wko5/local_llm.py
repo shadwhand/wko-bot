@@ -14,9 +14,9 @@ OMLX_KEY = os.environ.get("OMLX_KEY", "9538")
 WIKI_DIR = os.path.join(os.path.dirname(__file__), "..", "docs", "research", "wiki")
 
 # Model assignments
-MODEL_FAST = "gemma-3n-E4B-it-MLX-4bit"  # Fast prefetch/summary
-MODEL_FULL = "gemma-4-31b-it-4bit"  # Full synthesis
-MODEL_REASONING = "Qwen3.5-27B-Claude-4.6-Opus-Distilled-MLX-4bit"  # Deep reasoning
+MODEL_FAST = "Qwen3-4B-Instruct-2507-Claude-Haiku-4.5-Distill-qx86-hi-mlx"  # Fast prefetch (10.5 evid tags, 17s)
+MODEL_FULL = "Qwen3.5-122B-A10B-4bit"  # Full synthesis (14.5 evid tags, 38s, MoE)
+MODEL_REASONING = "Qwen3-30B-A3B-Thinking-2507-Claude-4.5-Sonnet-High-Reasoning-Distill-mxfp4-mlx"  # Deep reasoning
 
 
 def _omlx_chat(messages, model=None, max_tokens=1024, temperature=0.3):
