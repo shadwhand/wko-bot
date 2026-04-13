@@ -149,11 +149,95 @@ FTP_DEFAULT = 292
 
 Update these for your own data.
 
+## Knowledge Base (qmd)
+
+The platform includes a compiled knowledge wiki over 2,012 TrainingPeaks articles, 53 Empirical Cycling podcast episodes, and nutrition research — searchable via qmd.
+
+### Requirements
+
+- Node.js 20+ (`node --version`)
+- npm (`npm --version`)
+
+### Setup
+
+```bash
+# Install qmd
+npm install -g @tobilu/qmd
+
+# Index all collections (first time)
+qmd update
+qmd embed
+```
+
+This downloads ~2GB of GGUF models (EmbeddingGemma 300M + Qwen3-Reranker 0.6B) on first run.
+
+### Configuration
+
+- **qmd config:** `.qmd/qmd.yml` (6 collections: wiki, empirical-cycling, trainingpeaks, nutrition, reports, code)
+- **Wiki schema:** `docs/research/wiki/SCHEMA.md` (page structure, evidence tags, operations)
+- **Index:** `docs/research/wiki/index.md` (master catalog of all wiki pages)
+
+### Usage
+
+```bash
+# Search the wiki (recommended — compiled knowledge)
+qmd search "FTP plateau" -c wiki
+qmd query "how to pace a 200km ride" -c wiki
+
+# Search all default collections (wiki + EC + nutrition + reports)
+qmd query "durability fatigue modeling"
+
+# Search raw TP articles (opt-in, 2,012 articles)
+qmd search "Tour de France power analysis" -c trainingpeaks
+```
+
+### Claude Code Integration
+
+qmd runs as an MCP server — configured in `~/.claude/settings.json`:
+
+```json
+{
+  "mcpServers": {
+    "qmd": {
+      "command": "qmd",
+      "args": ["mcp"]
+    }
+  }
+}
+```
+
+This gives Claude Code direct access to `query`, `get`, `multi_get`, and `status` tools.
+
+### HTTP API
+
+For programmatic access (FastAPI integration):
+
+```bash
+# Start the HTTP daemon
+qmd mcp --http --daemon
+
+# Health check
+curl http://localhost:8181/health
+
+# Search via FastAPI
+curl "http://localhost:8000/api/knowledge?q=pacing+strategy&collections=wiki"
+```
+
+### Wiki Operations
+
+- **Ingest new sources:** Follow `tools/wiki-ingest.md`
+- **Lint pass:** Follow `tools/wiki-lint.md`
+- **Re-index after changes:** `qmd update && qmd embed`
+
+See `docs/research/wiki/SCHEMA.md` for the full Karpathy-style wiki workflow (ingest, query, lint, maintenance).
+
 ## Dependencies
 
 - Python 3.10+
+- Node.js 20+ (for qmd)
 - numpy
 - pandas
 - scipy
 - matplotlib
 - fitdecode
+- httpx (for knowledge client)
