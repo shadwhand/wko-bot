@@ -1,0 +1,53 @@
+collections:
+  wiki:
+    path: ./docs/research/wiki
+    pattern: "**/*.md"
+    context:
+      "/": "LLM-compiled knowledge pages — synthesized concepts, entities, and cross-references"
+      "/concepts": "Training science concepts: FTP, durability, pacing, VO2max, power-duration modeling"
+      "/entities": "Athletes, races, methods, tools referenced across the research"
+      "/nutrition": "Nutrition science: fueling, glycogen, hydration, race-day protocols"
+    includeByDefault: true
+
+  empirical-cycling:
+    path: ./docs/research/empirical-cycling
+    pattern: "**/*.md"
+    ignore:
+      - "eval/**"
+    context:
+      "/": "Empirical Cycling podcast insights — evidence-tagged claims from 53 episodes"
+      "/ec-master-reference.md": "Master consolidated reference across all episodes"
+    includeByDefault: true
+
+  trainingpeaks:
+    path: ./docs/research/trainingpeaks
+    pattern: "**/*.md"
+    context:
+      "/": "TrainingPeaks blog articles on power analysis, training methodology, nutrition, and race strategy"
+    includeByDefault: false
+
+  nutrition:
+    path: ./docs/research
+    pattern: "nutrition-*.md"
+    context:
+      "/": "Deep research syntheses on cycling nutrition — modeling, racing, and ultra-endurance"
+    includeByDefault: true
+
+  reports:
+    path: ./docs/reports
+    pattern: "**/*.md"
+    context:
+      "/": "Generated training analysis reports — fitness status, race plans, training recommendations"
+    includeByDefault: true
+
+  code:
+    path: ./wko5
+    pattern: "**/*.py"
+    ignore:
+      - "**/__pycache__/**"
+      - "mmp_cache/**"
+    context:
+      "/": "Python source code for the cycling analytics platform"
+      "/api": "FastAPI endpoints and route handlers"
+      "/stan": "Stan statistical models for Bayesian power-duration fitting"
+    includeByDefault: false
