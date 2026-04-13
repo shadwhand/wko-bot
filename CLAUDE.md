@@ -12,9 +12,11 @@ This project uses a **Karpathy-style LLM wiki** backed by qmd (local hybrid sear
 
 ### Searching
 
-- **MCP tools:** `query`, `get`, `multi_get` (qmd MCP server is configured)
-- **CLI:** `qmd search "query"` (lexical), `qmd vsearch "query"` (semantic), `qmd query "query"` (hybrid+rerank)
-- **API:** `GET /api/knowledge?q=...` via the FastAPI server
+**Retrieval flow:** Read `docs/research/wiki/index.md` first to identify relevant pages, then drill in. Use qmd when the question is ambiguous or the wiki grows beyond what the index can navigate.
+
+- **qmd MCP tools:** `query`, `get`, `multi_get` — always scope to wiki: `-c wiki`
+- **qmd CLI:** `qmd search "query" -c wiki` (lexical), `qmd query "query" -c wiki` (hybrid+rerank)
+- **API:** `GET /api/knowledge?q=...&collections=wiki` via the FastAPI server
 
 ### Collections
 

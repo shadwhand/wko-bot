@@ -127,14 +127,17 @@ Every page must have a `## Cross-References` section listing all related pages w
 
 **When:** A question is asked that the wiki should be able to answer.
 
-**Process:**
-1. Search qmd: `qmd query "the question" --json`
-2. Read the top-ranked wiki pages
-3. Synthesize an answer with citations
-4. **File back:** If the answer reveals a pattern, synthesis, or connection not captured in existing pages, update the relevant page(s) or create a new one
-5. Append to `log.md` if pages were modified
+**Retrieval flow:**
+1. **Read `index.md` first** — scan the catalog to identify which pages likely answer the question. At small scale (~50 pages) this is sufficient.
+2. **If ambiguous, use qmd** — `qmd query "the question" -c wiki` to search wiki pages specifically. qmd is the scaling layer over the wiki, not a replacement for navigating it.
+3. **Read the relevant wiki pages** and synthesize an answer with citations.
+4. **File back:** If the answer reveals a pattern, synthesis, or connection not captured in existing pages, update the relevant page(s) or create a new one.
+5. Append to `log.md` if pages were modified.
 
-**Key principle:** Every valuable query should make the wiki slightly better. The wiki compounds.
+**Key principles:**
+- Every valuable query should make the wiki slightly better. The wiki compounds.
+- Search the *wiki*, not the raw sources. The wiki is the compiled knowledge. Raw sources are for ingest.
+- Use `index.md` as the primary entry point. Use qmd when the wiki outgrows what the index can navigate (~100+ pages).
 
 ### 3. Lint
 
