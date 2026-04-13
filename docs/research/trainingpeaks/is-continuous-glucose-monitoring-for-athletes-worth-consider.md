@@ -1,0 +1,36 @@
+---
+title: "Is Continuous Glucose Monitoring for Athletes Worth Considering?"
+author: "Dr. Jeff Sankoff"
+source: "https://www.trainingpeaks.com/blog/is-continuous-glucose-monitoring-for-athletes-worth-considering/"
+slug: "is-continuous-glucose-monitoring-for-athletes-worth-consider"
+---
+
+Continuous glucose monitoring may be the latest and greatest metric to enter the sports world, but do the numbers add up? Dr. Jeff Sankoff explains why some data just isn’t worth analyzing.
+Athletes are often interested in collecting data and metrics in order to assess the effectiveness of their training, and with good reason. However, in some instances, data does not necessarily inform in a meaningful way and instead just becomes more background noise. This may indeed be the case with continuous glucose monitoring (CGM), the latest metric to enter the athletic realm without much reason to.
+Glucose Control in Your Body
+Before I get into the science that either supports or refutes the use of these devices, we need to first understand the basic physiology of glucose control in the body — then we can discuss whether or not monitoring it makes any sense.
+The nutrients that we take in when we eat serve many purposes but one of the principal ones is to provide metabolic fuel for our cells. Fuel comes in many forms but the preferred form for all of our cells is glucose and that is obtained through the consumption of carbohydrates. Most of our cells can make use of alternative fuels like free fatty acids or ketones but these are much less efficient fuels. Some cells — specifically those in highly metabolic active tissues such as the heart, nerves, kidneys, and white blood cells — will only make use of glucose except in rare instances.
+The body has developed a means of ensuring that when there is a shortage of glucose available, those cells that can utilize alternative fuels will not use the available glucose. Conversely, when glucose is plentiful, this same system ensures that all cells get access to the preferred fuel. This process is tightly controlled through the secretion of insulin when glucose is plentiful, and through counter-regulatory hormones like glucagon when it is not. Insulin is required for cells to be able to access glucose in the blood, except for those cells that are mandatory users of glucose.
+After eating, the glucose level in your blood is high, so the pancreas secretes insulin and all of your cells get to take up the glucose and use it as fuel. When glucose levels are low, the counter-regulatory hormone glucagon is secreted and various processes begin to create glucose by the breakdown of glycogen, fats, and protein so that normal levels are restored. This system is tightly controlled so that healthy people keep their glucose levels within a pretty narrow range. Even in periods of prolonged starvation, glucose levels will be maintained at the low end of this range in order to fuel those glucose-dependent cells.
+In contrast, diabetics have actually lost the ability to produce insulin (type 2 diabetics produce insulin but have become resistant to the hormone’s effects). As a result, glucose cannot get into the cells and continues to rise higher and higher causing all manner of problems. For a long time, diabetics would check their glucose levels periodically and then inject themselves with insulin depending on the level of sugar they obtained. But this was not the best way of managing the disease — inevitably blood glucose would run high and long-term health effects would result.
+Over the past couple of decades, continuous glucose monitoring (CGM) coupled with an insulin pump has allowed patients with diabetes to more precisely control their blood glucose in real-time and consequently decrease many of the long-term effects of the disease.
+Continuous Glucose Monitoring for Athletes
+Now, CGM has come to endurance sports. The premise is that knowing your glucose level on an ongoing basis will allow you to better control your metabolism and fueling in order to improve your performance. There have been a few high-profile triathletes posting on their social media about how they are trialing these devices, but relatively little in the way of what they are getting out of this information or how it is informing their training.
+As for actual evidence, there are only a couple of studies out there on CGM in relation to athletes. The first came out of Japan and looked at ultra runners (albeit, only seven of them), and essentially found that, unsurprisingly, each runner’s glucose levels stayed within the normal range throughout the test. There was a suggestion that higher glucose levels correlated with higher running speeds in some of the participants, but because the participants were running on varying terrain the authors could not be sure.
+A second study on CGM from 2017 was better designed but also small. This study on cyclists showed that glucose levels fluctuated over time relating to food intake, but for the most part stayed within the normal range and in almost all cases did not correlate with performance.
+I spoke with Dr. Lisa Kosmiski, an endocrinologist at Denver Health Medical Center, who works extensively with diabetics. She was surprised that this device was even being considered for athletes. To paraphrase, she said, “why in the world would anyone need to know this and what would they expect it to tell them? They can’t change how their bodies react to glucose anyways.”
+For a technology or a metric to be useful, an athlete must understand it and be able to act upon it in order to improve performance. I am unconvinced at this time that CGM rises to this level, except for diabetics. Our bodies handle glucose in a predetermined manner that cannot be changed by continuous monitoring, and therefore I am uncertain how knowing this information is either relevant or useful. At this juncture, my advice would be to wait before getting aboard the CGM bandwagon to see if any substantial evidence is published in its favor.
+Train hard, train healthy.
+References
+Gao W., Brooks, G., & Klonoff, D. (2018, March). Wearable physiological systems and technologies for metabolic monitoring. Retrieved from
+https://pubmed.ncbi.nlm.nih.gov/28970200/
+Ishihara, K. et al. (2020, April 17). Application of Continuous Glucose Monitoring for Assessment of Individual Carbohydrate Requirement during Ultramarathon Race. Retrieved from
+https://pubmed.ncbi.nlm.nih.gov/32316458/
+Start Your Free Account
+TrainingPeaks App
+TrainingPeaks offers the world’s most powerful training app, allowing you to plan, track, and analyze your training all in one place. Connect your free trial account with your favorite apps and devices for real-time workout guidance and watch your fitness progress with powerful data tools.
+Start for Free
+About Dr. Jeff Sankoff
+Jeff Sankoff is an Emergency Physician, long time triathlete and USAT/IRONMAN University Certified coach. He has completed 6 IRONMAN races (including Kona) and more than fifty races at the 70.3 distance including 5 World Championships. He produces the TriDoc Podcast that can be found on most popular podcast platforms and iWork’s with LifeSport Coaching. You can learn more about him at his website:
+TriDoc Coaching
+.

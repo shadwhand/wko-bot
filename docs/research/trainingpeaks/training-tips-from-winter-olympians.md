@@ -1,0 +1,35 @@
+---
+title: "Training Insights From Shaun White and Other Winter Olympic Legends"
+author: "Phil White"
+source: "https://www.trainingpeaks.com/blog/training-tips-from-winter-olympians/"
+slug: "training-tips-from-winter-olympians"
+---
+
+Take a cue from these training tips from Shaun White, Jessie Diggins, and Mikaela Shiffrin.
+With the Winter Olympics in Beijing in full swing, three members of Team USA at various stages of their career used different but equally effective approaches as they prepared to take on the world’s best. In this article, I’ll share how Shaun White’s volume management, Mikaela Shiffrin’s consistency, and Jessie Diggins’s versatility can help you beat the winter training blues.
+Shaun White’s Strategic Approach: Less Volume, Higher Intensity
+Shaun White took the snowboarding scene by storm as a brash teenager whose flowing red locks earned him the nickname of “the Flying Tomato.” Back then, he’d spend hours in the halfpipe honing his craft. But 20 years into the most storied career in the sport, the newly shorn Shaun has had to dial it back a bit to keep competing at the highest level. In the runup to the Beijing Games — which he announced would be his last after winning gold in 2006, 2010, and, on a dramatic and near-perfect last run, in 2018 — White was more strategic in deciding when to push himself in training and when to give his body the rest it needed to do it all again the next day.
+“I think it’s more calculated practice sessions,” White said in
+an interview on
+Good Morning America
+.
+“I would say it’s more like a power window than when I used to just be up there all day long. I’m like, okay, I don’t have that much energy. I’m not an old guy, but at the last competition, one of my competitors was like 15. I’m like, oh my goodness. I’m definitely pacing it out a bit more.”
+White’s reduction of overall training volume enabled him to stay consistent and avoid major injury during the buildup to Beijing, where he narrowly missed the podium and finished fourth. If you’re in your 30s, 40s, or above, you can take a cue from the most decorated snowboarder ever by cutting back on your mileage and focusing on shorter, more intense sessions that will still prompt adaptation without slamming yourself into overtraining.
+Jessie Diggins’s Well-Rounded Approach: Cross-Training at Appropriate Intensity
+Team USA has endured several medal droughts in certain Winter Olympics disciplines, such as the 62-year gold gap that the four-man bobsled crew led by Steve Holcomb broke in the 2010 Vancouver Winter Olympics. In the case of cross-country skiing, the US had never claimed gold until Jessie Diggins and Kikkan Randall topped the podium in dramatic fashion in the women’s team sprint at the PyeongChang Games in 2018. This was no outlier — Diggins has also won four medals at the FIS Nordic World Ski Championships, took the top spot in the 2020–21 FIS Cross-Country World Cup, and this week won the US’s first-ever medal in a cross-country individual sprint with a bronze in Beijing.
+While she spends plenty of time on snow fine-tuning her cardiovascular system for a sport that has recorded the top VO2 max levels in any discipline, Diggins doesn’t follow the lead of some of her competitors by flying around the world to access cold conditions year-round. Instead, she seeks ways to mirror the high demands of her sport on different surfaces. In addition to roller skiing — which is a dry-land simulation of skiing that, as the name suggests, involves using poles to propel yourself across the tarmac on roller skates — Diggins and her training group enjoy running near her summer base in Stratton, Vermont.
+“Trail running is an amazing way of cross-training,” Diggins
+told an interviewer for
+Outside
+.
+“We’re lucky in that basically anything you do that makes you sweat is probably great training for cross-country skiing. We’re training six days a week, twice a day. At least every other day, we do some kind of running. Sometimes it’s just a half-hour run for warm-up. This morning, we did a 2.5-hour trail run. People who are into training sometimes say, ‘You’re running so slow!’ because we stay in a Zone 1 heart rate, which means we’re running slow enough that we can carry on a conversation. We do that because when it’s time to go hard, then we go really, really hard. And you can’t do that if all your runs are hard.”
+There are two things Diggins shared that you can utilize in your own training. First, work to understand the physiological demands of your preferred sport, and then find other activities that mimic it so you can mix in more variety. Second, apply a wavy approach to these other disciplines, whereby you vary your intensity level from hard (eight to 10 out of 10) to moderate (four to seven) to easy (one to four) throughout a typical training week.
+Mikaela Shiffrin’s Consistent Approach: Sticking to a Routine and Assessing With Data
+It’s impressive when a skier wins their first World Cup skiing race, but for the very best in history, consistently putting themselves on the podium requires a level of daily diligence that enables them to show up when it counts over and over again. To this end, Mikaela Shiffrin’s secret to winning three overall World Cup titles isn’t complicated: find a routine that works, run with it day after day, and use data insights to fine-tune her program.
+She gets up between five and six AM and follows breakfast with a half-hour muscle activation warmup. The rest of the morning is skiing-focused on the mountain for up to five hours. Then after lunch and a nap, she’s in the gym with her strength and conditioning coach dragging and pushing sleds, throwing medicine balls, doing pullups, and performing other functional movements that foster total body strength and power. Shiffrin then reviews video of her ski session, eats dinner, and gets at least nine hours of sleep. She and her team keep tabs on training data and combine this with subjective measurements like rate of perceived exertion to make corrections to her programming as needed.
+“We can objectively rate what my energy levels should be, across a period of time, given this data,”
+Shiffrin told
+Sports Illustrated
+. “There’s a graph showing the peaks and valleys of my training, and the highest intensity blocks versus the lowest intensity blocks. The last couple of years we’ve collected enough data to see when I get tired in a really intense training block.”
+Shiffrin’s example offers two key takeaways. First, find the best times to train, refuel, and recover, and then stick to them. Second, use a smartwatch or fitness tracker to log each training session, correlate this with how you feel during and after each session, and then make adjustments if you’re not being challenged or are doing too much. Not sure where to begin? Find an experienced coach to guide you.
+Your goals might be very different from those of Olympians like Shaun White, Jessie Diggins, and Mikaela Shiffrin. But the ways in which they approach their training can inform how you prepare to perform your best on race day and in life.

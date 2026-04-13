@@ -1,0 +1,30 @@
+---
+title: "Which Triathlon Distance Should I Race?"
+author: "Carrie Barrett"
+source: "https://www.trainingpeaks.com/blog/which-triathlon-distance-should-i-race/"
+slug: "which-triathlon-distance-should-i-race"
+---
+
+If you're daunted by the challenge of an IRONMAN, don't fret. There are several different triathlon distances that could better suit your experience level.
+Most people have heard of the daunting IRONMAN, which consists of a 2.4-mile swim, 112-mile bike, and 26.2-mile run. The allure of this race distance attracts many, but there are several distances for athletes of all entry points, experience, and skill levels.
+The four most popular triathlon distances include:
+There are several factors to consider when deciding which triathlon distance is best for you.
+Level of Experience
+If you are new to the sport of triathlon and the idea of competing in three distinctly different sports sounds overwhelming, you may want to consider one of the shorter distances. The sprint distance is great for any athlete looking to “get their feet wet” and sample a taste of all the sport can offer. It can also be completed with just a few months of training and basic equipment. Many sprint races are beginner-friendly and offer additional assistance throughout the course.
+Those who have experience in one or two of the three sports or who have been bitten by the triathlon bug can consider moving up in race distance. Training for a Half Ironman (70.3), for example, isn’t as daunting if you’ve completed several sprint and olympic distances, or if you are an accomplished cyclist who has raced multiple road races. A solid base of knowledge, experience, and aerobic fitness is recommended before tackling longer distances, but it certainly isn’t required.
+Get the Newsletter
+Sign up for the TrainingPeaks Athlete Newsletter to get the tips and resources you need to own your next challenge.
+Yes, I would like to receive TrainingPeaks content as well as updates on TrainingPeaks products, services, and events. I can unsubscribe at any time.
+Submit
+Time
+How much time in your week can you dedicate to triathlon training? Family, work, travel, and social obligations must be considered before you make a decision on race distance. In most cases, the longer the distance, the more training required. Look at the calendar and be honest about the time you can dedicate to your goal. Training for longer distances races often includes two-a-day workouts. This means you may have to swim early in the morning before work and hit the trail for a run at lunch. Is this feasible?
+In addition, it’s important to consider proximity to training which can save or waste time. Do you have a treadmill or a bike trainer at home? Are you close to the nearest gym or swimming pool? Can you take spin classes, or do you have to ride outdoors? Does your gym have a good shower facility to make a quick change before work? Plotting your training schedule and investing in a good gym membership or home equipment will assist in making the most efficient use of your time.
+You will also want to consider the amount of time it takes to train for each distance. While it certainly varies based on level of experience, use the following as a general guideline for a training timeline, especially if you are new to the sport or are starting with very little fitness base.
+Equipment
+Equipment is not a barrier to entry in the sport of triathlon. It’s common to see mountain bikes and hybrid bikes at local races. If you’re new to the sport, keep your gear as simple as possible and opt for a shorter distance so that you can experience the array of equipment that people use. Ask questions. Take test rides on different bikes. Look at pedal options. Try on different triathlon suits. As you progress in distance and experience, consider investing in triathlon-specific gear as it is designed for comfort and speed, especially at longer distances.
+Budget
+The amount of money you can spend on training and racing is just as important as the amount of time you can dedicate to it. Triathlon is not a cheap sport. It requires equipment for three vastly different sports. Registration fees for triathlon usually range from $150-$1,000, depending on the distance. Longer distance races cost more because of increased demand on road closures, insurance, equipment, security, police, and other race day logistics. Longer distance races also cost more because of the extended training seasons. You’ll spend more on things like coaching, nutrition, massage, gym memberships, and bike maintenance. Travel cost is also a consideration, especially if you are flying or driving to your race destination. Assess your budget and understand that longer-distance racing does often come with greater financial obligations.
+Goals and Abilities
+Assess your goals and natural abilities for this race season and build your distances around your goals. Perhaps you want to finish your first Ironman 70.3 at the end of the year. If budget and time allow, schedule shorter distance races along the way to help you grow in confidence and experience.
+Maybe you want to land on the podium or even qualify for Nationals and World Championship races. Pick your races according to your goals and strengths as an athlete. People who excel in speed (run sprinters and speed swimmers) will generally do well in shorter distance races. It plays to their strengths. Endurance athletes excel in managing distance over speed. They’ve trained their body to race for several hours at a time, as opposed to sprinters who have trained to race at top speeds for short a duration. Athletes who want to qualify for Kona must race fast at the IRONMAN distance level. USA Triathlon offers both short course and long course championship races. Other event management companies are now offering championship races at various distances.
+While there is no right or wrong decision when it comes to selecting your triathlon distance, it is certainly important to consider the factors above in order to have your best race experience possible.

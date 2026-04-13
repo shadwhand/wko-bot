@@ -1,0 +1,24 @@
+---
+title: "A Twist on the Yasso 800s Workouts"
+author: "Ben Rosario"
+source: "https://www.trainingpeaks.com/blog/a-twist-on-the-yasso-800s-workout/"
+slug: "a-twist-on-the-yasso-800s-workout"
+---
+
+If you have ever trained for and run a marathon, you’ve likely heard of the Yasso 800 workout. This classic marathon preparation workout gets an update from Northern Arizona Elite Running Team coach Ben Rosario.
+Let me start by saying I love Bart Yasso and I love Yasso 800s. I’ve done this classic workout myself and I’ve prescribed them to countless numbers of runners I’ve coached with great success. But I do think it’s time they got a little update. I’ve been working on this post for a long time because it almost feels like runner blasphemy to even suggest a change to this tried-and-true favorite. I’m confident though, that in the name of us all trying to get better, what I’ve come up with can help runners of all ages and abilities and that’s always my goal.
+Let’s start by looking at what just might be one of the most famous workouts of all-time: Yasso 800s. Over a period of years, Yasso found that running 800s in the same “time” (converting the hours and minutes from the marathon to minutes and seconds for the 800s)  that he was shooting for in his marathon served as a good indicator of his marathon fitness. For example, if someone wanted to run a 2:40 marathon, they would need to run their 800s at 2 minutes, 40 seconds. Easy enough, right?
+Former Boston Marathon winner and current running journalist and author Amby Burfoot further explained the workout and its simplicity.”Between the 800s, jog for the same number of minutes it took you to run your repeats,” Burfoot wrote. “Training doesn’t get any simpler than this, not on this planet or anywhere else in the solar system.”
+I agree! And it really is a great workout. For those of you who’ve tried it you know that. But I’ve got a little twist for you that I believe creates a greater mental and physical challenge and hence, makes the workout a little more marathon specific.
+Rosario 800s
+One of the biggest challenges in the marathon is just the mental grind of staying focused for multiple hours. I like workouts to present a similar grind, albeit for a shorter time, as often as possible. I’m finding that sessions requiring a faster and more specific “rest/recovery” period do a great job of forcing the athlete to stay laser focused throughout. And thus a new workout was born!
+Before I give you the details I do want to thank a peer, Steve Magness, whose book inspired many of the new workouts I am currently prescribing. I have also seen similar workouts from the great Renato Canova and others. This is just my own way of studying what many of the world’s top athletes are doing and bringing those ideas to the masses.
+How Rosario 800s Work
+Simply take your Yasso 800 time and run one 800 at that pace, followed by an 800 at 25 seconds slower than that pace…and repeat. That is major difference, Rosario 800s have no breaks. Pretty simple concept. I recommend doing four miles total. That’s eight 800s. The average pace ends up being at the slow end of the tempo run zone. And, like Yasso 800s, the math works out for everyone…regardless of speed.
+Unlike Yasso 800s, this is not necessarily a workout I would have an athlete do multiple times throughout a training segment. It’s pretty tough. Depending on your experience level you may want to try a shorter version (2 to 3 miles) early in a training segment before graduating to four miles later on. As for when to do the full version of this bad boy, for most people I’d suggest somewhere between 10 days and four weeks out from your goal race. When you’re nice and fit!
+Why They Work
+I’ve mentioned the mental grind. Running the 800 at Yasso pace will be the “hard” part. Running the next 800 at 25 seconds slower, however, is not necessarily easy. Especially mentally. You have to stay focused. You have to hit your splits. The mind doesn’t get a break.
+The body doesn’t either. During the slower 800 you’ll be able to recover and you’ll be ready for the faster one, but it’s a much different training stimulus than simply jogging slowly for a few minutes. The best way I can put it is that you get more bang for your physiological buck.
+An Example of Rosario 800s
+I’ll give you an example so you can see how this would work. Let’s take a three hour marathoner. We’ll name her Sally. Sally’s Yasso 800 time is three minutes. So for Rosario 800s she’d be alternating 3:00 and 3:25 per 800 for 16 laps. That means she’ll be averaging 6:24 per mile (well 1600 technically). At the end of the workout she’ll have run 6400 meters (just short of four miles) in 25:36…a very solid tempo run. Make sense?
+Go ahead and try it for yourself. Plug in your Yasso time and see what Rosario 800s look like for you. Then it’s time to hit the track and give it a go.

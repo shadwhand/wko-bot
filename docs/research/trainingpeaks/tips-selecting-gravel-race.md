@@ -1,0 +1,24 @@
+---
+title: "5 Tips for Selecting Your Next Gravel Race"
+author: "Kyle McFarland"
+source: "https://www.trainingpeaks.com/blog/tips-selecting-gravel-race/"
+slug: "tips-selecting-gravel-race"
+---
+
+Choosing a gravel race that fits your goals can be tricky — here’s how to hone in on the right one.
+If there’s one thing that we’ve learned in the past couple of years, it’s that gravel racing keeps growing and is here to stay. In a world where new events are popping up like dandelions, how do we as athletes choose which races are right for us? This is a commonly discussed topic with a lot of my coached athletes during the off- and pre-seasons, and together we develop a race calendar keeping these five things in mind.
+1. Consider Race Terrain
+The first thing I look at when researching a gravel race is the course description and profile. The demands of the course will ultimately dictate how the race will unfold from a tactical perspective and the types of skills you will need to race competitively. This will help to inform your training in the coming months to ensure you arrive with the appropriate level of fitness and skill to complete the course.
+It’s also important to consider the wow factor of the course. Does the course inspire you or spark motivation for you to train day after day? A quick YouTube search will likely turn up some footage of the course and give you a better idea of the type of riding you can expect.
+2. Think Big Picture
+Endurance athletes aren’t known for remarkable self-control when it comes to filling their calendar with races. While there is nothing wrong with a stacked race calendar, it’s important to look at the big picture. Gravel races are notoriously difficult from both a physical and cognitive perspective, and blindly loading the calendar with races can lead to burnout or injury. Instead, when researching races, determine your priority “A” events and build the rest of your calendar around those, with adequate time to recover and rebuild between priority races.
+Another big picture item to consider is planning for the time of year the event will occur. Is it an early spring race or does it close out the season in the fall? From weather and kit choices to forecasting your peak fitness, timing is everything when developing a training plan.
+Speaking of training plans, here are a couple of my favorite gravel racing plans I’ve created for TrainingPeaks:
+Gravel Century+ Plan, 8 Weeks w/Strength & Mobility
+8-Week Mid-Season Build (Gravel/CX)
+3. Make Your Gravel Race an Experience
+Gravel races come in all shapes, sizes, and locations, from 35-mile fun rides in your local town to grueling ultra-endurance events in exotic locales. You’re going to spend months preparing for this race, so make sure that you choose something that’s inspiring and potentially unforgettable. While gravel racing has been a predominantly American discipline of bike racing, destinations like Morocco, Iceland, Costa Rica, and British Columbia have jumped on the gravel bandwagon with some phenomenal events. That being said, the U.S. is still very much the mecca of gravel, and there is no shortage of well-managed events focusing on the athlete experience. If jet-setting across the globe isn’t on the menu, I would strongly consider events like Robidoux Rendezvous, BWR, SBT GRVL, or Crusher in the Tushar. These events go above and beyond to create a unique experience for participants.
+4. Choose Events that Promote Growth
+When researching races and putting together the framework of my calendar, I focus on events that promote athletic growth. This can be short-term growth over the course of a season or long-term growth that spans multiple seasons. Don’t be afraid to push yourself because races aren’t just about winning or losing. More often than not, you walk away from a race with expanded tactical knowledge and a greater understanding of your current strengths and weaknesses. When selecting your next race, ask yourself how this race will help prepare you for bigger and more challenging races or objectives in the future.
+5. Does the Race Align with Your Training/Life Balance?
+My final and most fundamental tip for selecting your next gravel race is to carefully reflect on the previous four tips and ensure that each of them aligns with both the time you’ve set aside for training as well as your work/life balance. Remember that you started riding gravel because it was fun — don’t lose sight of that throughout the process of planning and training. I always encourage my athletes to cautiously consider the amount of time they can realistically allocate to training, and determine if that aligns with the bare minimum amount of time required to train for their priority event. This allows you to move forward confident in your ability to maintain a healthy balance of training with life responsibilities, and deliver you to the start line prepared and ready to take on your next gravel race.

@@ -1,0 +1,20 @@
+---
+title: "Four Ways To Improve Your Freestyle Kick"
+author: "Philip Mosley"
+source: "https://www.trainingpeaks.com/blog/four-ways-to-improve-your-freestyle-kick/"
+slug: "four-ways-to-improve-your-freestyle-kick"
+---
+
+A bad kick technique can act like a set of brakes, dragging your feet down and ruining your body rotation. Here's how to make sure it doesn't happen to you.
+Winter is a great time to work on your swim weaknesses. And one of the most common (especially among triathletes) is the front crawl kick. You might think that kicking isn’t particularly important, because when you wear a wetsuit in a race your legs float anyway. It’s true to a certain extent, but a good kick will always help you swim faster. Check out any ITU World Series triathlon and you’ll see how effectively the top athletes use their legs for balance, streamlining and propulsion during the swim. They certainly don’t let their legs drag behind them, and that’s because an effective kick reduces your drag and helps improve your body rotation. Now is the perfect time to work on yours, while you still have plenty of time before the summer race season starts. The tips in this feature should help you improve.
+Point Your Toes
+Having big feet like the multiple Olympic gold medal winning swimmer Ian Thorpe (size 17) is not always a good thing. That’s because swimming fast is as much about being streamlined as it is about propulsion. If you have poor calf flexibility the likelihood is that without realising it your toes will point towards the tiles on the bottom of the pool. This means your feet are at 90 degrees to your legs, causing them to act like a big set of brakes. There are various stretches you can do to remedy stiff ankles, but the reality is that stretching will take several months to make much of a difference. A quicker fix is to concentrate on pointing your toes while you swim – also known as plantarflexing your feet. By reducing the angle between your feet and legs, you’ll reduce needless drag.
+Kick From the Hips
+Avoid kicking as if you’re riding a bike. This is hard to do, but it’s worth persevering. Again, it comes down to being streamlined. If you kick from your hip joint, your legs will stay in a fairly straight line, providing propulsion while perfectly counterbalancing the rotation of your stroke. If you kick from your hips AND your knees at the same time, you’ll travel slower and it’ll feel like your legs are dragging down. That’s because bent knees ruin your streamlining as well as upsetting the balanced rotation of your stroke. It may feel good to kick from the knees, but it won’t make you faster.
+Body Position
+Ever get that feeling that your legs are dragging towards the bottom of the pool? There can be several reasons for this, but one of them is the way you balance yourself as you float through the water. You can play with different positions by altering the way you push your chest into the water. After all, your chest contains your lungs, which are full of air and help make you buoyant. The more you push your chest down while you swim, the more your legs come up. In the book
+Total Immersion
+by Terry Laughlin he refers to the sensation of doing this right as “downhill swimming”.  When you get it right, you’ll know what he means.
+Kick Timing
+There are no rules that say how many kicks you should do per stroke cycle. Normally, it’s two, four or six. A two-beat kick feels nice and slow, and is something that distance swimmers and skilled triathletes often do. Alternatively, you could opt for the more common six-beat flutter kick, which allows you to vary the intensity right up to a powerful sprint. The key to good kick timing is to make sure that when your hand enters the water at the front of the stroke, the opposite leg kicks. If your kick timing is wrong you could be compromising your body rotation. Try counting your kicks per stroke as you swim, to get an idea of what you currently do.
+Work on this essential component of swimming to improve your efficiency and speed in the water. It does take time and effort, but the pay off on race day is worth it.

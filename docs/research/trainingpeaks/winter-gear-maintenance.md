@@ -1,0 +1,16 @@
+---
+title: "Winter Gear Maintenance"
+author: "Lindsay Zemba Leigh"
+source: "https://www.trainingpeaks.com/blog/winter-gear-maintenance/"
+slug: "winter-gear-maintenance"
+---
+
+Over the winter months we are generally training less, so it’s the perfect time to make sure your gear is in good working condition.
+The winter months can be a great time to organize, clean, and repair your gear. Here we’ll go over some high-wear areas on the bike, as well as which supplies you’ll want to replace before the new season starts. Taking the time to do your gear maintenance now will save you lots of stress once the busy racing season starts—nobody wants to be searching for equipment before a workout or race!
+Let’s start with the bike, since that requires the most gear maintenance. It’s always a good idea to take your bike to the shop to have it checked over by a professional, but there are some common wear points that you can address at home.
+First, be sure that your chain is in good condition. Chains stretch over long miles, increasing the energy required to pedal and adding wear to your whole drivetrain. You should also replace the cassette if small indentations start to appear on the backside of the teeth. An excessively worn cassette will shorten the lifespan of a chain, and vice versa. That’s why it’s a good idea to replace them at the same time, if possible.
+The tires should also be replaced once the tread gets worn down. This is especially important if you spend a lot of time on the trainer—the friction can cause the rear tire to wear quickly. If you notice that a tire looks more square than curved, has lots of nicks, or has threads poking through, it’s past time to replace it!
+Next, check your cleats. I recently learned my lesson with my Speedplay cleats—the mounting bolts rusted into the sole, so I was forced to replace my entire shoe instead of just the cleats! Don’t be me! Your cleats are an important interface with your bike, and the edges will wear down over time, which can make your pedaling platform less stable. In some cases worn cleats may even lead to injury as your muscles try to compensate. It’s a good idea to replace your cleats at least every season.
+Brake pads, cables and housing should also be replaced at least once per year to prevent sticky grime accumulating, which can impair brake and shift quality. A good sign that your cables and housing should definitely be replaced is when shifting is sloppy despite adjusting derailleurs. You’ll know your brakes need some attention when they start rubbing, don’t return to open when you release the levers, or squeal when braking.
+Finally, it’s a good idea to stock up on tubes, tires, chain lube, CO2 cartridges, and tire levers so you’re not scrambling during the racing season if you need to quickly change a flat tire or worn tire before a race. It’s also a good idea to revamp yor nutrition with bars, gels, blocks, drink mixes, etc. This can be a great time to find sales on fueling and it’s good to have plenty stocked up for the training and racing season—you’ll use it up quickly!
+Take some time to get your equipment dialed now, and you’ll start 2021 ready to focus on what matters: training and racing!

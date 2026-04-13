@@ -1,0 +1,45 @@
+---
+title: "Behind Ultra Runner Abby Hall’s Sensational CCC-UTMB Placement"
+author: ""
+source: "https://www.trainingpeaks.com/blog/abby-hall-ccc-2021/"
+slug: "abby-hall-ccc-2021"
+---
+
+Get the inside scoop on ultra runner Abby Hall’s stunning CCC podium placement, plus FKTs and trips to the sauna!
+Photo Credit: Ian Corless for adidas TERREX
+Professional adidas TERREX runner and former TrainingPeaks employee Abby Hall is a rising star in the ultra running world who recently nabbed second place in the prestigious 2021 CCC-UTMB race. Here she shares what race day was like, her training secrets, and what’s next.
+What is CCC and what does the race mean to you?
+CCC is a 100k race in the famous Ultra Trail Mont Blanc series. Its name stands for Courmayeur-Champex-Chamonix, three cities in each of the three countries it connects (Italy-Switzerland-France, respectively) on its journey around the Mont Blanc massif.
+For me, the race represents the pinnacle of mountain ultras. It offers a sampling of everything from steep climbs, to technical descents, fast running, and the pursuit of trying to do that as hard as possible for 61 miles through three countries.
+I first ran CCC in 2019 and was 8th. At the time, that was a massive step in my path as an athlete. But most importantly, I came out of that experience absolutely enraptured by the international spirit of UTMB, the trails in the Mont Blanc region, and the role this race plays in our sport. So much so that the goal to return to CCC stayed fully ignited through all of 2020 until I was able to step up to the start line again two years later. I would be on a winter long run (the kind you might bump to another day unless you had a laser focus on something) and people would ask, “what are you training for?” I’d say CCC, and they’d laugh because at the time it was so far away.
+I knew to get on the podium at CCC, it wouldn’t occur in my immediate fitness the final few weeks before the race. It would occur over the course of many training cycles, and the hard-earned lessons and personal growth that resulted from consistency.
+Photo Credit: Ian Corless for adidas TERREX
+Give us a recap of the race. What was it like on the trail that day?
+When left to my own devices, I tend to run conservative races. Going into CCC, the plan was to run a far more aggressive race than I normally would. One of the last things I told my husband (Cordis) before falling asleep the night before the race, almost as though I were sleep talking, was “I want to arrive in Champex Lac having gone out so hard that I’m not sure I can continue.” Cordis knows I don’t actually quit, so what this actually translated to was positioning myself to run boldly.
+Of course, even an aggressive race plan requires plenty of precision in dialing the effort just right. From the start in Italy to the halfway point in Champex-Lac, Switzerland, there’s quite a bit of smooth running sandwiched between two giant climbs. I tried to take advantage of that, viewing it as almost a different bucket I was pulling from.
+Photo Credit: Ian Corless for adidas TERREX
+Separating the race into chapters based on terrain helped me not only ensure I was properly spreading the effort, but that I was also staying present.
+From Champex-Lac, there are three significant climbs separating you from the finish in Chamonix, France. You’re either ascending or descending the rest of the way. Climbing is a strength of mine, so I focused on draining the tank as much as I could at the top of each climb. At this stage in the race, I was in third place and had been for quite a while. But I knew the lead was only seven minutes up, and that there was still a lot of race left.
+I caught second place on the last climb of the race, Tête aux Vents. I could hear Cordis and my teammates yelling at the top of their lungs from Col des Montets (a road crossing visible from the last climb.) With them watching, it held me extra accountable to give it full gas to the end. While I made every move I could to try and catch the leader (and eventual winner, Spanish runner Marta Molist Codina) on the final descent, ultimately we held a similar gap the last few climbs of the race. Sometimes it’s a bit of a gamble knowing when to time your moves.
+Did you change anything in your training or preparation for the race? What worked and what didn’t?
+I was able to spend the five weeks prior to the race in Chamonix training with my adidas TERREX teammates. Having that kind of detailed connection with the course was reassuring to me on race day. I learned how I best operated on the course, figuring things out like, “at this tree, I put my poles away.” Or “once you make this turn, it’s all smooth running to the next aid.” Or, “no matter how good you feel, hike this section of the climb!”
+I did my workouts and long runs on the course. Rather than planning the intensities as specific durations like we might normally, my coach, Jason Koop, planned them around my goal splits for race day. While my workouts would be much faster than I’d do them on race day, it got me acquainted with pacing that I could scale.
+The night before, I had my teammates quiz me on my splits for each section like I was studying flashcards for an exam. That was really new for me; I’ve never approached a race that meticulously before. I figured it would either work, or it wouldn’t, and I’d learn from it.
+On race day, I was regularly referring to these splits that I’d gotten to know well in my training. I came in ahead on some, and behind on others, but whenever I’d hit the split button, it felt like a new chapter of the race was beginning and wherever I was at was an opportunity for me to continue to stay on track.
+Photo Credit: Ian Corless for adidas TERREX
+Tell us about your Nüümü Poyo (JMT) FKT attempt. Did that run change anything about how you approach racing or training? Did those learnings inform your CCC run?
+In 2020, I returned to the JMT, a 223-mile trail that holds a deep significance for me. I headed out solo for the unsupported women’s FKT, ultimately falling six hours short over the course of 4 days and 20 hours on my feet. It was one of the most meaningful and joyful experiences of my life. Amidst sleep deprivation, UFO sightings and seemingly slithering between wildfires, I learned that I can carry a heavy pack and continue moving for a very, very long time.
+Coming to a race like UTMB where a common burden is the required gear, it felt like nothing compared to carrying four days worth of food in a hard-sided bear canister digging into my back! Above all, what my time experiencing the Nüümü Poyo taught me was that I carried all the tools I needed to sustain and manage myself. I think as an ultrarunner, there can be a tendency to overly depend on our support crews. Returning to CCC, I think this experience made me more confident in my ability to take risks and deal with the potential aftermath as it happened. Knowing you can handle yourself in a wide range of scenarios helps your brain spend less time thinking about “what if?” and more time in the present experience. Basically, I can wreck myself and genuinely trust that I’ll figure it out.
+What tips do you have for an aspiring ultra runner? Can you share some of your training secrets (e.g., going to the sauna!)?
+Go after the big goal that inspires you the most and don’t worry about creating a logical path to get there. The path will forge itself, and having a goal that lights you up is the most important part. My path has been comprised mostly of learning experiences stacked on top of each other. But pointed in the right direction, those build to something.
+And I am a huge fan of the sauna! Mainly because I quite literally enjoy being warm. But conveniently, it’s got some great training adaptations, too. I say we call those kind of things “training extra-curriculars”—pick a couple that are fun for you, and weave them in when your schedule allows, putting the other training first.
+For me, adapting a long-term view that puts consistent, incremental training at the core of each day has been by far where my biggest gains have occurred.
+In TrainingPeaks terms, the times when I’m most fit aren’t when my CTL has a massive spike, but when it’s slowly been creeping up and up for months.
+What keeps you running when the going gets tough?
+I do a lot of visualizing. I used to only picture moments where I missed the mark and wanted to be stronger. I still do that, but now I’m noticing I also picture moments like the CCC finish and the joy it brought me. That propels me forward just as much and that feels like a cool point of growth to have arrived at.
+What’s next?
+We’re getting ready to move, so that will be our next big adventure! And if time allows, I’ve got a couple of fall FKT missions up my sleeve. I’ll be returning to CCC again in 2022 because I’ve still got more I want to do there.
+The Complete Ultramarathon Training Guide
+Training Guide
+In this guide you'll find tips from top trail running coaches on the training, logistics, and mental tricks you'll need to complete a successful ultramarathon.
+Read the Guide

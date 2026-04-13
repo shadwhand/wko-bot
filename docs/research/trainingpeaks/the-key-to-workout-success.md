@@ -1,0 +1,37 @@
+---
+title: "Four Keys to Workout Success"
+author: "Matt Fitzgerald"
+source: "https://www.trainingpeaks.com/blog/the-key-to-workout-success/"
+slug: "the-key-to-workout-success"
+---
+
+It’s not just what you do for training that matters, but also how you experience, interpret and feel about your training. Unlock workout success with these four expert tips.
+Kelly and Shelly are identical twins with identical athletic histories who are now following identical training plans in preparation for an Olympic-distance triathlon — but there’s one major difference between them. While Kelly’s coach is giving her performance targets for workouts that are based on an accurate assessment of her present fitness level, Shelly’s coach is assigning targets that are slightly too aggressive.
+As a consequence, Shelly is falling short in most of her workouts, whereas Kelly is consistently hitting her numbers. Yet the two sisters are actually performing equally in their swims, rides, and runs; it’s just their workout targets that differ. The question is, how will they fare in relation to each other on race day?
+The Power of Self-Efficacy
+The answer is that Kelly will almost certainly reach the finish line ahead of Shelly. Yes, their bodies are the same, both genetically and fitness-wise, but athletes do not race with their bodies alone. They race with their minds, too. And in this respect the twins are different, with Kelly having experienced a lot of success in her training and Shelly a lot of failure.
+As a coach, I take pains to minimize the amount of failure my athletes experience in the training process. That’s because experiencing failure has a damaging effect on self-efficacy, which is defined as a person’s belief in their capacity to succeed in a situation. Such beliefs are known to be self-fulfilling, and for this reason, cultivating self-efficacy should be a major priority of the training process for every athlete.
+Henry Ford famously said, “If you think you can do a thing or can’t do a thing, you’re right.” And nothing makes an athlete believe they can do a thing quite like repeatedly doing things successfully. This was shown in
+a doctoral thesis
+on self-efficacy in runners that was conducted by Ashley Samson of LSU’s Department of Kinesiology. In part one of the three-part study, 39 runners in marathon training reported that physically feeling good was their top source of self-efficacy, while in a separate part involving 10 running club members, past experiences (e.g., “I had good runs last week”) ranked slightly higher than feeling good physically as the strongest source of self-efficacy. Samson quotes one of these runners as saying, “When I made it through a run, and I was able to finish feeling strong, it makes me want to go out and do more runs.”
+What these findings show is that
+it’s not just what you do for training that matters, but also how you experience, interpret, and feel about your training.
+In my coaching work, I try to set athletes up to experience their workouts as wins rather than losses. There are four specific measures that I use in this effort. Even if you’re self-coached, you can apply them to your own training to ensure that you arrive on your next starting line feeling more like a Kelly than a Shelly.
+Four Keys Workout Success
+1. Set Challenging but Achievable Performance Targets
+The most successful athletes seldom test their limits in training. Effective endurance training is about consistency, not heroic individual efforts. Performance targets in individual workouts should, therefore, be set at a level you’re confident you can achieve, given your current fitness and fatigue levels. It’s okay to have to work hard to hit your numbers in key training sessions, but it’s not okay to set the bar so high that you’re likely to fall short of it. To accomplish this:
+Follow a training plan that fits your current fitness level and your current lifestyle constraints. The
+TrainingPeaks training plan store
+is a great resource to find one.
+If you don’t have one already, upgrade to a coach. While training plans can’t always fit your specific needs, a coach can tailor a plan that’s perfect for you. Use the TrainingPeaks
+Coach Match
+service to find your perfect coach, whether that’s in-person or virtual.
+Keep your zones current. These are the building blocks of your training plan because they will determine how hard your efforts will be. If your zones are set too low, you won’t be challenged enough. But if they’re set too high, then you won’t achieve consistent workout success. Make sure you review your zones if you notice that your heart rate or perceived exertion levels are inconsistent.
+2. Manage Your Expectations
+If, for any reason, I don’t expect an athlete I coach to have their best stuff for a particular workout, I tell them so. For example, I might say, “Don’t be surprised if you feel a little flat in tomorrow’s tempo ride coming off yesterday’s hill sprints. If that happens, just grind it out, knowing that the benefit comes from getting it done, not from feeling great.” Managing expectations in this fashion keeps you from experiencing workouts as failures, even when you are not at your best physically.
+3. Change Your Performance Targets Mid-Session if Needed
+Keep in mind that the performance targets you create for workouts are nothing more than educated guesses about what you’ll be capable of in a particular session. If those numbers turn out to be unreachable, it doesn’t mean you’ve failed; it just means your guesses weren’t very good. The true purpose of performance targets is to set you up to get the intended benefit of a workout. So in situations where you discover that the numbers you’ve chosen are too aggressive, you need to make a spontaneous adjustment to preserve the workout’s purpose.
+Suppose, for example, you plan to do a workout consisting of 5 x 5:00 at critical power (CP) on the bike, and your current estimated critical power is 265 watts. However, very early in the first interval, you find that 265 watts feels a lot harder than it normally does, and you sense that if you forced yourself to hold this wattage, you would be completely exhausted by the end of the workout, which is definitely not its intended purpose.
+By definition, critical power is the highest wattage a cyclist can sustain for 30 minutes. This number will fluctuate from day to day based on fatigue levels and other factors. If your CP is 265 watts on a good day, it might only be 255 watts on a bad day like the one described. In this scenario, the right move is to complete the intervals at a wattage you feel you could sustain for 30 minutes straight in your current physical state. This will prevent you from not only pushing too hard but also from subjecting yourself to an unnecessary failure that might rattle your confidence.
+4. Redefine Failure
+I don’t want to leave you with the impression that failure is bad and should be avoided at all costs. While too much failure certainly is bad, a little is actually better than none. Risking failure is necessary for improvement, and failing occasionally can help to alleviate the fear of failure itself. I remind my athletes of these things often, and I encourage you to do the same for yourself. Seeing yourself as an athlete who dares to fail every now and again is perhaps the subtlest element of self-efficacy, or believing in your overall ability to succeed.

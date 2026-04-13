@@ -1,0 +1,20 @@
+---
+title: "Rapid Recovery with Egg White and Hemp Protein Powder"
+author: "Shauna Sledge"
+source: "https://www.trainingpeaks.com/blog/rapid-recovery-with-egg-white-and-hemp-protein-pow/"
+slug: "rapid-recovery-with-egg-white-and-hemp-protein-pow"
+---
+
+The addition of a concentrated protein source reduces the glycemic load and helps to minimize spike in blood glucose and insulin levels. Two of these concentrated protein sources are egg white protein and hemp protein.
+When it comes to replenishing the body after a tough workout, athletes have hoards of options, but few make a direct and fast impact. Rich sources of the branch chain amino acids or BCAAs (leucine, isoleucine and valine), are indispensable to athletes and other active individuals because these nutrients promote rapid recovery from exercise via their anabolic muscle building effects. The addition of a concentrated protein source reduces the glycemic load and helps to minimize spike in blood glucose and insulin levels. Two of these concentrated protein sources are egg white protein and hemp protein.
+Egg White Protein
+The egg white is one of the highest-quality proteins that you can get. It’s rich in the branch chain amino acids that helps drive protein synthesis so nutrients are fully utilized by the body. Another egg white component is the arginine amino acid. This simulates production of nitric oxide that dilates blood vessels for better blood and oxygen circulation and promotes higher energy. With over 40 different proteins found in egg whites, egg white protein is undoubtedly a great source of healthy sustenance for daily activities.
+Moreover, egg white protein has virtually no carbohydrates or fat. This makes it the perfect supplement for individuals seeking a weight loss option or following a strict diet. Scientists suggest eating eggs in the morning help you eat less throughout the day and lead to more significant weight loss. Plus, it’s a great alternative to those who are lactose intolerant and can’t handle the milk proteins that comprise whey.
+Obviously you can cook eggs yourself, but if you don’t have time to separate out the egg whites or you’re out training or racing, egg white protein powder can be a valuable and convenient substitute instead. Egg white protein powder is derived from dehydrated egg whites that have been processed into a fine powder. During the manufacturing process, it undergoes a pasteurization process to prevent salmonella and inactivate the avidin protein, an antinutrient that’s found in raw egg whites. Furthermore, as a powder it’s digested faster, getting the BCAAs into the system faster for optimum performance.
+So, rise and shine with egg whites or egg white protein powder. Consuming it in the morning boosts protein synthesis and prevents muscle protein breakdown, and in its powder form it’s a great breakfast option for athletes on-the-go.
+Hemp Protein Powder
+Generally speaking, foods can be classified as complete, partial, or an incomplete sources of proteins. In order for a food to be classified as complete, it must contain all nine essential amino acids. Hemp is a complete protein comprised of all nine essential amino acids, providing sustenance to the body. Hemp is also a good alternative for vegetarians and vegans seeking a rich, concentrated protein source.
+The true testament to health is how easily hemp is digested. It contains edestin and albumin, two globular proteins. Globular proteins dissolve easily so they are readily accessible for the body to use. While some look to soy protein, soy is much more difficult for the body to digest, where its inhibitors block the action of trypsin and other enzymes needed to break down the protein. This can often result in unwanted bloating and gas.
+Stick to egg white or hemp protein and you’ll be well on your way to rapid recovery, but also have the ability to enjoy the many other healthful benefits these rich concentrated protein sources provide.
+References
+Cordain, L. (2013, October). The Paleo Diet: Lose Weight and Get Healthy by Eating the Food You Were Designed to Eat. John Wiley & Sons.

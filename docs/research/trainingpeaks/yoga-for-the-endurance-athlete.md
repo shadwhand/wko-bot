@@ -1,0 +1,21 @@
+---
+title: "Yoga for the Endurance Athlete"
+author: "Sarah Oliver"
+source: "https://www.trainingpeaks.com/blog/yoga-for-the-endurance-athlete/"
+slug: "yoga-for-the-endurance-athlete"
+---
+
+Yoga can be a great addition to any endurance athlete’s routine. Yoga instructor and coach Sarah Oliver shows you some key moves that will help you become stronger and more flexible.
+Endurance athletes are constantly striving to find the appropriate balance within their bodies so they may continue to progress in their training. Injuries and mental burnout can inhibit the athlete’s ability to consistently train and progress, resulting in a loss of precious time towards improvement. Athletes ranging from the novice beginner triathlete, to the professional cyclist, to the ultra marathoner are turning to yoga to offset these challenges by balancing strength, flexibility, and mental prowess.
+Physical Benefits
+Endurance athletes spend the majority of their time in the forward moving plane of movement. Runners and cyclists propel their bodies forward through recruitment of the hip flexors, quadriceps, hamstrings, glutes, and core. Swimmers propel their bodies forward through the repetitive movement of rotating the shoulders, utilizing the pectoralis (chest) muscles, trapezius and latissimus dorsi (upper/mid back) muscles, and the core. The repetitive nature of these sports put the body at risk for muscular imbalances, which could eventually result in injury. Yoga encourages an individual to utilize both the superficial and deep muscle groups, resulting in appropriate balance in strength and flexibility. Overall body awareness and balance can improve with a better sense of where the body is moving in space-an important skill to have for appropriate technique in any sport.
+Mental Benefits
+An important component to both training and racing that all too often can be overlooked is the mental component of the sport. Endurance sports take an incredible amount of focus, persistence, patience, and adaptability. An athlete can be in the best shape of his or her life, but if on race day their head is not it, neither will their body be. The practice of yoga improves mental focus by utilizing both the breath and the body as an anchor for the mind. The practitioner becomes more aware of their own thoughts as they improve their ability to be fully present with their body and breath. Yoga teaches the individual to stay calm, focus, and breathe with whatever shows up on their mat, and athletes can certainly take these skills with them into their sport when the going gets tough.
+Specifically for athletes, find a yoga style that encourages you to utilize strength to support your flexibility. The safest way to take the body into a more intense range of motion is through supported strength and/or appropriate yoga props. Athletes in particular should support any deep stretches with strength, as there may already be vulnerable muscular imbalances resulting from the repetitive nature of their sport.
+The following poses are excellent at building strength and flexibility in common muscular imbalances in the endurance athlete:
+Downward Facing Dog- Stretches the hamstrings and low back, builds strength in the quadriceps, trapezius muscles, rhomboids (muscles between the shoulder blades), adductors (inner thighs), and transverse abdominis (deep core.)
+Upward Facing Dog- Stretches the ankles, hip flexors, pectoralis muscles (chest), builds strength in the glutes, hamstrings, trapezius muscles, rhomboids, spinal extensors.
+Crescent Lunge- Stretches the hip flexors, pectoralis muscles, strengthens the quadriceps, adductors, gastrocnemius and soleus (calf muscles), quadriceps, trapezius muscles, and rhomboids.
+Pigeon- Stretches the hip abductors (outer hips/glutes), hip flexors
+Happy Cow Face- Stretches the hip abductors, triceps, pectoralis muscles, strengthens the hip adductors, trapezius muscles, and rhomboids.
+Yoga for many athletes has become the “glue” that holds them together. The practice keeps the body flexible and strong and the mind supple and resilient. Consider adding a weekly yoga practice into your schedule to find, maintain, or improve your mind and body balance.

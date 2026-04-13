@@ -1,0 +1,19 @@
+---
+title: "Engaging Your Triathlon Community to Stay Motivated"
+author: "Laura Bennett"
+source: "https://www.trainingpeaks.com/blog/engaging-your-triathlon-community-to-stay-motivated/"
+slug: "engaging-your-triathlon-community-to-stay-motivated"
+---
+
+Even when training in three different sports, triathlon training can be monotonous. Professional triathlete and 30 year veteran of the sport Laura Bennett outlines how she has used athletes around her to stay motivated and enjoy her training while still working towards her own goals.
+How many times have you been stuck in a rut with your training? Every athlete gets tired physically, mentally, and emotionally of the same training day after day, month after month, year after year. You set goals for yourself and do your best to find a routine that will allow you to reach them, but the monotony can be brutal.
+My husband Greg and I are often asked, “How have you stayed in the sport for 30 years?” The quick response is that we love the community of triathlon and it’s the people that make the sport great. Sure, we love the challenges and the tests we put ourselves through, but when it’s all said and done, it’s the camaraderie and the sharing of war stories that makes this sport great. After 30 years, the training could get monotonous, but we work to keep it exciting and interesting. How do we do it? We use our community.
+Training Partners
+In any training program, there are times to put your head down and focus entirely on what you need to get done. This usually occurs during a push phase leading up to your key race for the year. However, there is also plenty of time throughout the year that you can use others to help distract from the pain, overcome the tedious miles, and help you reach new levels of performance.
+Only a few professional triathletes train on their own for long periods of time. Great athletes like Chris McCormack, Craig Alexander, Javier Gomez, and Simon Whitfield have always had sidekicks training with them. Gwen Jorgensen, Mario Mola, Mirinda Carfrae, and Richard Murray are all in training groups. Greg and I have always had each other to drag ourselves out the door.
+Groups
+We’ve had each other, but we’ve also used other aspects of the community around us. The swim squads at our training locations in Noosa, Australia, Boulder, Colorado, and North Palm Beach, Florida and the bike groups in Noosa and North Palm Beach, have been invaluable in keeping our training interesting and social. They have truly helped us reach new levels of performance. Believe it or not, we even train with our competition for a much of the year, whether that be in Noosa or Boulder.
+Planning Around Your Community
+We have recently designed our program for the world’s highest elevation triathlon- The 106 West Triathlon, a massive goal for our season. It is both specific to our individual needs of preparing for the rigors of racing above 9,000 ft. while also allowing us to enjoy the journey with others. Our program is built around the Boulder Masters swim program, the Boulder Track club long runs, and our close friends long bike rides. We go to the specific workouts keeping in mind what we hope to achieve from each individual workout and how the accumulation of those workouts will help us prepare for our race.
+A great training program is also a flexible training program. A program is a guide, it is not the final word. Understanding your program is very important. When you know why you are doing the sessions you are, you will have the freedom to fit your sessions into a group environment if that is what you need mentally and emotionally.
+No one knows you like you do. If you can adapt your training program to your community and use the group swim, bikes, and runs to help keep the sport social and interesting, you will prolong your career in the sport. More importantly, you will be in a better emotional and mental place, which will lead to even greater performances.

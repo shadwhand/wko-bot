@@ -1,0 +1,32 @@
+---
+title: "How to Breathe Your Way to Better Recovery"
+author: "Phil White"
+source: "https://www.trainingpeaks.com/blog/how-to-breathe-your-way-to-better-recovery/"
+slug: "how-to-breathe-your-way-to-better-recovery"
+---
+
+Before you reach for the melatonin, try these simple breathing exercises to activate your parasympathetic nervous system for better rest.
+For endurance athletes, it’s all too easy to let your mileage, splits, and other stats become your main focus. And while the stimuli you subject yourself to are important, they don’t fully determine the adaptation you’re seeking: the key part of your training equation is how well you recover. There are plenty of levers and dials you can use to tweak your recovery, but (perhaps surprisingly) few hold more promise than the ability to manipulate your breathing.
+A few years ago, the
+Wim Hof Method
+broke out of obscure human performance circles and into the mainstream. The Dutch extreme athlete has championed a combination of cold immersion, meditation and breathing exercises to decrease stress and improve performance. The most commonly used protocol (30 fast breaths followed by a long exhale and maximum breath hold) is designed to up-regulate your system—or kick you into fight-or-flight mode.
+While up-regulation can come in handy for big work presentations or races, you can use the same mechanism to activate the other branch of the autonomic nervous system; the rest-and-digest (parasympathetic) state.
+On average, an adult takes between 16,000 and 20,000 breaths each day—the majority of which many of us are never aware of. Yet in every kind of meditation and you’ll find a common factor: focus on and regulation of breathing. Like sliders and knobs on a music studio’s mixing desk, you can change your breathing to change your physical, cognitive, and emotional state.
+For the purpose of this article, let’s now look at some of the ways you can change your breathing to encourage post-training or racing recovery, and set you up for restful slumber. To help, I brought in Brian Mackenzie, one of my co-authors of
+Unplugged
+,
+who has worked with high performing endurance athletes for over 15 years and created
+The Art of Breath
+, a principles-based approach to breath and energy control.  It is also used by first responders and members of the military. Here are a few simple ways to get started with recovery-focused breathwork.
+Breathe Through Your Nose
+When you’re stuck in a stress state, it’s often caused or exacerbated by over-breathing, which is typically accompanied by mouth breathing. This is a secondary way of intaking and expelling air that does not require much work from the diaphragm. Outside of sub-max and maximal work loads, mouth breathing doesn’t actually absorb any more oxygen than nasal breathing, and can create tension in muscles and tissues, which are essentially being asked to do a job they weren’t designed for (yep, that sore neck you get might be in part due to how you’re breathing).
+The simplest fix? Resolve to only breathe in and out through your nose at any work being done below or around your aerobic threshold. This doesn’t just relate to the tone of your autonomic nervous system. Taking air in through your nasal passages also warms it, filters it like a Dyson vacuum cleaner, and regulates the amount of oxygen that reaches your lungs. Your nose was designed to be the channel you breathe through—your mouth was not. So your first piece of homework is to simply inhale and exhale through your nose, unless you’re doing work that actually requires you to move more O2 in and more CO2 out, which is probably 20% or less of your training.
+Slow Down
+There are an infinite number of ways you can game your breathing to calm yourself down, switch from a sympathetic to parasympathetic state, and get ready to sleep. But the simplest is to reduce the number of breaths you take per minute. This is one of the plus sides of nasal breathing, as it instantly reduces our respiration rate. The way to do this is to slow the heck down, and take your ego out of it.
+For starters, try this: take a slow inhale through your nose for six seconds, then exhale (again through your nose) for eight seconds. Do this for three to five minutes, and note the differences in how it makes you feel. Then, anytime you’re stressed throughout the day, take as many of these slow, nasal breaths as the situation allows. This is great for calming down before a big work presentation, dealing with the “stop honking at me!” stressors of rush hour, and all those other annoyances that daily life throws your way.
+Hold Up, Wait
+…before you take your next inhale. Apnea (meaning absence of breath) protocols can help you become more tolerant to carbon dioxide, which in turn will prevent over-breathing. Inserting brief breath holds between nasal inhales and exhales can also help you downshift your nervous system so that every other mechanism in your body is better primed for recovery. One of the simplest ways to get started with apnea breathing—not to be confused with sleep apnea, which is tied to mouth breathing at night—is to take a six second nasal inhale, hold your breath for 18 seconds, and then exhale through your nose for 12 seconds.
+Do this for three to five minutes an hour before turning in for the night and see how it positively impacts your sleep. If timing each phase stressed you out, just ballpark it, focusing on breathing calm and easy. Can’t hold your breath for 18 seconds without feeling stressed out? Then dial it back to approximately a four second nasal inhale, 12 second hold, and eight second nasal exhale. The inability to hold your breath without experiencing panic is a sign that your nervous system is stuck in fight-or-flight mode.
+The CO2 tolerance test on Brian’s website
+can help give you greater insight into this. And the cure? You guessed it: a few minutes of daily breath work.
+From training to technology to the 24/7 news cycle, we’re constantly exposing our bodies to signals that tell us to go, go, go. What we’re lacking are ways to go slow, slow, slow afterward. No wonder many of us turn to OTC medications or natural alternatives like ZMA, magnesium, and melatonin to help get our sleep-wake cycles back on track. While the latter offer unquestioned, research-backed benefits, an even easier way to reset our brain and nervous system (and get better recovery as a result) is to do the most elemental thing we do as human beings: breathe.

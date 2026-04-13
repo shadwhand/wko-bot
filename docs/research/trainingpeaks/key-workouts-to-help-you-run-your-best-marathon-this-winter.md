@@ -1,0 +1,23 @@
+---
+title: "Key Workouts to Help You Run Your Best Marathon This Winter"
+author: "Karen Meadows"
+source: "https://www.trainingpeaks.com/blog/key-workouts-to-help-you-run-your-best-marathon-this-winter/"
+slug: "key-workouts-to-help-you-run-your-best-marathon-this-winter"
+---
+
+Just because it's cooler outside doesn't mean marathon-running season is over. Here are some workouts to help focus your winter training.
+Now that certain in-person running events are back on, and with more coming in 2021, many of us are getting excited about racing again. With cooler temps already here in many states (and on the way in others), there is no better time to lace up your running shoes and prepare for a marathon. I have listed below some key workouts that will help most runners tackle the marathon distance successfully—whether their goal is to complete the distance or obtain a personal best.
+The Tempo Run
+The tempo or threshold run is one of the most effective ways to gain fitness and race faster. Running at threshold pace (or effort) is designed to push you to the edge of your lactate threshold without flooding your system with lactic acid,  making marathon pace feel easier in training and on race day. I like to describe tempo as runs that are comfortably hard, where you can talk in short sentences—but you prefer not to. You can also think of tempo as running at or near your 10-mile race pace.
+Temp runs can either be broken into intervals with short jogging rest, or done at a continuous threshold pace. An example of a tempo interval would be 4 x 4 minutes at tempo pace (or the equivalent effort) with short jogging recoveries between sets. It’s important that the rest between intervals is short and runnable. I tell my athletes if they have to walk between intervals, then they are running the tempo too fast. I recommend that a continuous run at threshold be kept under an hour for most runners or it will require additional recovery time before the next hard workout.
+The Marathon Pace Run
+The marathon pace (MP) run is the essential ingredient in pursuit of a time goal or a personal record. The MP run helps an athlete learn to feel the correct pace/effort needed to meet their goal. While most runners are used to using a GPS training device for pacing, it’s important to remember that occasionally the signal may be lost or delayed—so learning to “feel” the proper pace is important.
+Runs at or close to MP should be included in the training plan, especially in the last 6-8 weeks prior to race day. I like to have my athletes run 12-16 miles at MP well before race day, depending on their fitness level, mileage and race goal. These can be continuous miles run at MP, or may be broken like 2 x 6 miles at MP with one mile of jogging between sets.
+The Long Run x 2
+Most runners and coaches know that the long run (LR) is the cornerstone to every athlete’s success in completing the marathon, but what about two long runs in a week? I have found that a midweek long run (of 2 hours or so) helps runners prepare physically and mentally for the marathon. If you work a normal work week, you can try splitting up that midweek long run into a double—for example, running 6 miles in the morning then 4-7 miles midday or in the evening. As always, the specifics depend on your level of fitness and how far you need to run to meet that 2-hour goal.
+Include Quality Running Within Your Long Run
+The long run should not always be run at easy pace or effort. Spice up your long run by including a progression, or try a cut down run, where you start out 15-30 seconds slower than marathon pace and end up 15-30 seconds faster than MP. This is great for teaching your body how to run hard when it is already tired, which will happen in the later miles of the marathon. Another fun workout is a fast finish run where the run is relatively easy for the first two thirds but cuts down to MP or a little faster the last third. The great thing about adding quality work to the long run is the athlete can recover relatively quickly since they only ran a portion of it hard.
+The final 12 weeks of the marathon is a balancing act of building up mileage, training the proper energy systems, performing prehab strength work and recovering to avoid injury all the while beating back the cumulative fatigue that all this brings.
+Complete Marathon Training Guide
+Training Guide
+This guide is designed to be used as you train for a marathon, with in-depth information on every part of the process. Each chapter is packed with tips, workouts, and insights from expert running coaches, to give you all the tools you need to succeed.

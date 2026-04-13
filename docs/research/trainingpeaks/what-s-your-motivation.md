@@ -1,0 +1,34 @@
+---
+title: "What’s Your Motivation?"
+author: "Mike Ricci"
+source: "https://www.trainingpeaks.com/blog/what-s-your-motivation/"
+slug: "what-s-your-motivation"
+---
+
+What’s the difference between you and that competitor? Why is he/she willing to do whatever it takes to reach their goals, yet you give yourself permission to slack off? Motivation has a lot to do with it.
+ZZZZZ. It’s 6:00 a.m., and the alarm clock goes off. It’s time to start the car up, scrape the ice off the windshield, drive to the pool and jump into the cold water. Sounds enticing, right? The bed is nice and warm, but if you continue to lie there, you’ll miss your workout. “It’s only February,” you tell yourself. You rationalize why it’s ok to miss your swim workout. You hit snooze and you go back to sleep.
+Meanwhile, the guy or gal in your age group that you want to beat doesn’t miss the workout. They get up and get it done. The thought of missing a workout doesn’t even cross their mind. Never has, actually.
+What’s the difference between you and that competitor? Why is he/she willing to do whatever it takes to reach their goals, yet you give yourself permission to slack off? Motivation has a lot to do with it. Sometimes, a lack of motivation comes from success. What? Right. When you have a super awesome, really cool goal for the season and you reach it, typically you’ll ask yourself, “Now what?” We see this all the time. As a coach, I constantly remind my athletes that it’s a lot easier to get to the top of the mountain than it is to stay there. Where’s that intrinsic motivation going to come from once you’ve reached the top?
+On the opposite realm, I remember watching a certain pro football player from the Dallas Cowboys who was being interviewed. He was asked, “What motivates you?” His answer was surprising. He said it wasn’t the money, it wasn’t the success—it was the fear of failure!
+If you really want to get after your goals, but are lacking motivation, then take a minute and do this exercise. Close your eyes and imagine yourself finishing your “A” race of the season, short of the goal that you set for yourself. Imagine how that feels.
+Now, see yourself telling others how you didn’t reach your goal. Imagine looking in the mirror and telling yourself it’s ok, that you’ll “get ‘em next time”. Now keep that feeling with you for the off-season. Most importantly, stick that memory in the back of your head when you think about skipping the next workout!
+I asked a few of my athletes what motivates them during the cold, dark winter months and here’s what one had to say: “What keeps me motivated is having long-term goals in mind and focusing on doing small tasks well, even when it’s really early and cold and nobody is there cheering me on. At these times, I am my own motivator. The winter months show who wants it badly enough.”
+Here are the key factors that should keep us motivated to keep training through the winter.
+1. We remember that training for endurance sports is a lifestyle choice.
+This is true for most of us. It’s penciling in that long bike or long run every weekend. It’s working a family vacation around a race (or trying not to sometimes). It’s about eating healthy, and working out isn’t just “exercising” but it’s “training”. We set goals (see #2), and we’re working towards them.
+2. We remember that we are training for a goal.
+We aren’t going through the motions to fit into a slimmer pair of jeans. We are training to beat our previous times, to beat our neighbor, our office mate, and of course, our rivals. We are training to push our limits to see what we are capable of. We train every day seeing ourselves crossing the finish line with a feeling of satisfaction. We see ourselves passing our rivals—how good is that going to feel? Mental Skills Coach Will Murray adds, “Make a motion picture in your mind’s eye of yourself heading toward the finish line of a race next summer—full color, warm, sunny, crowds along the race course. Let that movie propel you forward during these short days.” We also have objectives to help us meet our goals (see #3).
+3. We need to reach our objectives in order to reach our goals.
+When we write down our goals for the year—that we are going to swim, bike or run X number of miles, we know that if we miss ONE week of hitting that goal we’ll have to make up those miles somewhere along the line. Seeing those little green boxes fill up on TrainingPeaks is a simple motivation for some—comparing last year to this year with regard to hours completed, miles run, etc. is enough motivation to keep us from staying in bed on the next cold day. As a coach, I never want my athletes to be in “make-up mode” but as an athlete, I understand sometimes it needs to be done to stay on task.
+4. We keep raising the bar.
+Motivated athletes are constantly raising the bar for themselves. There is never “enough” and there’s never an excuse—it’s just on to the next goal. They might think, “Oh great, I broke 8:00/mile in my 5k, now I’m going for 7:45 pace!” Or, “I broke 3:00 in an Olympic distance race and now my goal is to break 2:50.” And so on. Motivated athletes see a goal as just the next hill to climb. They will do everything they can to get there, and they are resolute that it WILL happen.
+5. We decide to choose the thing that’s good for us vs. the thing that’s easiest for us.
+It’s super easy to put your jammies on at night and get a good book and read in bed. It’s much tougher to put those jammies on, do a 15 minute core set, and then go to bed. These are the types of decisions we can make in February to help us at our key races in July and August.
+There’s no better feeling as an athlete than stepping to the starting line knowing that you trained harder than everyone in your age group, and you’ve done everything you can to reach your goal on race day. And there’s nothing worse than the opposite, right? Prepare now for the success you want to have during your season. It’s not easy to be great or to win your age group, or to place in that local race. If it were, then there would be a lot more people who were doing it. It’s all up to you to reach that goal and to reach that level that you didn’t think was possible.
+One of my age group athletes sums it up nicely: “The things that keep me motivated in the cold winter months are terror, self-respect and will. Terror of not performing well in my first Ironman, self-respect to not be an out-of-shape 50 year old that has given up, and the will to be all that I can be.”
+In short, ask yourself, “Am I doing everything I can on a daily basis to get better, so that when my ‘A’ race is over, I’ll know I did absolutely everything I could have to have my best day ever?” If the answer is no, then there’s work to be done!
+Training for IRONMAN Boulder and need some guidance and motivation? Join D3 Multisport’s IRONMAN Boulder
+training group
+, or attend their
+IRONMAN Boulder training camp
+from June 4-8, 2014.

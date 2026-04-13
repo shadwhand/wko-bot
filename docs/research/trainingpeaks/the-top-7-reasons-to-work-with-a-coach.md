@@ -1,0 +1,27 @@
+---
+title: "The Top 7 Reasons to Work With a Coach"
+author: ""
+source: "https://www.trainingpeaks.com/blog/the-top-7-reasons-to-work-with-a-coach/"
+slug: "the-top-7-reasons-to-work-with-a-coach"
+---
+
+There are many reasons why athletes work with a coach. We asked TrainingPeaks athletes to list the top benefits they have received from hiring a coach and here are the top 7 answers.
+For many athletes, working with a coach has made the difference between just “training” and doing focused workouts to meet a goal. We asked a simple question on Facebook, “Why do you work with a coach?” and these are the top responses we received from athletes. Which of these aspects can you benefit from the most?
+1. Structure
+For many athletes, setting up the structure of their training is the hardest step. There are many components involved in how you prepare for your event. Factors like experience, goal time, time to train and others all come into play. This also makes it confusing. When should you do a base period? How long should your build be? You can certainly work to manage all of this, but it can frustrating. One athlete wrote in that having a coach helps her, “To avoid obsessing over my training.” Another athlete wrote that having a coach helps since it provides, “Focused effective workouts versus my rambling attempts.”
+2. Accountability
+Another popular answer, accountability, is something a coach can provide in a one-on-one manner. For some, knowing someone else is going to see if they miss or shorten a workout gets them out the door. As one athlete put it, “I can not follow a plan without guidance and being checked.” For those that need to have someone else to be accountable to, nothing is more effective than a coach.
+3. Motivation
+Hand in hand with accountability, motivation was another popular answer. Daily training, while effective, can also be draining. From hard tempo runs to long bike rides, the training can be daunting at times. Having someone else to cheer you on and push your limits can make all the difference. “I know what I need to know but find excuses,” wrote one athlete. Having a coach encourage you through training, and even through the down days can keep you on track to reach your goals. The mental aspect of training can not be underestimated. When you have support you can reach higher. One comment that stood out was, “Because he makes me feel like a world champion!”
+4. Provide Wisdom/Smarts
+There are certainly plenty of resources available to athletes- at times it can be too much. Picking and choosing from the multitude of literature on training can be time consuming and stressful. Having someone invested in your goals to wade through that and provide a clear plan allows you to focus solely on getting the work done. One commenter wrote that their coach, “Has forgotten more than I know about how to race and how to get faster.” Additionally, coaches can shorten the learning curve of endurance sports training. They can, as one athlete put it, “impart some of their wisdom and experience on those of us hoping to achieve what they have.” Coaches also give the feedback necessary to avoid making the same mistakes repeatedly by providing unbiased comments. They give, “Impartial advice and critical analysis,” as one commenter wrote.
+5. Lower the Chance of Overtraining/Injury
+Endurance training can be addictive, and overtraining is a real concern. Having someone else to monitor not just your daily workouts but your overall health can keep you from overdoing it. “Without her I’d be doing nothing or way too much,” wrote one athlete about her coach. Additionally, rest is as necessary as training in order to make fitness gains. For many athletes, taking a rest is the hardest part of training. Coaches can, “reign me in and rest,” as one athlete wrote. Going too hard, too often can lead to injury, something no athlete wants to experience. Having a coach pull back your training before an injury happens is highly valuable.
+6. Time Management
+This is an area where a coach can help the most. As one athlete wrote, “I know I can apply effort. Being short on time, I need someone that knows more than me to make sure I’m putting it where it counts.” The majority of athletes have limited time to spend training, so ensuring that every session matters and no time is wasted is key. Having an unbiased expert create a plan that works with your schedule and directly address your strengths and weaknesses can take you to the next level without wasting your most precious resource- time.
+7. To do the Thinking for Them
+Whether it’s analyzing a run, looking at your overall season, or addressing a weakness, there is a seemingly never ending list of elements to incorporate into your plan. This can be overwhelming to many athletes. This is where the coach not only saves time but frustration as well. “I don’t want spend time on thinking what to do, to improve my performance,” wrote in one athlete.
+Many athletes wrote in citing several of the elements in the list above. That’s one of the biggest benefits of all; the fact that you can gain so many advantages from one single person. We are encouraging athletes to dream bigger than ever for 2015, and as many coached athletes will agree with, working with a coach may be the smartest step you can take towards achieve those goals.
+Let TrainingPeaks find the right coach for you with our
+Coach Match Service
+.

@@ -1,0 +1,10 @@
+---
+title: "Nutrition for Male vs. Female Athletes"
+author: "Dr. Rick Kattouf"
+source: "https://www.trainingpeaks.com/blog/nutrition-for-male-vs-female-athletes/"
+slug: "nutrition-for-male-vs-female-athletes"
+---
+
+An athlete's nutritional requirements will be based on the amount of lean muscle the athlete has and what the athlete is goal-setting for. As an athlete becomes leaner, his/her nutritional needs will change.
+Over the years, a question always arises regarding the nutritional needs of males versus females. When it comes to the nutrition needs of an athlete, it is more one’s body composition that will be the determining factor as opposed to the sex of the athlete. The two main keys to determining an athlete’s nutritional requirements is the athletes body fat percentage and the athletes goals/needs. For example, if we look at two different female athletes: athlete #1 is 5’4”, 115 pounds, 15% body fat, and is training for Olympic distance and Half-Iron distance triathlons; athlete #2 is 5’4”, 160 pounds, 32% body fat, and wants to lose weight/body fat. The athlete with 15% body fat is of course much leaner and is training for triathlons, therefore, her total calories and macronutrient combinations (percentages of carbohydrates, protein, and fat) will vary as compared to athlete #2. Now, the same holds true for male athletes. A male athlete with 7% body fat will have different nutritional needs as compared to a male with 23% body fat.
+In summary, no two bodies are exactly alike, male or female. Therefore, in order to dial this in for each athlete, his/her nutritional requirements will be based on the amount of lean muscle the athlete has and what the athlete is goal-setting for. As you can imagine, over time, these needs for each athlete may change. As an athlete becomes leaner, his/her nutritional needs will change. Also, athletes are very driven and focused and continue to set higher goals for themselves. So, as the sprint Triathlete becomes more experienced and chooses to gradually increase his/her race distance to the Olympic, Half-iron and Iron-distance triathlon, his her nutritional needs will drastically change.

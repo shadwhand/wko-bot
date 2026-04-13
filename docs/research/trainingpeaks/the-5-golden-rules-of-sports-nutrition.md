@@ -1,0 +1,35 @@
+---
+title: "The 5 Golden Rules of Sports Nutrition"
+author: "Craig David"
+source: "https://www.trainingpeaks.com/blog/the-5-golden-rules-of-sports-nutrition/"
+slug: "the-5-golden-rules-of-sports-nutrition"
+---
+
+When we think about our sports nutrition…what’s going to make it “golden?” On track, top notch, or better than average? Here are five easy rules you can follow.
+When we think about our sports nutrition…what’s going to make it “golden?” On track, top notch, or better than average? In my opinion every athlete who is serious about performance should aim to have top notch sports nutrition habits. Our bodies have become these machines – dealing with everyday stress, stress of long and hard workouts, and stress under sleep deprivation. Nutrition is crucial to enabling your body to process the stress and nurture the body to higher performance.
+In order to understand what comprises the golden rules of sports nutrition we first need to identify its ultimate goals. When we work with clients and are building their nutrition programs, sometimes we say things like “This may not make sense now, but it will in time” as we do things that may seem counter-intuitive at first – such as increasing their calories to actually lose weight (see, you don’t think it makes sense either, do you)! Why is this relevant? Because we need to comprehend the notion that in sport, whether it is endurance or strength, we are asking our bodies to do extraordinary things; so, we must feed it in extraordinary ways.
+That said, the goals of sports nutrition can be categorized into four general buckets: understanding the stress response in relation to exercise, being able to control blood sugar before/during/after a training session, advancing recovery with different nutrients at different times, and to minimize the effects of cortisol.
+Based on these main goals, here are the Five Golden Rules of Sports Nutrition.
+(Drumroll, please…)
+1) Avoid working out on an empty stomach.
+If you haven’t eaten within the 2 hours prior to training grab a banana, an electrolyte drink, or something else that is light to keep your blood sugar steady.
+For shorter workouts (less than 45 minutes) a piece of fruit would suffice. Make sure it’s fruit that your stomach is familiar with and can easily digest.
+For a workout that’s 60-90 minutes, consider adding an electrolyte drink 1/3 or halfway through to ensure your body has a constant flow of carbs, and to prevent dehydration.
+With a workout over 90 or 120 minutes, then you’ll want to consider taking in a combination of liquid hydration such as Skratch Labs drink mix, along with some form of solid food: bar, rice, boiled potato, etc. Find out what works for you in terms of liquid and whole foods and you’ll be ahead of the competition!
+2) Don’t miss your breakfast.
+This seems to set the tone for how your body utilizes nutrients throughout the day. We often hear that people “aren’t hungry” when they get ready for the day, and that’s perfectly okay. What I’d recommend is to start with something simple like an egg and a piece of fruit, or a glass of milk and a granola bar. Try being consistent for a week, let your body adjust to having nutrients in the morning and then you can progress from there.
+Blood sugar should rise and be more stable with a protein/carb combo. For more sustained energy, add in some healthy fats; for example add avocado to that egg or put some almond butter in a smoothie or on your toast. You’ll stay full for hours to come and energy for that mid-day workout will be better than expected.
+3) Have the meals 2-3 days prior to your event all planned out.
+In doing so, you’ll ensure your body has what it needs for your event and the tank is “topped off” so to speak. We see so many athletes “wing it” and then wonder why they bonk or get dizzy or feel lethargic on race day.
+To make planning easier, stick with foods you already know you like and won’t create any stomach distress. Stay away from foods with a high saturated fat content, or high fiber content. You’ll always want to match up a carb with a protein – stick to a 2:1 or 3:1 carb to protein ratio so insulin is in check and blood sugar stays stable. And yes, I’m recommending you cook it ahead of time! Pack your lunch, pull a pre-made dinner meal out of the freezer, plan your breakfast for race day and get up an hour earlier to give it plenty of time to digest. Trust me, you’ll thank yourself!
+No need to overthink it, but do keep in mind that “failing to plan is planning for failure.”
+4) Never skip your recovery meal.
+If you’re skipping recovery nutrition, you’re skipping out on the ability to produce results from your training program. Figure out what recovery protocol works for your training, implement it within the precious 30-45 minutes after your workout, and eat within another 90 minutes after that…watch your performance soar.
+Why do we recommend that athletes eat within 30-45 minutes after their session? Science shows us the good old “recovery window” starts to close within 45-60 minutes. Liquid recovery nutrition seems to be easier on the stomach, digests quicker and can be more convenient to use if you’re not at home to prep anything. Stash a protein shake or some amino acids in your gear bag so you can down it when you’re done. Then, when you get home, get in an equally distributed meal: some complex carbs, protein, vegetables and some omega fats. This will again, re-stabilize blood sugar and keep your body moving forward!
+5) Get in a nutrient-dense snack before bed.
+By nutrient-dense I mean some healthy fats, nuts, berries, protein – foods that will not spike blood sugar, but help keep it from dropping during the night.
+Oftentimes we’ll get the question, “Shouldn’t I not eat after X time in the evening?” I guess you could say there’s a mental benefit to feeling good about not overeating or self control about what you’re putting into your body. However, from the perspective of fueling for sport, there’s not a lot of physiological benefit to fasting before bed; we know blood sugar is rapidly depleted during sleep to sustain the body’s processes. Furthermore, if we restrict nutrient intake, what would the body rebuild from during the evening?
+I think the question to ask yourself is not, “Am I going to eat?” but rather, “What kind of food would be best for my body at this time of day?” Our athlete body is in constant motion, and in constant need of fueling and rebuilding itself. The worst thing an athlete of
+any
+kind can do is to restrict nutrients in hopes of improving performance. It just doesn’t work!
+As you can see there’s a lot of rocket science going on (totally joking)! Now that you know the rules, ask yourself, “Is my nutrition ‘top notch’? Am I adhering to the golden rules?” Is your answer no, maybe or sometimes? Unless it’s a definite “yes,” you need to step back and consider your training load. Consider how much stress it is on the body. If you implement sports nutrition in such a way that it’s as high of a priority as training, you’ll create efficiencies and gains you’ve never seen before. Give it a try.

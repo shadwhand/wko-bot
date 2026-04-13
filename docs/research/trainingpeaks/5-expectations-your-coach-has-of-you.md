@@ -1,0 +1,29 @@
+---
+title: "5 Expectations Your Coach Has of You"
+author: "Jim Rutberg"
+source: "https://www.trainingpeaks.com/blog/5-expectations-your-coach-has-of-you/"
+slug: "5-expectations-your-coach-has-of-you"
+---
+
+The coach-athlete relationship requires several key elements to be effective. Coach Jim Rutberg outlines what coaches expect from their athletes in order to build a strong relationship that leads to performance gains.
+Recently, an elite ultrarunner named Ryan Ghelfi wrote a blog post entitled
+Running Dumb: Letting Go of the Reins
+. Ryan is coached by one of my colleagues, Jason Koop, and the post is a very good description of the conflict many athletes feel as they transition from being self-coached to working with a professional. But we were struck by the phrases “running dumb” and “don’t think, just run”. The post inspired a great discussion about what we, as coaches, expect from you, the athlete.
+Coaching is a two-way street. You expect your coach to be knowledgeable, communicative, professional, and responsive to your needs. There are
+numerous
+articles
+about what you should expect from a coach. But coaches also have expectations of you, and to get the most out of your coaching experience and achieve the greatest improvements in your performance we expect – or at least we really, really hope – you will:
+Be Engaged
+No credible coach wants you to turn your brain off and blindly follow orders. We rely on your perceptions and emotional responses to provide context to the training data you’re uploading. You’re a person, not a machine or a robot, and we need that personal feedback from you in order to help guide you toward your best-possible performance.
+We love talking with you about training, nutrition, and human performance. We don’t want you to just nod, say OK, and hang up the phone. The more you understand what’s going on with your training the better equipped you will be to pick up on anomalies – both positive opportunities and signs of trouble – and that helps both of us!
+Be Truthful
+Don’t try to impress a coach by what you can endure or survive. You don’t need to impress me; I’m not going to value working with you more because you can shoulder a bigger training load than anyone else. Always remember, this isn’t about me. It’s about you, helping you achieve your goals, and hopefully helping you achieve more than you thought you were capable of.
+Be honest about how you feel and how you are responding to training. Telling me you feel fine and can handle more training load when you’re actually exhausted doesn’t help either of us. First, when I have data from your training (another reason to consistently upload your data) I can tell when you’re fatigued and when you’re not recovering adequately from training. Second, if I choose to give you the benefit of the doubt, you’re just delaying the point at which we both conclude that you’re digging a hole for yourself. Then you’ve just wasted days or weeks of your valuable training time and we have to change course to get you out of the hole.
+NOTE: This is an even bigger problem with inexperienced coaches. The easiest thing a coach can do is keep piling on training load, and some athletes naively believe that being crushed by workouts is a positive sign that the training is effective. In the worst case scenario an athlete who chronically understates his/her fatigue starts working with a coach who doesn’t know the difference.
+Have Trust
+Trust has to be earned and a coach earns yours through a combination of our work with athletes before you and our work directly with you. It takes a little time, but that trust is necessary so you gain confidence in the direction of your training and can turn your focus to the execution of workouts, nutrition strategies, recovery routines, etc. Trusting your coach doesn’t mean you shouldn’t question your coach. You should have spirited discussions about your plan and hold your coach accountable to show you how you’re improving. Just as I don’t expect you to blindly follow my directions I don’t expect blind trust, either. In the end, though, if you don’t trust your coach’s choices you’re never all-in. You always hold something back because of doubt. And ironically, the only person it hurts is you because you’re not achieving all you could.
+Listen
+Rest days are in your schedule for a reason. So are endurance days and interval days. Wanting to or needing to change a training schedule is natural and happens all the time. Talk to me and I’ll happily make the adjustments or help you understand why it’s occasionally really important to stick to the schedule. But totally disregarding the schedule isn’t helpful, especially because it can have a ripple effect on the days and even weeks that follow.
+Do the Work
+You came to us for help and we applied our expertise and invested our time to the pursuit of your goal. Our expectation is that you’ll do the work you said you wanted to do, or that if you can’t do the work you’ll communicate with us so we can adjust and help you find solutions. But at the end of the day no matter how much support we provide we can’t do the work for you. You expect a coach to deliver performance results, but the enigma of coaching is that we can give you the tools and put you in a position to achieve those results. Then it’s up to you.
+Now, keep in mind, for almost all coaches – myself included – the vast majority of our athletes aren’t earning a living through sport. You’re doing this for fun and personal achievement. The expectations above aren’t commandments and it’s unrealistic to think any athlete will meet all five expectations all the time. That’s fine. That’s the real world. And like all other relationships in the real world, the best thing you can do to make it successful is keep communicating!

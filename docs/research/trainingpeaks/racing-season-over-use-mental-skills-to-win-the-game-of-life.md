@@ -1,0 +1,29 @@
+---
+title: "Hone Your Post-Racing Mental Skills"
+author: "Jim Afremow"
+source: "https://www.trainingpeaks.com/blog/racing-season-over-use-mental-skills-to-win-the-game-of-life/"
+slug: "racing-season-over-use-mental-skills-to-win-the-game-of-life"
+---
+
+Dr. Jim Afremow, author of The Champion's Mind, offers some mental advice for athletes dealing with cancellations and anxiety through the COVID-19 pandemic.
+Whether you signed up for an Ironman, qualified for the Boston Marathon, or were resolved to try your first ultra, those plans have likely been curtailed due to the COVID-19 Pandemic. I’m sorry to hear it, but want to encourage you to work on the mental side of your sport so that when you eventually show up to the starting line, you’re mentally tougher than ever.
+Gratitude Reshapes Attitude
+During this difficult time, we’re all struggling to make sense of what we see on the news, on social media, and in our own daily lives. Everything’s changing so fast that it’s easy to feel bewildered and disoriented (you’re not alone in this—me too!). Negative bias is a real thing we’re all struggling with right now, and if we feed the bad wolf of negative talk too often or for too long, we get stuck in a constantly reinforcing loop. The resulting maelstrom makes it easy to forget all our blessings, and instead focus on our problems.
+It’d be easy for me to do the lazy thing here and tell you to simply be more positive. But that would mean ignoring reality and trying to pretend that everything that’s going on isn’t affecting us. But it is, because we don’t exist in a vacuum. So instead of just brushing our nagging doubts, fears, and uncertainties under the rug (which will just make them manifest themselves in other ways later) I suggest that you schedule a few minutes each day to sit quietly with them.
+This is a beneficial form of compartmentalizing that acknowledges the confusion of what Winston Churchill once called “anxious and baffling times” without letting the bad wolf of continual negative self-talk devour us. If you find yourself starting to say self-limiting things about other people or your circumstances in the middle of the day, acknowledge it and then say, “OK, I’ll wait to deal with this until 6 PM” or whatever time block you’ve set aside beforehand.
+The complement to giving yourself permission to ponder even your darkest thoughts and feeling for a little while is to also give some mind to gratitude. Even if you’re a pro athlete whose livelihood is on shaky ground because your entire competitive calendar has been canceled, you still have your health, friends, family, and food on the table to be thankful for. It might sound a little Pollyanna (remember the vintage film’s challenge to “
+Play the glad game
+”?), but you’d also do well to do at least one kind act each day for someone in need who is less fortunate.
+Embrace the Grey
+No, not the movie or book
+Shades of Grey
+! But rather the need to admit that the unprecedented period of history that we find ourselves in right now isn’t all good or all bad. As your brain is constantly trying to save energy (remember
+your CPU uses up to 20 percent of your total power – more even than big muscles like your heart, glutes, and quads
+), it sets up systems that allow us to reduce complex decisions and perceptions to elementary school-level ones. So if I’m a Chiefs fan, I might reactively proclaim that I hate the Broncos, or if I’m for this political candidate, I might say I’m against all the others.
+While there are autopilot choices that help us avoid decision fatigue (like which brand and type of toothpaste we typically buy), black-or-white thinking can hinder us in other ways and is a classic cognitive distortion. And when we’re in a complicated, ongoing situation—whether that’s a soldier deployed overseas, a runner battling through the Leadville 100 course, or the chaos that our society is now subjected to—we can fall into the trap of oversimplification. There’s so much going on right now that isn’t one thing or another—it just is. The mental trick here is to be OK with that. The same resilience and persistence that got you to where you are as an athlete is what will get you through these tough times. So keep telling yourself that although you don’t have all the facts and everything might change tomorrow, you’re made of stern stuff and will push onward, no matter what (ambiguity be darned).
+Win Today, Every Day
+Just as with increasing strength, speed, endurance and the other physical qualities needed to excel at your sport, the biggest benefits from mental skills training don’t come from haphazard or sporadic effort, but from a consistent daily commitment. Until recently, it might have been easy to make the all too familiar excuse: “I’m too busy.” But with races and group training shuttered until further notice, you almost certainly can find at least 10 minutes.
+To make it easier, consider a time in the morning and another in the evening, when you’re typically doing something else that doesn’t require much cognitive effort. At the start of the day, this might be when you’re lying in bed before you head downstairs for breakfast. Maybe in the evening it’s when you’re smashing your quads or calves with a roller.
+These are perfect opportunities to build a little mindset work into your routine. Commit to doing five minutes tomorrow morning, and carving out another five tomorrow night. Then repeat the next day and the next. Put it on your calendar if you had to, like you would a college class, work meeting, or kids’ event. Soon enough, you’ll start doing it automatically and, I hope, looking forward to it. You could pull in a teammate or two to help you stay accountable. Still struggling to keep at it? Then use an app like
+The Champion’s Mind
+to guide you through a brief audio on confidence, self-talk, or goal setting.

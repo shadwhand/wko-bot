@@ -1,0 +1,21 @@
+---
+title: "5 Steps to Relieving the Pressure of Race Day"
+author: "Will Murray"
+source: "https://www.trainingpeaks.com/blog/5-steps-to-relieving-the-pressure-of-race-day/"
+slug: "5-steps-to-relieving-the-pressure-of-race-day"
+---
+
+Every athlete experiences nerves and anxiety as the approach their A race for the season. These five steps from Will Murray can help you deal with those feelings and step on the start line feeling confident and capable.
+In the few weeks before your big race, you may feel the pressure building. You have invested thousands of training hours and thousands of dollars and thousands of metric kilowatts of psychological energy to this race. You want to see your investment return some benefit. You begin to feel as though this is all very serious indeed, and the mounting pressure isn’t helping you feel good about your upcoming big day.
+Here are five simple yet effective techniques for bleeding off some of the pressure so that you are just ever-so-properly inflated on race day.
+1. Write Down Goals for After the Race
+Do this at least one week before your race. This doesn’t have to be complicated. You might say, “I want to run with a few of my friends who can’t run with me anymore because they can’t keep up.” Or, “I will do a couple of coffee rides, not training, just being out on my bike, to a destination for a treat, the cruise home.” Or, “I’m going to sleep in late all next week.”
+Alternatively, you could line up on your next race and begin to lay plans. Whatever it is, you will benefit by having something fun to look forward to after your race.
+2. Smile
+That’s the whole tip. Try this: frown hard and say, “I feel awful.” I’ll bet you do, a little at least. Now smile wide and say, “I feel awful.” You don’t because you can’t. Once you smile, your system liberates biochemicals that promote a feeling of well-being. So smile every time you think about your upcoming big race. Smile when you think about the volunteers, your competitors, the finish line, the flat tire you might get, and getting body marked and–everything. Imagine smiling your way through the race, especially when you don’t feel like it. Extra credit—begin your smile from your eyes and let it recruit your lips. Authentic smiles always come from the eyes.
+3. Breathe
+Yes again, that’s the whole tip. Psychologist Fritz Perls once said, “Fear is excitement without breathing.” So when that little germ of fear starts, just breathe. Here are the specific instructions. Do this now: Inhale deeply. Exhale. Repeat once more. Feel better? Of course you do. In the days before the race, breathe. In the moments before the race, just before you hit the water, take two or three deep inhales and exhales. It will settle you right down. Or give you excitement.
+4. Preview Your Race Goals
+In the week or so before the race, answer this question: “Why am I doing this race?” Then ask this: “Let’s just say I have the race I’m capable of. What would that actually look like and feel like?” Make a video in your mind’s eye of that race, going just like that. Make the movie go just as you want your race to go. Obviously, your movie won’t have every second of your race in it. They made a movie of Dr. Zhivago, so you can let the highlights be the movie. Then run this same movie in fast motion so that it takes less than 10 seconds. Run your 10-second movie as many times as you like in the days before the race.
+5. Radiate Your Intentions
+Some athletes race friendly. They say thanks to all the volunteers. They give attaboys to their direct competitors. They say, “Good job” to the athletes they pass on the bike and run, and they think “Good job” to the swimmers they pass. Other athletes race fiercely. They ignore the volunteers and course marshals because they don’t even see them. They straight-face or even scowl at their competitors. They might even try to psych them out. Whichever type you are—and both can be effective when the type really fits the athlete—radiate that type. If you race friendly, radiate friendliness in the two days before the race. If you race fierce, radiate fierceness. Exude your true self. As the gun goes off, you will be in your authentic, congruent, true self and let the race begin. You will automatically have the right amount of pressure for how you like to race.
