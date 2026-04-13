@@ -45,6 +45,19 @@
 - **Pages created:** none
 - **Key findings:** Autoregulation is a 25-75% spectrum, not binary; short FTP checks and sprints are near-zero-fatigue-cost readiness gauges; "anticipated recovery environment" should inform workout deployment; undercooking by 5-20% beats overcooking by 10%; 100% plan compliance is explicitly undesirable
 
+## 2026-04-12 — Ingest: TMT #74 — FTP Training Mistakes (And Solutions)
+
+- **Source:** `/tmp/ec-episodes/tmt-74.txt` (transcript, March 14 2026, 1:11 duration)
+- **Episode insights:** `docs/research/empirical-cycling/ep-tmt74-ftp-mistakes.md`
+- **Pages updated:**
+  - `concepts/ftp-threshold-testing.md` — lactate/CPX testing overrated (common mistake 14-18), FTP-by-feel cues, 2x8 test historical context, terrain FTP variance (10-20W), indoor FTP heat penalty (10-15W), 12-min minimum interval duration, FTP as fatigue buoy, extrapolation unreliable
+  - `concepts/interval-design.md` — start-conservative pacing (5-10W below target), 12-min minimum threshold duration, outdoor stochasticity acceptance, sustained >105% is not threshold
+  - `concepts/training-periodization.md` — in-season FTP building counterproductive, indoor heat limiting threshold, over-indexing on FTP blocks, indoor-to-outdoor transition section (spring recalibration, volume increase, seasonal factors)
+  - `concepts/vo2max-training.md` — VO2max ceiling reinforced (house analogy from TMT-74), long boring FTP intervals as signal to shift to VO2max
+  - `concepts/endurance-base-training.md` — under-fueling sabotages multi-day adaptation, morning hydration, acute energy deficit from spring outdoor transition
+- **Pages created:** none
+- **Key findings:** Three most experienced EC coaches (~75 yrs collective) converge on: (1) performance-based testing beats lactate/CPX, (2) start-conservative interval pacing is strictly better than all-out starts, (3) FTP is a fatigue buoy not a daily fitness marker, (4) terrain-specific FTP training matters (10-20W variance), (5) under-fueling is a hidden FTP-block killer
+
 ## 2026-04-12 — Karpathy pattern completion
 
 - **SCHEMA.md** created — defines page structure, evidence tags, cross-reference format, and 4 operations (ingest, query, lint, maintenance)
