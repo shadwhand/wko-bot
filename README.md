@@ -4,42 +4,39 @@ A Python library for WKO5-style cycling power analysis built on a local SQLite d
 
 ## Quick Start
 
+The fastest way to get up and running:
+
+```bash
+bash setup.sh
+```
+
+This walks you through Python environment, athlete config, data source connection, and knowledge base setup interactively.
+
+Or follow the manual steps below.
+
 ### 1. Create Python environment
 
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate
-pip install numpy pandas scipy matplotlib fitdecode
+pip install numpy pandas scipy matplotlib fitdecode garth httpx
 ```
 
 ### 2. Get your data
 
-**Option A: Garmin bulk export (historical data)**
+You need cycling activities with power meter data. Choose one:
 
-1. Request your data export from [Garmin Account](https://www.garmin.com/account/datamanagement/)
-2. Extract the FIT files from the zip into `fit-files/`
-3. Run the ingestion script:
+**Option A: Garmin Connect (recommended)**
 
-```bash
-python wko5/ingest_missing.py
-```
-
-This scans all FIT files, identifies cycling activities with power data, and ingests them into `wko5/cycling_power.db`.
-
-**Option B: Sync new activities from Garmin Connect**
+Syncs directly from your Garmin account. First run prompts for credentials; tokens are saved to `~/.garth/` for future syncs.
 
 ```bash
-python wko5/garmin_sync.py
+python wko5/garmin_sync.py --days 90
 ```
-
-First run prompts for Garmin credentials and MFA. Session tokens are saved to `~/.garmin_tokens/` for future runs.
 
 ```bash
 # Sync since last activity in DB
 python wko5/garmin_sync.py
-
-# Sync last 30 days
-python wko5/garmin_sync.py --days 30
 
 # Sync from a specific date
 python wko5/garmin_sync.py --from 2024-01-01
@@ -47,6 +44,42 @@ python wko5/garmin_sync.py --from 2024-01-01
 # Also save FIT files locally
 python wko5/garmin_sync.py --save-fit
 ```
+
+**Option B: Strava**
+
+Syncs via the Strava API. Requires a free Strava API app (one-time setup):
+
+1. Go to [Strava API Settings](https://www.strava.com/settings/api)
+2. Create an application (set callback domain to `localhost`)
+3. Note your Client ID and Client Secret
+4. Run the sync:
+
+```bash
+python wko5/strava_sync.py --days 90
+```
+
+First run prompts for credentials and opens a browser for OAuth authorization. Tokens are saved to `~/.strava_tokens/` for future syncs.
+
+```bash
+# Sync since last activity in DB
+python wko5/strava_sync.py
+
+# Sync from a specific date
+python wko5/strava_sync.py --from 2024-01-01
+```
+
+**Option C: Bulk FIT file import**
+
+If you have FIT files from any source (Garmin export, Wahoo, Hammerhead, etc.):
+
+1. Place `.fit` files in `fit-files/`
+2. Run the ingestion:
+
+```bash
+python wko5/ingest_missing.py
+```
+
+This scans all FIT files, identifies cycling activities with power data, and ingests them into `wko5/cycling_power.db`.
 
 ### 3. Use the library
 
