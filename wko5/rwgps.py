@@ -11,9 +11,9 @@ from wko5.routes import _ensure_tables, downsample_track
 
 logger = logging.getLogger(__name__)
 
-# Credentials from environment or keyring
-RWGPS_API_KEY = os.environ.get("RWGPS_API_KEY", "c8da9c01")
-RWGPS_AUTH_TOKEN = os.environ.get("RWGPS_AUTH_TOKEN", "1d3398ca6114c6cc559ca30aa9116129")
+# Credentials from environment — no hardcoded defaults
+RWGPS_API_KEY = os.environ.get("RWGPS_API_KEY")
+RWGPS_AUTH_TOKEN = os.environ.get("RWGPS_AUTH_TOKEN")
 
 BASE_URL = "https://ridewithgps.com/api/v1"
 
