@@ -737,3 +737,22 @@ def route_analysis(route_id: int, n_draws: int = 200):
         result["opportunity_cost"] = {"error": str(e)}
 
     return result
+
+
+# ---------------------------------------------------------------------------
+# Knowledge search (qmd)
+# ---------------------------------------------------------------------------
+
+from wko5.knowledge import KnowledgeClient
+
+_knowledge = KnowledgeClient()
+
+
+@router.get("/knowledge", dependencies=[Depends(verify_token)])
+def knowledge_search(q: str, collections: str | None = None, limit: int = 10):
+    """Search the knowledge base for relevant training science context."""
+    colls = collections.split(",") if collections else None
+    result = _knowledge.search(q, collections=colls, limit=limit)
+    if result is None:
+        raise HTTPException(503, "Knowledge service unavailable")
+    return result
