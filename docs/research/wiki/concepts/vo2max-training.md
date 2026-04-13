@@ -58,6 +58,7 @@ VO2max sets the ceiling for FTP. FTP cannot rise indefinitely from threshold tra
 - Improving FTP means either raising VO2max (higher ceiling) or increasing the fraction of VO2max sustainable at threshold (higher utilization). [R]
 - If FTP has plateaued despite consistent threshold training, the signal is to introduce VO2max work. (TMT-60) [E]
 - TTE (Time to Exhaustion) stagnation at FTP specifically signals need for VO2max work, not more threshold training. (TMT-60) [E]
+- **TMT-74 reinforcement:** "The house analogy -- VO2 is the roof and FTP is the ceiling." When FTP work stops producing gains, the roof may need raising. This is a common explanation for plateaus that do not respond to more threshold training. Also: when long threshold intervals become mentally boring/exhausting, it is "probably beyond time to do VO2s" -- both a physiological and psychological signal to shift focus. [E] (TMT-74)
 - A higher VO2max also increases lactate threshold, plasma volume, muscle strength, lactate tolerance, glycogen storage, and stroke volume. (Simone, TP) [R]
 
 ### Decision Tree (TMT-60)
@@ -309,6 +310,7 @@ The widely cited Ronnestad 30/15 study requires careful interpretation:
 | TMT-55 | Rest Weeks | 7+ days rest after VO2max blocks; every 2-3 weeks |
 | TMT-72 | Stimulus vs Recovery | VO2max blocks have highest recovery cost |
 | AMA (1M) | Volume before VO2max | Ultra-endurance athletes see massive gains from first VO2max block |
+| TMT-74 | FTP Training Mistakes | VO2max ceiling reinforced (house analogy); long boring FTP intervals = time for VO2max; FTP requires both muscular metabolic fitness AND aerobic capacity |
 | Persp-38 | TID, NIRS, FLIA | No single best intensity distribution; individual variation dominates |
 
 ### Secondary (TrainingPeaks Articles)

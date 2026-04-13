@@ -87,6 +87,8 @@ When constructing any interval workout, four variables interact (Cusick, TP):
 - Evenly paced efforts are fine, possibly preferable to "start hard" protocols [E] (WD-55)
 - Sporadic dosing can work -- one athlete did 3 sessions month 1, 6 sessions month 2 alongside other training and saw massive FTP gains [E] (TMT-60)
 - VO2max work "raises the roof" for FTP to grow into -- essential even in minimal plans [E] (TMT-60)
+- **VO2max RPE management (TMT-75):** Breathing and effort are the primary indicators, not power -- power will drop slightly across reps and that is acceptable as long as the athlete is pushing hard. HR and RPE should both be high for all reps. [E]
+- **Vibes-based VO2max (TMT-75):** "Go do some hard hills between 2 and 8 minutes" is a valid unstructured approach; track time up a benchmark hill for progress; minimum 3 reps [E]
 
 **Conflicts:**
 - **30/15 protocol (Ronnestad):** The original study abstract states "no group difference in change of VO2max" (p=0.49). Performance gains are most parsimoniously explained by W' (anaerobic capacity) improvement, not VO2max [R] (WD-55). Cyclocross racing, which delivers massive intermittent effort doses similar to 30/15, never improves VO2max in trained athletes [E]. Conclusion: 30/15s are "super cool but not magic" (Jem Arnold, Persp-38) -- useful for repeatability and FRC, but do not claim VO2max superiority.
@@ -116,6 +118,13 @@ This is THE primary progression path: **extend duration before increasing power*
 - TTE stagnation at FTP signals the need for VO2max work, not more threshold training [E] (TMT-60)
 - Over-under protocol (90%/105% FTP alternating) is effective for race-specific surge simulation [E] (TMT-44)
 - In-season maintenance: 1 threshold/sweet spot session every 1-2 weeks at RPE 6-7/10 [E] (TMT-60)
+- **Flexible threshold prescription (TMT-75):** "Give me ~60 min at FTP using any combination of intervals" is a valid vibes-based approach -- athletes in mountainous areas often produce 35min + 15min + 10min efforts naturally; this is practically equivalent to 3x20 erg mode [E]
+- **Threshold RPE management (TMT-75):** RPE will creep up during threshold sessions and that is normal -- hold power steady; do not drop power to chase a heart rate zone or constant RPE. RPE ceiling for threshold: rarely needs to exceed 8/10 [E]
+- **Substitution rule (TMT-75):** When tired, substituting sweet spot or tempo for threshold is acceptable for in-season maintenance or early return from illness, but during build phase most workouts should be high quality and progressive [E]
+- **Start conservative (5-10W below target) for interval 1, build through session** -- overpacing interval 1 and fading is worse than a conservative start with a strong finish; the last interval is where you push [E] (TMT-74)
+- **12 minutes is the minimum useful threshold interval duration** -- shorter intervals risk drifting into VO2max intensity, especially for beginners or indoor winter training [E] (TMT-74)
+- **Outdoor stochasticity does not invalidate the workout** -- avg/NP within ~1W of target = good interval regardless of power trace smoothness; WKO5 rule-based auto-detection is a reasonable quality proxy [E] (TMT-74)
+- **Sustained >105% FTP for a full interval is not threshold training** -- over-under bursts at 105% are fine; sustained 20 min at 105%+ drifts into supra-threshold [E] (TMT-74)
 
 **Platform module:** `training_load.py` -- TTE tracking; `blocks.py` -- FTP decision tree
 
@@ -276,8 +285,10 @@ Performance stagnating?
 | "More intervals = more fitness" | >2 hard sessions/week shows no added benefit; increases overtraining risk | Seiler 2010, Hawley 2021 [R] |
 | "Micro-optimizing interval structure matters most" | Sustainable training template (basics) outperforms session-level optimization long-term | Persp-38 [E] |
 | "You can stack 1-3% gains from different protocols" | Arrow-gains fallacy; micro-optimizations do NOT compound when stacked | WD-61, TMT-68 [E] |
-| "100% plan compliance = dedication" | Warning sign; indicates lack of auto-regulation | TMT-52 [E] |
+| "100% plan compliance = dedication" | Warning sign; indicates lack of auto-regulation; EC coaches explicitly request less compliance | TMT-52, 75 [E] |
 | "ERG mode is better for intervals" | Hides true readiness; free ride reveals daily capacity | TMT-73 [E] |
+| "Outdoor intervals must match erg precision" | Within 10W of target at threshold is "definitely close enough" outdoors; do not expect perfect square waves | TMT-75 [E] |
+| "Structured intervals are always better than unstructured" | "Give me ~60 min at FTP, any combination, 10 min minimum" is practically equivalent to 3x20 erg mode; ride the mountain instead of turning around after 1200 seconds | TMT-75 [E] |
 | "All FTP gains come from threshold work" | FTP stagnation from threshold work requires VO2max to "raise the roof" | TMT-60 [E] |
 
 ---
@@ -338,7 +349,7 @@ After every interval session, assess:
 ## Sources
 
 ### Empirical Cycling Podcast
-- TMT-44 (Sweet Spot), TMT-45 (Simplest Plan), TMT-46 (Science Interpretation), TMT-49 (Proxies for Stimulus), TMT-52 (Intermediate Mistakes), TMT-54 (Junk Miles), TMT-55 (Rest Weeks), TMT-60 (FTP Decision Tree), TMT-64 (Off-Season), TMT-68 (Using Data), TMT-69 (Riding Easier), TMT-71 (Panic Training), TMT-72 (Stimulus vs Recovery), TMT-73 (Things We Wish We Knew)
+- TMT-44 (Sweet Spot), TMT-45 (Simplest Plan), TMT-46 (Science Interpretation), TMT-49 (Proxies for Stimulus), TMT-52 (Intermediate Mistakes), TMT-54 (Junk Miles), TMT-55 (Rest Weeks), TMT-60 (FTP Decision Tree), TMT-64 (Off-Season), TMT-68 (Using Data), TMT-69 (Riding Easier), TMT-71 (Panic Training), TMT-72 (Stimulus vs Recovery), TMT-73 (Things We Wish We Knew), TMT-74 (FTP Training Mistakes -- start-conservative interval pacing, 12-min minimum duration, outdoor stochasticity acceptance, over-under vs sustained supra-threshold), TMT-75 (Autoregulation -- flexible prescriptions, RPE management by workout type, outdoor precision tolerance)
 - Perspectives-38 (TID, NIRS, FLIA -- Jem Arnold)
 - Watts Doc-55 (VO2max Training + 30/15 Reanalysis), WD-56 (Strength Without Weight)
 

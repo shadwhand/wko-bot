@@ -1,0 +1,7 @@
+Based on the provided text, durability is defined as the ability to maintain power output after accumulated work [E] (WD-60). Formally, it is "the time of onset and magnitude of deterioration in physiological characteristics over time during prolonged exercise" [R] (Maunder et al., August 2021).
+
+Durability differs from having a high FTP in the following ways:
+
+*   **Baseline vs. Retention:** FTP (Functional Threshold Power) is the baseline power—the maximal watts sustainable for a specific duration (typically 30-70 minutes) in a fresh state [R] (TMT-70, WD-62). Durability is the measure of how much of that power is retained after work has been performed [E] (WD-60).
+*   **Performance Expression:** While FTP determines the "engine" size, durability is the "ability to express performance" as a ride progresses [E] (WD-60). An athlete can have a high FTP but poor durability, meaning they would lose a significant percentage of their power (e.g., 30% of their 5-minute power) after accumulating work (e.g., 40 kJ/kg) [E] (WD-60).
+*   **Impact on Results:** Race results can improve through durability gains even if FTP remains flat or declines [E] (TMT-70). However, the text notes that durability cannot compensate for a lack of absolute power; over-indexing on durability without sufficient absolute power is considered a strategic error [E] (WD-60).

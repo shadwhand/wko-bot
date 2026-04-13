@@ -72,6 +72,8 @@ Key microcycle principles:
 - Hard/easy day alternation to allow partial recovery between key sessions
 - Endurance rides fill remaining time at genuinely easy pace (IF 0.50-0.65, RPE 1-3/10) (EC TMT-69) [E]
 - Sprint add-ons (3-5 x 10-15 sec) at the start of endurance rides have low opportunity cost and can be included year-round (EC TMT-45, 64) [E]
+- **Training priorities should be ranked** (primary, secondary, tertiary) within each microcycle so that autoregulation never sacrifices the most important stimulus for fun or convenience (EC TMT-75) [E]
+- **Flexible workout prescriptions are valid** -- "give me ~60 min at FTP, any combination, 10 min minimum intervals" is practically equivalent to rigid 3x20 for most purposes (EC TMT-75) [E]
 
 ---
 
@@ -247,6 +249,7 @@ Flips the traditional model: high-intensity, low-volume work in winter (when day
 **Purpose:** Competition execution and in-season maintenance.
 
 - **In-season FTP maintenance:** 1 threshold/sweet spot session every 1-2 weeks at RPE 6-7/10 (EC TMT-60) [E]
+- **Building FTP through race season is usually counterproductive** -- unpredictable race fatigue (e.g. 100km breakaway) disrupts recovery timing; accept stable FTP in-season and manage fatigue (EC TMT-74) [E]
 - **Gym: in-season maintain** at 1x/week heavy singles RPE 7/10 (EC TMT-42, WD-56) [R]
 - Multiple peaks possible with block periodization (3-season example: Tinkoff-Saxo Boaro peaked 3 times across Feb-Oct) [E]
 - Mid-season breaks (full week off May/June) are invaluable for long seasons (EC TMT-48) [E]
@@ -297,8 +300,16 @@ Peaking twice in a season requires careful management of the "valley" between pe
 ### 6.3 Winter/Indoor Training
 
 - Indoor training generates 1.1-1.2x the recovery cost of equivalent outdoor TSS (thermoregulation strain) (EC TMT-51) [E]
+- **Indoor heat buildup limits threshold work** -- 65-75F indoor temps cause overheating; tempo/sweet spot may be the realistic ceiling for many athletes indoors. FTP may need 10-15W indoor reduction if cooling is suboptimal (EC TMT-74) [E]
 - Block periodization with shorter, focused intervals suits trainer-based training well [E]
 - Include variety: tempo, sweet spot, strength intervals, sprints to prevent boredom and maintain broad fitness [E]
+- **Over-indexing on any single focus (e.g. FTP blocks) has opportunity costs** -- Kolie Moore has given less FTP-specific training over 2-3 years with no loss of FTP, TTE, or gains. Variety within the week often outperforms single-focus blocks (EC TMT-74) [E]
+
+### 6.3.1 Indoor-to-Outdoor Transition (Spring)
+
+- **Recalibrate RPE when transitioning outdoors** -- physics changes (cooling, terrain, wind, bike position) alter threshold perception. Explicitly re-test or recalibrate during first outdoor weeks (EC TMT-74) [E]
+- **Overall volume typically increases outdoors** -- this has a measurable effect on aerobic adaptations, especially TTE. People who ride larger volume see faster week-to-week adaptation progress (EC TMT-74) [E]
+- **Seasonal factors affect adaptation** -- summer heat degrades sleep quality; accumulated season fatigue from 48+ weeks of training changes how threshold work translates to FTP gains (EC TMT-74) [E]
 
 ### 6.4 Time-Crunched Athletes
 
@@ -317,7 +328,8 @@ Peaking twice in a season requires careful management of the "valley" between pe
 | Polarized is best | 80/20 is optimal for all | No single distribution is superior; individual variation dominates | Persp-38 [R] |
 | Zone 2 is special | Zone 2 has unique adaptations | Total volume matters more than sitting in specific zone | TMT-69 [E] |
 | CTL = fitness | Higher CTL = fitter | CTL is a proxy, not fitness itself; peak performances often occur after CTL dips | TMT-68 [E] |
-| Rigid plan adherence | Follow the plan exactly | Plans are "written in sand"; 100% compliance is a warning sign | TMT-52, 73 [E] |
+| Rigid plan adherence | Follow the plan exactly | Plans are "written in sand"; 100% compliance is a warning sign; EC coaches explicitly request less compliance | TMT-52, 73, 75 [E] |
+| Prefab plans are reliable | 12-16 week canned plans produce optimal results | Like long-range weather forecasts: accuracy degrades with planning horizon; coaches working 1-2 weeks ahead have tighter "forecast windows" | TMT-75 [E] |
 | More training = more fitness | Always add load | Low-volume athletes can be recovery-limited, not stimulus-limited | TMT-72 [E] |
 | Strength hurts endurance | Avoid gym for cyclists | Aerobic and anaerobic are NOT zero-sum; heavy lifting does not hurt durability | WD-60 [E] |
 
@@ -355,6 +367,8 @@ Peaking twice in a season requires careful management of the "valley" between pe
 - TMT-71: Panic Training
 - TMT-72: Stimulus vs Recovery
 - TMT-73: Things We Wish We Knew
+- TMT-74: FTP Training Mistakes (in-season FTP building counterproductive, indoor-to-outdoor transition, over-indexing on FTP blocks, variety over mono-focus)
+- TMT-75: The Art of Autoregulation (vibes training, flexible prescriptions, priority ranking)
 - Persp-38: Training Intensity Distribution (Arnold)
 
 ### TrainingPeaks Articles

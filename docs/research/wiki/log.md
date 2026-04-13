@@ -32,6 +32,19 @@
 - **One regression:** Q3 actionability (baseline hour-by-hour format beat augmented's 2-hr groupings)
 - **Full report:** `docs/research/wiki/eval/results.md`
 
+## 2026-04-12 — Ingest: TMT #75 — The Art of Autoregulation (Training To Vibes)
+
+- **Source:** `/tmp/ec-episodes/tmt-75.txt` (transcript, March 26 2026, 1:20 duration)
+- **Episode insights:** `docs/research/empirical-cycling/ep-tmt75-autoregulation.md`
+- **Pages updated:**
+  - `concepts/training-periodization.md` — priority ranking in microcycles, flexible workout prescriptions, prefab plan forecast analogy
+  - `concepts/training-load-recovery.md` — low-fatigue readiness gauges (FTP check, sprint), rest inertia, anticipated recovery environment, suggestion bias, fatigue security blanket, common mistakes 8-10
+  - `concepts/interval-design.md` — flexible threshold prescription, RPE management per workout type, substitution rule, outdoor precision tolerance, vibes-based VO2max
+  - `concepts/endurance-base-training.md` — group rides as valid training, long ride frequency for ultra, diminishing returns on ultra-long rides
+  - `concepts/ultra-endurance.md` — 6+ hr/month ride frequency, diminishing returns on extreme duration, training camp autoregulation
+- **Pages created:** none
+- **Key findings:** Autoregulation is a 25-75% spectrum, not binary; short FTP checks and sprints are near-zero-fatigue-cost readiness gauges; "anticipated recovery environment" should inform workout deployment; undercooking by 5-20% beats overcooking by 10%; 100% plan compliance is explicitly undesirable
+
 ## 2026-04-12 — Karpathy pattern completion
 
 - **SCHEMA.md** created — defines page structure, evidence tags, cross-reference format, and 4 operations (ingest, query, lint, maintenance)

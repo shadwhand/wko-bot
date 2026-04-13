@@ -189,6 +189,11 @@ Any single trigger is sufficient to initiate rest (EC TMT-55):
 4. **Failed mid-block workout + failed retest 2-3 days later**
 5. **Athlete requests rest week** -- ALWAYS grant it, 100% of the time
 
+**Low-fatigue readiness gauges (TMT-75):** [E]
+- **Short FTP check (3-5 min at threshold):** If FTP feels unusually hard for a brief effort, more rest is needed. FTP should stay within 5-10W of normal and feel "pretty decent" -- if you are counting down the seconds, you are not recovered.
+- **Short sprints (10-15 sec):** If the motor pattern feels foreign, neural drive is suppressed, or numbers are well below baseline, skip the hard workout. Sprint power is the most sensitive freshness indicator.
+- These tests have near-zero fatigue cost -- they function as warm-up efforts that also provide diagnostic data.
+
 ### 4.3 Active Recovery
 
 - Short, genuinely easy rides (IF < 0.50) are preferred over complete inactivity [E]
@@ -271,7 +276,10 @@ Any single trigger is sufficient to initiate rest (EC TMT-55):
 4. **Time-crunched athlete doing more intervals** -- may need more rest, not more intervals (EC TMT-72) [E]
 5. **"I perform well fatigued" belief** -- almost always false; operating at 80-90% without realizing it (EC TMT-58) [E]
 6. **Trusting "I feel fine" in Type-A athletes** -- when performance data shows regression, data wins over feelings (EC TMT-55) [E]
-7. **100% plan compliance** -- indicates lack of auto-regulation; a warning sign, not a badge of honor (EC TMT-52) [E]
+7. **100% plan compliance** -- indicates lack of auto-regulation; a warning sign, not a badge of honor; EC coaches explicitly ask for less compliance (EC TMT-52, 75) [E]
+8. **Ignoring "anticipated recovery environment"** -- if upcoming days have high stress, poor sleep, or illness in the household, deploy good legs carefully; one high-quality session is better than two mediocre ones when recovery will be compromised (EC TMT-75) [E]
+9. **Overcooking by 10% vs undercooking by 20%** -- undercooking is far safer; the recovery hole from overcooking is disproportionately deep (EC TMT-75) [E]
+10. **Maintaining the "fatigue security blanket"** -- athletes keep training hard because resting feels like giving up; accepting that skipping a hard workout is correct is a sign of training maturity (EC TMT-75) [E]
 
 ---
 
@@ -407,6 +415,13 @@ EC identifies subjective metrics as often more reliable than objective data for 
 | RPE drift at constant power | High | Same power feeling harder over time = fatigue accumulation |
 | Dissociated RPE (legs vs lungs) | Moderate | Different fatigue signatures |
 | Brain fog | Moderate | Often dismissed but correlates with chronic fatigue |
+| Time to get ready for a ride | Moderate | If it takes 2 hours to find motivation to dress up, nutrition has been off (EC TMT-75) [E] |
+| Short FTP check feel | High | 3-5 min at FTP should feel "pretty decent"; if counting down seconds, not recovered (EC TMT-75) [E] |
+| Sprint neural drive | High | Motor pattern feeling foreign or numbers well below baseline = neural fatigue (EC TMT-75) [E] |
+
+**Suggestion bias warning (TMT-75):** Athletes conflate what they expect to feel with what they actually feel -- especially during rest weeks or when returning from illness. Short objective tests (FTP check, sprint) ground self-perception in reality. [E]
+
+**Rest inertia (TMT-75):** By end of a rest week, motivation often vanishes entirely -- athletes feel they could quit cycling forever. This resolves within 1-2 rides and is NOT a signal to extend rest. It is a normal neurological phenomenon. [E]
 
 **The performance vs. subjective conflict detector:** If power is trending down but athlete reports feeling good, flag for review. Data wins over feelings in Type-A athletes. (EC TMT-55) [E]
 
@@ -516,6 +531,7 @@ EC identifies subjective metrics as often more reliable than objective data for 
 - TMT-71: Panic Training (anti-panic protocol)
 - TMT-72: Stimulus vs Recovery (overreaching, CTL chasing)
 - TMT-73: Things We Wish We Knew (fueling, zone 2)
+- TMT-75: The Art of Autoregulation (readiness gauges, rest inertia, anticipated recovery environment, fatigue security blanket)
 - Persp-36: Chronic Underfueling / RED-S (Carson)
 - Persp-40: Energy Expenditure / Constrained Energy Model (Trexler)
 

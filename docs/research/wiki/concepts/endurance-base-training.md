@@ -264,6 +264,9 @@ From WD-60 and the durability literature:
 - Measured as power drop at standardized kJ/kg bins (use bins of 10 kJ/kg) [R]
 - Total time riding is the best predictor of durability -- not specific "durability workouts" [E]
 - kJ/kg is the standard metric; raw kJ is misleading across body weights [R]
+- **Ultra-endurance specificity (TMT-75):** At least one 6+ hour ride per month is "almost non-negotiable" for athletes preparing for 15+ hour events; FTP work and sweet spot help but cannot replace long ride stimulus [E]
+- **Diminishing returns on ultra-long rides (TMT-75):** A 6-7 hour ride captures most of the adaptation; 10+ hours adds disproportionate fatigue relative to new learning, except for discovering edge-case weak points (e.g., knee pain at hour 25 that would not surface on a 6-hour ride) [E]
+- **Feedback from long rides is valuable (TMT-75):** If 4 hours into a 6-hour ride you cannot feel your hands, that is a critical equipment/positioning problem to solve before race day [E]
 
 | Benchmark | Power Drop at 50 kJ/kg | Source |
 |-----------|----------------------|--------|
@@ -302,6 +305,11 @@ This mirrors late-race demands: you must produce power AFTER burning through gly
 
 **Key insight:** Eating enough on bike often leads to weight loss because it prevents post-ride overeating and energy compensation [E] (TMT-73). Under-fueling endurance rides is counterproductive for both performance and body composition.
 
+**TMT-74 additions on fueling and threshold sessions:**
+- **Under-fueling threshold sessions sabotages multi-day adaptation** -- Fabiano's athlete failed Monday after missing post-workout nutrition on Sunday. Higher intensity = higher carb demand; missed refueling compounds across consecutive hard sessions [E] (TMT-74)
+- **Morning sessions require deliberate pre-hydration** -- 8 hours of sleep means dehydration and glycogen depletion; gel + drink mix is the minimum. Hydration may be as significant as caloric intake for early-morning riders [E] (TMT-74)
+- **Acute energy deficit from longer outdoor rides in spring** -- as athletes move outdoors and ride longer, kJ expenditure jumps; failing to match fueling to increased energy output creates deficits that impair all aspects of training [E] (TMT-74)
+
 **"Train low" is a dead end:** The AMPK-glycogen mechanism is real at the molecular level, but performance evidence for "train low" strategies is consistently negative [R] (WD-54). Low-carb training is explicitly dismissed by Kolie Moore for durability training: "I checked my list... there is nothing here" [E] (WD-60).
 
 ---
@@ -320,6 +328,8 @@ This mirrors late-race demands: you must produce power AFTER burning through gly
 | "3 months of base miles required before any intensity" | Outdated; modern view is that intensity can be included year-round in modest doses | Rutberg, TMT-45 [E] |
 | "Train low/fasted to improve fat oxidation" | Molecular mechanism exists but performance evidence is negative | WD-54 [R] |
 | "Junk miles are any easy miles" | Junk miles = miles where fatigue cost exceeds adaptive benefit, regardless of zone; easy miles are almost NEVER junk | TMT-54 [E] |
+| "Group rides are junk miles" | Group rides are never junk -- they provide race-specific stimulus (stochasticity, pack dynamics, mental preparation for non-self-dictated pace); may be the most specific training for some race demands | TMT-75 [E] |
+| "You need more structure to improve" | Some athletes are genuinely shocked at how little structured training is needed for meaningful long-term progress; the better trained you are, the more you should trust vibes-based training | TMT-75 [E] |
 | "LT1 should be trained at LT1 specifically" | LT1 rises from hours well UNDER it, not at it | TMT-73 [E] |
 | "The 80/20 rule means exactly 80% Zone 2" | 80/20 is a rough guideline; individual variation is enormous; ~80% low intensity emerged from elite observation, not a universal prescription | Seiler, Persp-38 [R] |
 
@@ -404,7 +414,7 @@ All levels:
 ## Sources
 
 ### Empirical Cycling Podcast
-- TMT-44 (Sweet Spot), TMT-45 (Simplest Plan), TMT-48 (Over-Optimization), TMT-50 (Fat/Carb Myths), TMT-54 (Junk Miles), TMT-55 (Rest Weeks), TMT-58 (Why Rest Is Scary), TMT-64 (Off-Season), TMT-69 (Riding Easier), TMT-72 (Stimulus vs Recovery), TMT-73 (Things We Wish We Knew)
+- TMT-44 (Sweet Spot), TMT-45 (Simplest Plan), TMT-48 (Over-Optimization), TMT-50 (Fat/Carb Myths), TMT-54 (Junk Miles), TMT-55 (Rest Weeks), TMT-58 (Why Rest Is Scary), TMT-64 (Off-Season), TMT-69 (Riding Easier), TMT-72 (Stimulus vs Recovery), TMT-73 (Things We Wish We Knew), TMT-74 (FTP Training Mistakes -- under-fueling sabotages multi-day adaptation, morning hydration, acute energy deficit from spring outdoor transition), TMT-75 (Autoregulation -- group rides, long ride frequency, diminishing returns on ultra-long rides)
 - Perspectives-38 (IPD Meta-Analysis, TID -- Jem Arnold)
 - Perspectives-40 (Constrained Energy Model -- Trexler)
 - Perspectives-41 (Macros/Timing -- Podlogar)

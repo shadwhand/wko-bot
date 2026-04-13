@@ -10,6 +10,8 @@ Evidence levels: **[R]** = Research-backed, **[E]** = Experience-based, **[O]** 
 
 - **FTP = MLSS (Maximal Lactate Steady State)** -- sustainable for 30-70 minutes depending on the athlete; it is NOT specifically "1-hour power." Individual TTE varies enormously. **[R]** (ec-master-reference / TMT-70, WD-62)
 - **FTP stagnation does NOT mean fitness stagnation** -- race results can improve substantially even with flat or declining FTP through durability, repeatability, race craft, and specificity improvements. **[E]** (ec-master-reference / TMT-70)
+- **Extrapolating FTP from sub-FTP intervals is unreliable** -- completing 3x20 at sweet spot does not predict 30-40 min at FTP; extended sweet spot TTE does not necessarily mean FTP has risen. All percentage-based estimates from non-FTP efforts are estimates, not measurements. **[E]** (TMT-74)
+- **FTP does not change much day-to-day** -- perceived drops mid-week are almost always fatigue, heat, or nutrition masking true capacity. Use FTP as a "fatigue buoy" rather than assuming fitness has dropped. **[E]** (TMT-74)
 - **Rolling PD curves from training data are more reliable than isolated test days** -- single tests carry ~2% power meter error, making 5W changes statistically meaningless. **[R]** (ec-master-reference / WD-62)
 - **Ramp test improvements may reflect W' (anaerobic capacity), not VO2max** -- decompose PD curve changes into CP vs W' contributions to distinguish. **[R]** (ec-master-reference / WD-55)
 - **FTP training alone hits a ceiling** -- VO2max work is needed to raise it further. VO2max "raises the roof" for FTP to grow into. **[E]** (ec-master-reference / TMT-60)
@@ -43,6 +45,10 @@ Evidence levels: **[R]** = Research-backed, **[E]** = Experience-based, **[O]** 
 | Indoor-to-outdoor FTP gap | Typically 5-10% lower indoors | indoor-cycling-physiological-benefits **[E]** |
 | Post-indoor adjustment period | 4-6 weeks outdoors to re-adapt | indoor-cycling-physiological-benefits **[E]** |
 | Indoor quality session limit | 60-90 min typical; 2 hr max | your-indoor-trainer-to-use-but-not-abuse **[E]** |
+| Terrain FTP variance | 10-20W (flat vs climbing) for some athletes | TMT-74 **[E]** |
+| Indoor FTP heat penalty | 10-15W if cooling is suboptimal | TMT-74 **[E]** |
+| FTP by-feel accuracy | Within ~5W in ~10 min for experienced athletes | TMT-74 **[E]** |
+| Minimum threshold interval duration | 12 min (below this risks drifting to VO2 intensity) | TMT-74 **[E]** |
 | Aerobic threshold (AeT) as % FTP | 80-90% of FTP (varies by fitness) | why-you-should-target-your-aerobic-threshold **[E]** |
 | AeT as % max HR | 75-80% max HR | why-you-should-target-your-aerobic-threshold **[E]** |
 | LT1 range across athletes | 45-85% FTP | TMT-69 **[E]** |
@@ -68,6 +74,8 @@ The most widely used FTP test. Simple but has known limitations.
 
 **Limitations:** The 0.95 multiplier is a population average. Individual FTP-to-20min ratios range from ~0.90 to ~0.98 depending on anaerobic capacity (W'). Athletes with large W' will over-estimate FTP with this protocol. **[R]** (ec-master-reference / WD-55)
 
+**Historical context (TMT-74):** The older 2x8 minute protocol (average two 8-min efforts, take 90%) is even worse -- Kolie Moore tested at 330W with this method when his actual FTP was ~270W, a 60W overestimate from excessive anaerobic contribution. **[E]** (TMT-74)
+
 ### 2. Kolie Moore Protocol (EC Podcast Recommended)
 
 A longer, sustained-effort test that directly measures FTP and TTE.
@@ -83,6 +91,8 @@ A longer, sustained-effort test that directly measures FTP and TTE.
 **Advantages over 20-min test:** Directly measures both FTP and TTE. No population-average correction factor. Reveals individual FTP/TTE relationship. **[E]**
 
 **Key instructions:** Start 5-10W below estimated FTP and hold as long as possible. Failure should feel like a gradual inability to sustain, not an explosion. Test is invalid if effort collapses abruptly (indicates starting power was too high). **[E]** (TMT-66)
+
+**TMT-74 reinforcement:** An experienced athlete roughly in touch with their body can get FTP within ~5W in about 10 minutes by feel. The key cues are: respiration rate (labored but not ragged), effort felt in legs not lungs, and a distinct mental "switch" when going above threshold where neural drive must actively push harder. **[E]** (TMT-74)
 
 ### 3. Ramp Test
 
@@ -233,6 +243,16 @@ The aerobic threshold (AeT, or LT1) is the first metabolic threshold -- the high
 
 13. **Ignoring FTP staleness in PMC analysis** -- TSS and IF depend on an accurate FTP. An out-of-date FTP corrupts CTL, ATL, and TSB, making the entire Performance Management Chart unreliable. **[E]** (using-threshold-improvement-notifications-in-the-e)
 
+14. **Getting gaslit by lactate tests** -- 4 mmol is a population average (ranges 3.8-4.2); individual variation creates a fallacy of division. Lactate testing can both drastically overestimate (during ramp tests) and underestimate FTP (a world champion track cyclist was 30-40W underestimated). >10 different lactate methodologies exist, none definitive. Expensive ($250/test) and unnecessary when a power meter + good sense suffices. **[E]** (TMT-74)
+
+15. **Trusting CPX/ventilatory threshold tests at face value** -- CPX-derived LT2 values tend to overestimate; athletes routinely fail 2x20 at the prescribed intensity. Functional field tests are cheaper, repeatable, and more ecologically valid. **[E]** (TMT-74)
+
+16. **Assuming weekly linear FTP increase without validation** -- raising prescribed watts by 3-5W per week assumes linear growth that does not exist. Eventually riders are above threshold without realizing it, leading to failed sessions and stagnation. **[E]** (TMT-74)
+
+17. **Overpacing the first threshold interval** -- treating a threshold session like an FTP test (all-out from the start) causes fading on subsequent intervals, losing the training stimulus. Start 5-10W conservative, assess legs, build through the session. The last interval is where you push. **[E]** (TMT-74)
+
+18. **Neglecting terrain-specific FTP training** -- some athletes show 10-20W difference between flat and climbing FTP. If race demands are flat TTs, train on flat terrain even if climbing feels better. Indoor trainer type (feedback/rollers vs flywheel) also affects this. **[E]** (TMT-74)
+
 ---
 
 ## Platform Integration
@@ -301,6 +321,7 @@ The aerobic threshold (AeT, or LT1) is the first metabolic threshold -- the high
 - **TMT-70** -- FTP stagnation vs. fitness stagnation, power meter switching
 - **TMT-72** -- CTL rising + performance declining = overreaching
 - **TMT-73** -- Erg mode limitation, TTE extension tied to fueling, LT1 rises from sub-LT1 volume
+- **TMT-74** -- FTP training mistakes: lactate/CPX testing overrated, FTP by feel cues, start-conservative interval pacing, terrain-specific FTP, FTP as fatigue buoy, under-fueling sabotages adaptation
 - **WD-55** -- Ramp test decomposition (CP vs W')
 - **WD-62** -- Power meter error (~2%), meaningful FTP change (>6W), rolling PD curves
 - **Persp-38** -- No single intensity distribution statistically superior

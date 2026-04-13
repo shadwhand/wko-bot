@@ -216,6 +216,9 @@ Key learning: Go into ultra-events with **high TSB (form) and slightly lower CTL
 - For ultra focus: 1 threshold/sweet spot day + 1 long endurance day + endurance fill
 - **Progressive overload before protocol change** -- exhaust duration progression before switching protocols (TMT-44, 45) [E]
 - **Long rides are the irreplaceable session** -- there is no substitute for time in the saddle for ultra preparation [E]
+- **Long ride frequency (TMT-75):** At least one 6+ hour ride per month is "almost non-negotiable" for athletes targeting 15+ hour events; shorter structured work helps but cannot replace this specificity [E]
+- **Diminishing returns on extreme duration (TMT-75):** A 6-7 hour ride captures most of the adaptation; 10+ hours adds disproportionate recovery cost relative to new adaptation. Exception: occasional extreme-duration rides reveal edge-case weak points (e.g., knee pain at hour 25, hand numbness at hour 8) that shorter rides cannot surface [E]
+- **Training camp autoregulation (TMT-75):** For training camps (e.g., a week in Mallorca), rigid plans are counterproductive; provide guardrails (intensity cap, duration guidance, altitude HR ceiling) but let the athlete ride on vibes; treat recovery planning like post-cyclocross season [E]
 
 ---
 
@@ -299,6 +302,7 @@ From research by Tatjana Bill (Ph.D. dissertation, published PLOS ONE 2023):
 |--------|------|-----------------|
 | EC WD-60 | Podcast | Durability framework, kJ/kg methodology |
 | EC TMT-73 | Podcast | Fueling revolution, start eating at km 0 |
+| EC TMT-75 | Podcast | Long ride frequency (6+ hr/month), diminishing returns on ultra-long rides, training camp autoregulation |
 | EC TMT-70 | Podcast | FTP stagnation != fitness stagnation |
 | EC Persp-41 | Podcast | On-bike carb targets, gut training |
 | EC WD-58 | Podcast | Creatine for sleep deprivation |
