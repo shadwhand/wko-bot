@@ -16,4 +16,5 @@ docs/research/raw/
 .runtime.json
 .qmd/index.sqlite
 docs/research/wiki/entities/personal-ride-log.md
-docs/reports/
+docs/reports/*.md
+!docs/reports/TEMPLATE-race-plan.md
