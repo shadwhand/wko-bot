@@ -1,7 +1,8 @@
 # Wiki Index
 
-Knowledge base compiled from 2,012 TrainingPeaks articles, 53 Empirical Cycling
-podcast episodes, and nutrition research. Last compiled: 2026-04-12.
+Knowledge base compiled from 2,012 TrainingPeaks articles, 55 Empirical Cycling
+podcast episodes (TMT 42-75, Perspectives 36-41, Watts Doc 51-62), and nutrition
+research. Last updated: 2026-04-13.
 
 ---
 
@@ -22,7 +23,7 @@ podcast episodes, and nutrition research. Last compiled: 2026-04-12.
 
 ## Entities
 
-- [Personal Ride Log](entities/personal-ride-log.md) — 20 ultra-endurance rides (200km+), lessons learned, nutrition, equipment, pacing progression
+- [Personal Ride Log](entities/personal-ride-log.md) — *(local only, gitignored)* 20 ultra rides (200km+), lessons learned, nausea arc, pacing progression
 - [Pro Race Analyses](entities/pro-race-analyses.md) — Tour de France, Vuelta, Giro power data compiled by stage/year
 - [Ironman & Triathlon](entities/ironman-triathlon.md) — IM/70.3 power targets, pacing, Kona analysis
 - [Notable Coaches & Methods](entities/notable-coaches-methods.md) — Hunter Allen, Tim Cusick, Kolie Moore, Joe Friel approaches
