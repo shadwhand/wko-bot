@@ -6,15 +6,17 @@ Cycling analytics platform: power-based training, nutrition, pacing, and perform
 
 **Before answering ANY question about training, nutrition, pacing, physiology, coaching, race planning, or ride analysis, you MUST follow this retrieval flow:**
 
-1. **Read `docs/research/wiki/index.md`** — scan the catalog, identify 2-3 relevant pages
+1. **Route via local LLM** — run `tools/wiki-route.sh "your question"` to get 2-3 relevant page paths from Qwen3-4B (~5s, free). This replaces reading index.md manually.
 2. **Read those wiki pages** — extract specific evidence with [R]/[E]/[O] tags and source citations
 3. **Answer using wiki content as primary source** — cite the page and evidence tags in your response
 4. **File back** — if your answer reveals connections not captured in the wiki, update the relevant pages
 5. **Re-index** — `qmd update && qmd embed` after any wiki changes
 
+**Fallback if omlx is down:** Read `docs/research/wiki/index.md` manually and identify pages yourself.
+
 **Do NOT answer from general knowledge when the wiki has relevant content.** The wiki contains curated, evidence-tagged knowledge compiled from 2,012 TrainingPeaks articles, 55 EC podcast episodes, and the athlete's personal ride history. General knowledge is a fallback, not the default.
 
-**Do NOT skip straight to pages you "already know about."** Read the index first. The index is the entry point — it may point to pages you'd miss.
+**Do NOT skip straight to pages you "already know about."** Use the router. It may point to pages you'd miss.
 
 **After every valuable answer, ask:** "Did this reveal connections worth filing back to the wiki?" If yes, update pages and re-index.
 

@@ -9,7 +9,7 @@ import httpx
 
 log = logging.getLogger(__name__)
 
-OMLX_URL = os.environ.get("OMLX_URL", "http://127.0.0.1:8000")
+OMLX_URL = os.environ.get("OMLX_URL", "http://127.0.0.1:8001")
 OMLX_KEY = os.environ.get("OMLX_KEY", "9538")
 WIKI_DIR = os.path.join(os.path.dirname(__file__), "..", "docs", "research", "wiki")
 
