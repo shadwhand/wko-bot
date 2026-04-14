@@ -2,6 +2,8 @@
 
 A Python library for WKO5-style cycling power analysis built on a local DuckDB database of Garmin FIT file data. Includes a power duration model, training load tracking (CTL/ATL/TSB), individualized training zones, ride analysis, power profiling, and Jupyter notebooks for visualization.
 
+**Your data stays local.** This repo provides the tools and training science knowledge base. You bring your own ride data by syncing from Garmin Connect, Strava, or importing FIT files. Your ride database, personal ride logs, race plans, and reports are gitignored — they live on your machine only.
+
 ## Quick Start
 
 The fastest way to get up and running:
