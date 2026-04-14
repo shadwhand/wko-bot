@@ -43,8 +43,7 @@ def _ensure_mmp_cache_table(conn):
             activity_id INTEGER,
             duration_s INTEGER,
             max_avg_power REAL,
-            PRIMARY KEY (activity_id, duration_s),
-            FOREIGN KEY (activity_id) REFERENCES activities(id)
+            PRIMARY KEY (activity_id, duration_s)
         )
     """)
     conn.commit()
@@ -151,22 +150,54 @@ def rebuild_mmp_cache():
     return count
 
 
-def _pd_model(t, pmax, tau, frc_kj, t0, mftp):
-    """3-component power-duration model.
+def _pd_model(t, frc_kj, mftp, tau, tau2, tte, a):
+    """Peronnet-Thibault / WKO4 power-duration model.
+
+    Based on veloclinic.com analysis showing WKO4/5 uses a modified Peronnet &
+    Thibault (1989) model, itself an extension of Ward-Smith → LLoyd → Hill.
+
+    For t <= TTE:
+        P(t) = FRC*1000/t * (1-exp(-t/tau)) + mFTP * (1-exp(-t/tau2))
+    For t > TTE:
+        P(t) = FRC*1000/t * (1-exp(-t/tau)) + mFTP * (1-exp(-t/tau2)) - a*ln(t/TTE)
+
+    Parameters:
+        frc_kj: Functional Reserve Capacity (kJ) — anaerobic work capacity above FTP
+        mftp:   modeled Functional Threshold Power (W) — maximal aerobic power (MAP)
+        tau:    time constant for anaerobic onset (s) — ≈ FRC*1000/Pmax
+        tau2:   time constant for aerobic onset (s) — how fast aerobic system ramps up
+        tte:    Time to Exhaustion at FTP (s) — longest duration mFTP can be sustained
+        a:      slope of log-linear decline after TTE (W per ln(s))
+
+    Derived:
+        Pmax ≈ FRC*1000 / tau (instantaneous max power)
+    """
+    anaerobic = frc_kj * 1000 / t * (1 - np.exp(-t / tau))
+    aerobic = mftp * (1 - np.exp(-t / tau2))
+
+    # Post-TTE log-linear decline
+    decline = np.where(t > tte, a * np.log(t / tte), 0.0)
+
+    return anaerobic + aerobic - decline
+
+
+def _pd_model_legacy(t, pmax, tau, frc_kj, t0, mftp):
+    """Legacy 3-component additive model (pre-P&T update). Kept for reference.
     P(t) = Pmax * e^(-t/tau) + FRC*1000/(t+t0) + mFTP
     """
     return pmax * np.exp(-t / tau) + frc_kj * 1000 / (t + t0) + mftp
 
 
 def fit_pd_model(mmp):
-    """Fit the 3-component PD model to an MMP array.
-    Returns dict with {Pmax, FRC, mFTP, TTE, mVO2max, tau, t0} or None on failure.
+    """Fit the Peronnet-Thibault / WKO4 PD model to an MMP array.
+
+    Returns dict with {Pmax, FRC, mFTP, TTE, mVO2max, tau, tau2, a} or None on failure.
     """
     if len(mmp) < 60:
         logger.warning("MMP too short for model fitting (need >= 60s)")
         return None
 
-    max_dur = min(len(mmp), 7200)
+    max_dur = min(len(mmp), 28800)  # up to 8 hours — P&T model handles long durations
     durations = np.arange(5, max_dur + 1, dtype=float)
     powers = mmp[4:max_dur].astype(float)
 
@@ -174,39 +205,51 @@ def fit_pd_model(mmp):
         durations = durations[:len(powers)]
 
     cfg = get_config()
-    p0 = [1200, 15, 20, 5, 280]
-    bounds_low = [cfg["pd_pmax_low"], cfg["pd_tau_low"], cfg["pd_frc_low"], cfg["pd_t0_low"], cfg["pd_mftp_low"]]
-    bounds_high = [cfg["pd_pmax_high"], cfg["pd_tau_high"], cfg["pd_frc_high"], cfg["pd_t0_high"], cfg["pd_mftp_high"]]
+
+    # Parameters: frc_kj, mftp, tau, tau2, tte, a
+    # Initial guesses
+    p0 = [20, 280, 15, 20, 2400, 20]
+
+    # Bounds
+    bounds_low = [
+        cfg["pd_frc_low"],     # frc_kj
+        cfg["pd_mftp_low"],    # mftp
+        cfg["pd_tau_low"],     # tau (anaerobic onset)
+        5,                      # tau2 (aerobic onset) — at least 5s
+        600,                    # tte — at least 10 min
+        1,                      # a — decline slope, at least 1
+    ]
+    bounds_high = [
+        cfg["pd_frc_high"],    # frc_kj
+        cfg["pd_mftp_high"],   # mftp
+        cfg["pd_tau_high"],    # tau
+        120,                    # tau2 — up to 120s
+        5400,                   # tte — up to 90 min
+        100,                    # a — decline slope
+    ]
 
     try:
         popt, _ = curve_fit(
             _pd_model, durations, powers,
             p0=p0, bounds=(bounds_low, bounds_high),
-            maxfev=10000,
+            maxfev=20000,
         )
     except (RuntimeError, ValueError) as e:
         logger.warning(f"PD model fitting failed: {e}")
         return None
 
-    pmax, tau, frc_kj, t0, mftp = popt
+    frc_kj, mftp, tau, tau2, tte, a = popt
 
-    # TTE
-    t_range = np.arange(1, max_dur + 1, dtype=float)
-    modeled = _pd_model(t_range, *popt)
-    above_ftp = np.where(modeled > mftp + 1)[0]
-    tte = float(above_ftp[-1] + 1) if len(above_ftp) > 0 else float("nan")
+    # Derived: Pmax ≈ FRC*1000 / tau
+    pmax = frc_kj * 1000 / tau
 
-    # mVO2max for trained cyclists
-    # Use power at ~5min (300s) from MMP as proxy for VO2max power
-    # Convert via gross efficiency (23% for trained cyclists, range 22-25%)
-    # Caloric equivalent: 1 L O2 ≈ 20.9 kJ (at RER ~0.9)
-    # VO2 (mL/min) = Power(W) * 60 * 1000 / (efficiency * 20900)
+    # mVO2max estimation
     cfg = get_config()
     weight_kg = cfg["weight_kg"]
     if len(mmp) >= 300:
-        p_vo2max = float(mmp[299])  # power at 5 min — proxy for VO2max power
+        p_vo2max = float(mmp[299])
     else:
-        p_vo2max = mftp * 1.15  # rough estimate: VO2max power ~115% of FTP
+        p_vo2max = mftp * 1.15
 
     gross_efficiency = 0.23
     vo2max_ml_min = p_vo2max * 60 * 1000 / (gross_efficiency * 20900)
@@ -216,12 +259,15 @@ def fit_pd_model(mmp):
         "Pmax": round(float(pmax), 1),
         "FRC": round(float(frc_kj), 2),
         "mFTP": round(float(mftp), 1),
-        "TTE": round(tte / 60, 1),
+        "TTE": round(float(tte) / 60, 1),
         "mVO2max_L_min": round(vo2max_ml_min / 1000, 2),
         "mVO2max_ml_min_kg": round(vo2max_ml_min_kg, 1),
         "tau": round(float(tau), 1),
-        "t0": round(float(t0), 1),
-        "sub_cp_note": "CP model may overestimate sustainable power at durations >TTE. Use durability model for efforts beyond TTE.",
+        "tau2": round(float(tau2), 1),
+        "a": round(float(a), 1),
+        "model": "peronnet_thibault",
+        "note": "Based on Peronnet & Thibault (1989), modified per WKO4 implementation. "
+                "Pmax is derived (FRC*1000/tau). Post-TTE decline modeled as -a*ln(t/TTE).",
     }
 
 
@@ -311,12 +357,19 @@ def rolling_pd_profile(window_days=90, step_days=14):
 
 def _pd_power(duration_s, model):
     """Compute predicted power at a duration from PD model parameters."""
-    pmax = model.get("Pmax", 1100)
     frc = model.get("FRC", 20)
     mftp = model.get("mFTP", 280)
     tau = model.get("tau", 15)
-    t0 = model.get("t0", 4)
-    return pmax * np.exp(-duration_s / tau) + frc * 1000 / (duration_s + t0) + mftp
+    tau2 = model.get("tau2", 20)
+    tte = model.get("TTE", 40) * 60  # TTE stored in minutes, convert to seconds
+    a = model.get("a", 20)
+
+    t = np.float64(duration_s)
+    anaerobic = frc * 1000 / t * (1 - np.exp(-t / tau))
+    aerobic = mftp * (1 - np.exp(-t / tau2))
+    decline = a * np.log(t / tte) if t > tte else 0.0
+
+    return anaerobic + aerobic - decline
 
 
 def decompose_pd_change(model_old, model_new):
