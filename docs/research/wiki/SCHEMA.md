@@ -95,6 +95,14 @@ Every page must have a `## Cross-References` section listing all related pages w
 
 ## Operations
 
+**Universal rule: every operation that modifies wiki pages MUST end with re-indexing.**
+
+```bash
+qmd update && qmd embed
+```
+
+This is non-negotiable. The wiki is only as good as its index. If pages are updated but not re-indexed, qmd search returns stale results. Run this after every ingest, file-back, lint fix, or maintenance change.
+
 ### 1. Ingest
 
 **When:** A new source arrives (podcast episode, TP article, research paper, scraped doc).
@@ -190,6 +198,8 @@ Report findings and fix issues. Append to `log.md`:
 - Evidence upgrades: N claims upgraded
 ```
 
+8. Run `qmd update && qmd embed` to re-index.
+
 ### 4. Maintenance
 
 **Structural changes:**
@@ -202,6 +212,8 @@ Report findings and fix issues. Append to `log.md`:
 - Every page must have at least 3 cross-references to other wiki pages.
 - Every claim must have an evidence tag and a source.
 - The Sources section must be comprehensive — no uncited claims.
+
+**After any maintenance change:** Run `qmd update && qmd embed` to re-index.
 
 ---
 
