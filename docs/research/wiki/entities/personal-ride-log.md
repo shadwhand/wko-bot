@@ -16,8 +16,99 @@ Evidence levels: **[R]** = Research-backed, **[E]** = Experience-based, **[O]** 
 - **Peak powers:** 1hr 159W, 2hr 137W, 4hr 122W
 - **Zone distribution:** 53% Z1, 32% Z2 -- very conservative pacing
 - **HR zones:** 63% Z1, 28% Z2 -- low cardiac stress throughout
+- **Weather:** Hot and muggy. Lows in the 50s F, highs in the 90s F, humidity 70-90% throughout.
+- **Start wave:** 84-hour group, Monday 5am mass start (~250 riders)
 
-No human-written ride notes. Auto-stats show extremely conservative power output -- this was a successful finish of the world's premier 1200km randonneuring event. The low IF (0.49) and heavy Z1 distribution suggest the athlete prioritized completion over speed. [E]
+**Goals:** [E]
+1. Finish inside 70 hours (previous PBP: 82:26)
+2. Get a Korean randonneur jersey
+3. Pull as many riders as possible across France
+
+All three goals achieved.
+
+**2019 comparison:** [E]
+
+Previous PBP finished in 82:26 with suffering throughout. Bad taper advice -- didn't ride for a month before the event. Only ~1.5 years of serious cycling at that point. The 2023 edition represented 4 years of deliberate improvement.
+
+**Training context (9-month build):** [E]
+
+Started with TrainerRoad polarized training (85-90% Z2, 10-15% threshold/VO2max). Saw decent results through 2022, but after a rough 600k and noticing the fastest rider on the route was a track/road racer, shifted to a racing-focused approach:
+
+- **TTE extension:** Started from 3x10, progressed through 3x15, 3x20, mixing sweet spot with threshold. TTE improved from 33 min to ~1 hour over 9 months. [E]
+- **VO2max development:** Repeated high-intensity intervals; "my cheeks get super rosy when I do Vo2max and I always run up to my wife after sessions to show her how cute I look." [E]
+- **Fatigue training:** Sweet spot/threshold intervals after 200k or 300k rides -- maintaining intensity while deeply fatigued. [E]
+- **Results:** FTP +0.35 w/kg over 9 months. [E]
+- **Volume:** Only 8-11 hr/week training. Longest regular ride 30-40 miles. General weekday ride ~1.5 hr. Did a 200k the week before PBP on random rides through the French countryside. [E]
+- **Key resource:** Kolie Moore's Empirical Cycling podcast for training fundamentals. [E]
+
+> "Bicivino looked at it and remarked how I was probably barely fatiguing and that I should shift my overall training approach." [E]
+
+**Nutrition breakthrough:** [E]
+
+4 years of projectile vomiting on rides solved. Previous failed approaches:
+- Limiting carb intake to reduce nausea -- "this only resulted in worse feelings" [E]
+- Fasted riding to delay nausea onset -- "this was also a terrible idea" [E]
+
+**The fix:** Eating a huge breakfast and consistently consuming 70-85g CHO/hour. [E]
+
+> "This solved my problem and frankly this took forever to realize how fueling for both training and riding is important for me."
+
+For PBP: combination of real meals, powders, and gels. Extensive gut training before the event. Switched to mostly powder and fewer gels/bars because of the heat. Found a Korean vegan bibimbap restaurant en route -- "hit the stomach well during this ride." [E]
+
+**Day 1 -- Rambouillet to Loudeac (435 km):** [E]
+
+- Mass start at 5am with 250 riders. Chaotic -- riders with no group-riding skills, loose luggage falling off bikes, people stopping in the peloton, random photos.
+- Pushed to the front immediately knowing that was the safest position from 2019 experience.
+- Near-death roundabout incident -- forgot how French roundabouts worked, entered while a truck was coming through. Apologized to the group.
+- First 200k completed in 6:18 with a strong, well-organized front group. Group broke up after 200k as priorities diverged.
+- Minor bonk at ~390 km, but finished strongly into Loudeac. [E]
+- At Loudeac: checked into hotel, changed chain, showered, slept 3 hours.
+
+**Day 2 -- Loudeac to Brest and back (390 km):** [E]
+
+- Slow start: only 2 bananas, a smoothie, and a bottle of drink mix. No dinner the previous night -- hard to have appetite after 1000g+ CHO in a day.
+- Hunger pains by the first control (~80 km). Ate rice and sauce, rice pudding, Coke. Slept 15 min.
+- Roc'h Trevezel (only real "climb" on the course) in Tuesday morning fog.
+- At Brest (600 km mark): feeling so good that he skipped eating at the control and went to the Lidl down the street for Italian salad, Coke, and sparkling water. Korean food planned ~100 km later. [E]
+- After Brest: ~2,300m of climbing with no flat sections. Passing tired riders uphill at 2.9 w/kg. Pulling groups and collecting thumbs-ups for the effort. [E]
+- Back to Loudeac at 7:46pm. Could have kept riding but chose to rest for the 435 km final day. Slept 6.5 hours.
+
+**Day 3 -- Loudeac to Rambouillet (435 km):** [E]
+
+- Switched nutrition entirely to real food -- 5 meals at controls. No bars, no gels. "I was just tired of gels and bars at this point and real food was being digested so fast anyway, it was likely a wash (except for time)." [E]
+- Befriended an Estonian rider during the morning. Rode together ~16 hours. Gave him gels when he had fuel issues, suggested he eat more at controls. [E]
+- Pulled a group of about 12 riders through the latter part of the ride. [E]
+- Fougeres castle. Coffee in exchange for a postcard.
+- Families spraying riders with hoses because of the heat (85-95 F at points).
+- Took a cold shower in a high school gym with all gear still on to manage the heat. [E]
+- Sprint finish into Rambouillet with energy to spare. [E]
+
+> "There were points where I felt nausea creeping in, points where my saddle sores were approaching untenable, and times where I just really missed my family and I wanted to stop. I think overcoming these downs is a part of this stupid sport though and the past 4 years have really helped teach me how to adjust and deal with these issues." [E]
+
+> "Possibly because I was missing my own daughter, I would tear up whenever I saw little kids during the ride." [E]
+
+**Key moments:** [E]
+- Minor bonk at 390 km on Day 1 -- managed and finished strong. [E]
+- Skipped Brest control food for Lidl salad -- confidence in nutrition management. [E]
+- Cold shower in high school gym with gear on -- effective heat management. [E]
+- Estonian rider friendship -- 16 hours of shared suffering creates bonds. [E]
+- Nausea creeping in at points but managed -- 4 years of learning how to adjust. [E]
+- Annoyed by a rider who surged every time he took a pull on the final stretch. [E]
+
+**Strava comments (from other riders):** [E]
+- **Rene:** Message about being pulled through highs and lows -- direct acknowledgment of the "pull riders across France" goal being achieved. [E]
+- **Sourav:** Remembered the athlete from 2019 PBP -- the improvement over 4 years was visible to others. [E]
+- **Patrice:** Complimented efficiency and smile -- riding well enough to still be smiling at the end of 1,230 km. [E]
+
+**Lessons:** [E]
+1. 9 months of racing-focused training (TTE extension, VO2max, fatigue training) at only 8-11 hr/week was sufficient for a 17.5-hour improvement over 2019. [E]
+2. The shift from polarized to racing-focused training was a key inflection point. The fastest ultra-endurance riders often train like racers. [E]
+3. Nutrition is the dominant variable on 1200k rides. The 4-year nausea problem was solved by eating MORE, not less -- huge breakfast + 70-85g CHO/hr consistently. [E]
+4. By Day 3, real food is superior to gels/bars. The gut is so primed that solid food digests fast enough, and the psychological relief of eating real meals matters. [E]
+5. Pulling groups is sustainable at 2.9 w/kg in the second half of PBP. Being strong enough to help others is a valid training goal. [E]
+6. Sleep strategy: 3 hr (Day 1) + 6.5 hr (Day 2) = 9.5 hr total sleep in a 64.9 hr effort. Conservative but effective. [E]
+7. Heat management in hot PBP editions: cold showers with gear on, hose-downs from locals, liquid nutrition over solids. [E]
+8. The 200k the week before PBP was fine -- a mild taper is better than the 2019 approach of not riding for a month. [E]
 
 ---
 
@@ -349,9 +440,24 @@ Longer 200k+ effort at moderate intensity. Pre-Hokkaido training block.
 - Under-fueling -> bonk -> nausea spiral (Hopland 400k 2023)
 - In heat (>32C), solid food absorption drops. Switch to liquids only.
 
-**Nausea history:** Previously a recurring issue on 400km+ rides. Two distinct causes identified:
-1. **Fueling-related:** Under-eating leads to low blood sugar -> nausea. Fix: maintain CHO intake proactively (validated at Pinnacles 600k). [E]
-2. **Cold-induced:** Hypothermia -> nausea independent of fueling status. Fix: warm first, eat second. Do not try to ride through it. (validated at Surf City 600k DNF). [E]
+**Nausea history -- the full arc (4 years to resolution):** [E]
+
+The athlete's single biggest performance limiter for 4 years was projectile vomiting on rides 400km+. Multiple 600k rides finished severely dehydrated and malnourished. PBP 2019 nearly ended due to nausea. The resolution was iterative:
+
+| Date | Event | Nausea? | Approach | Result |
+|------|-------|---------|----------|--------|
+| 2019 | PBP | Severe | No strategy | Pushed through, suffered |
+| 2022 | 600k | Severe | Limiting carbs | "Only resulted in worse feelings" |
+| 2022 | Training | Severe | Fasted riding | "Terrible idea" |
+| 2023-03 | Hopland 400k | Yes | Still under-fueling | Hypothesis formed: nausea = low blood sugar |
+| 2023-04 | Pinnacles 600k | **None** | 75-80g CHO/hr + big breakfast | First 400km+ ride without nausea in 4 years |
+| 2023-08 | **PBP** | **Minor, managed** | 70-85g CHO/hr + huge breakfast + gut training | Validated at 1,230 km scale |
+| 2024-06 | Surf City 600k | Yes | Fueling was fine | Cold-induced nausea identified as separate cause |
+
+**Three distinct causes now identified:**
+1. **Fueling-related:** Under-eating -> low blood sugar -> nausea. Fix: huge breakfast + 70-85g CHO/hr proactively. Validated at Pinnacles 600k, held at PBP 1,230 km. [E]
+2. **Cold-induced:** Hypothermia -> nausea independent of fueling status. Fix: warm first, eat second. Do not try to ride through it. Validated at Surf City 600k DNF. [E]
+3. **GI fatigue (multi-day):** By Day 3 of a 1200k, gels/bars become psychologically and physically less tolerable. Fix: switch to real food meals at controls. The gut is so primed by Day 3 that solid food digests fast enough. Validated at PBP Day 3. [E]
 
 ### Temperature & Clothing [E]
 
@@ -396,12 +502,25 @@ This is the single biggest recurring failure mode. Three separate incidents:
 
 **Ongoing lesson:** Don't over-pack on 1000k+ (SBS lesson), but DO bring the night kit on any ride with overnight hours (Surf City lesson). The balance is: minimal but complete.
 
+### Training Philosophy [E]
+
+**Polarized -> racing-focused shift:** The athlete trained polarized (85-90% Z2, 10-15% threshold/VO2max) through 2022 with decent results, but plateaued. The inflection came from two observations: (1) Bicivino's feedback that he was "barely fatiguing," and (2) noticing the fastest rider on a 600k was a track/road racer. Shifted to TTE extension + VO2max + fatigue training at the end of long rides. [E]
+
+**Key insight:** Ultra-endurance riders benefit from training like racers. TTE from 33 min to 1 hour in 9 months, FTP +0.35 w/kg, and all on only 8-11 hr/week with longest regular rides of 30-40 miles. [E]
+
+**Taper lessons:** [E]
+- 2019 PBP: Didn't ride for a month before -- terrible advice, suffered throughout the ride. [E]
+- 2023 PBP: Mild taper, rode 200k the week before in France -- felt great on race day. [E]
+- **Rule:** A mild taper with maintained riding is far better than full rest. [E]
+
 ### Sleep & Fatigue [E]
 
 - Ditch naps become counter-productive when cold -- you get colder and can't rewarm (Surf City DNF)
 - Back-to-back training weekends (300k + 200k, June 2023) are effective PBP prep
 - On 1200k events, expect 60-67hr elapsed with sleep stops built in
 - Energy dip at 2-4 AM is normal -- ride through it with caffeine, don't stop unless warming is needed
+- PBP 2023 sleep strategy: 3 hr (night 1) + 6.5 hr (night 2) = 9.5 hr total in a 64.9 hr effort. Conservative but left energy for a sprint finish. [E]
+- 15-min control naps are effective for resetting when sleepy in the early morning. [E]
 
 ---
 
@@ -421,4 +540,5 @@ This is the single biggest recurring failure mode. Three separate incidents:
 
 - Strava activity data (20 rides, 200km+, 2023-01 through 2026-02)
 - Athlete's Strava descriptions and comments
+- PBP 2023 ride report (athlete's detailed write-up)
 - Surf City 600k DNF forensics analysis (docs/reports/2026-06-27-surf-city-600k.md)
