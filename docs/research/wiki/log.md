@@ -66,3 +66,10 @@
 - **Cross-reference pass:** 3 parallel agents adding `## Cross-References` sections to all 21 pages
 - **Ingest pipeline:** `tools/wiki-ingest.md` — prompt template for new source ingestion
 - **Lint workflow:** `tools/wiki-lint.md` — prompt template for periodic health checks
+
+## 2026-04-13 — Query→File back: 600k race planning
+
+- **Query:** Planning SCR Surf City VI 600k using wiki knowledge
+- **Connections found:** TMT-74/75 content applies to ultra race execution (autoregulation, terrain FTP, by-feel pacing)
+- **Pages updated:** ultra-endurance, pacing-strategy, ultra-nutrition
+- **Report updated:** docs/reports/2026-06-27-surf-city-600k.md

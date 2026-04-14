@@ -82,6 +82,13 @@ Evidence levels: **[R]** = Research-backed, **[E]** = Experience-based, **[O]** 
 - **Pace for the second half, not the first** -- the ride should feel easy for the first quarter [E]
 - **Use IF targets rather than absolute watts** -- 0.50-0.65 for single-day, 0.40-0.55 for multi-day [E]
 
+### Ultra-Distance Pacing Principles (Race Application)
+
+- **"Undercook by 5-20% beats overcook by 10%"** -- in events >6 hours, when debating between pushing and holding back, always hold back. The cost of going too hard compounds catastrophically over 15-30 hours; the cost of going slightly easy is a few minutes on the clock [E] (TMT-75)
+- **Terrain-specific FTP variance of 10-20W is normal** -- climbing FTP is often lower than flat FTP. For routes mixing extended flats and significant climbs (e.g., a 600k with coastal flats and inland mountains), set terrain-specific power targets rather than one flat number [E] (TMT-74)
+- **Trust feel over power after 15+ hours** -- experienced athletes can estimate FTP by feel within ~5W in 10 minutes. After 15+ hours of riding, cardiac drift, thermal load, and cumulative fatigue decouple power from internal cost. RPE becomes more reliable than the power meter for pacing decisions [E] (TMT-74, TMT-75)
+- **Race-day autoregulation is essential for 20+ hour events** -- rigid power plans fail because conditions change (temperature swings, GI issues, sleep deprivation, mechanical problems). 100% plan compliance is a warning sign that the athlete is ignoring real-time signals. Autoregulate: use the plan as a guide, not a contract [E] (TMT-75)
+
 ### Pacing Strategy by Event Type
 
 | Event Duration | Target IF | Pacing Notes |

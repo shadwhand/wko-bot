@@ -123,7 +123,7 @@ Every page must have a `## Cross-References` section listing all related pages w
 
 **Key principle:** One source should touch multiple pages. If you're only updating one page, you're probably missing connections.
 
-### 2. Query
+### 2. Query → File Back
 
 **When:** A question is asked that the wiki should be able to answer.
 
@@ -131,13 +131,41 @@ Every page must have a `## Cross-References` section listing all related pages w
 1. **Read `index.md` first** — scan the catalog to identify which pages likely answer the question. At small scale (~50 pages) this is sufficient.
 2. **If ambiguous, use qmd** — `qmd query "the question" -c wiki` to search wiki pages specifically. qmd is the scaling layer over the wiki, not a replacement for navigating it.
 3. **Read the relevant wiki pages** and synthesize an answer with citations.
-4. **File back:** If the answer reveals a pattern, synthesis, or connection not captured in existing pages, update the relevant page(s) or create a new one.
-5. Append to `log.md` if pages were modified.
+
+**File-back flow (the wiki compounds here):**
+
+After answering, ask: "Did this query reveal connections, patterns, or applications not captured in existing pages?" If yes:
+
+4. **Identify file-back targets** — which wiki pages should be updated with the new connection? Typical triggers:
+   - A concept page's content applies to a use case not mentioned on that page
+   - Two pages contain related findings that aren't cross-referenced
+   - A recently ingested source has implications for a topic not covered during ingest
+   - A practical application (race plan, training block) synthesizes multiple pages in a new way
+
+5. **Update each target page:**
+   - Add the new finding to the appropriate section with evidence tags
+   - Cite the original source (episode ID, article) not the query
+   - Add cross-references if the connection links pages not yet linked
+
+6. **If the query produced a valuable output** (race plan, training analysis, coaching recommendation), save it to `docs/reports/` — these become searchable context for future queries.
+
+7. **Append to `log.md`:**
+   ```
+   ## YYYY-MM-DD — Query→File back: [query topic]
+   - Query: [one-line summary]
+   - Connections found: [what was new]
+   - Pages updated: [list]
+   - Report created: [path, if applicable]
+   ```
+
+8. Run `qmd update && qmd embed` to re-index.
 
 **Key principles:**
 - Every valuable query should make the wiki slightly better. The wiki compounds.
+- File back the *connection*, not the answer. The wiki stores knowledge; reports store applications.
 - Search the *wiki*, not the raw sources. The wiki is the compiled knowledge. Raw sources are for ingest.
 - Use `index.md` as the primary entry point. Use qmd when the wiki outgrows what the index can navigate (~100+ pages).
+- The more queries that file back, the better the wiki gets at answering future queries. This is the compounding loop.
 
 ### 3. Lint
 

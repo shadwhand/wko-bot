@@ -203,6 +203,8 @@ Ultra-distance events (> 6 hours, up to multi-day) follow different pacing rules
 
 ### Key Ultra Pacing Principles
 
+- **"Undercook by 5-20%" as a pacing rule for events >6 hours** -- when debating between pushing and holding back, always hold back. The asymmetry is stark: undercooking by 5-20% costs minutes; overcooking by 10% costs hours or a DNF. This applies to every segment, not just the start [E] (TMT-75)
+- **Autoregulation overrides power targets after hour 15** -- RPE should take priority over the power meter in ultra events. Cardiac drift, thermal load, and cumulative fatigue decouple watts from internal cost. "Breathing > power" -- if breathing feels labored at target watts, drop watts immediately rather than chasing a number that no longer represents sustainable effort [E] (TMT-75)
 - **"Start smart, finish fast"** -- Lynda Wallenfels (100-mile MTB): "Start at a speed that feels conservative, then increase perceived exertion gradually as start-line excitement wears off and fatigue sets in. Starting faster than you have trained to do is the biggest mistake in a 100-mile mountain bike race." [E]
 - **If you are too fast to eat in the first hour, you are over-pacing** (Wallenfels). Fueling ability is a proxy for sustainable intensity. [E]
 - **High early cadence preserves legs** -- "Pedal with cadence on the high side early. This puts more stress on cardiovascular system than muscular system and saves legs for later." Allow cadence to drift lower as fatigue accumulates. [E]
