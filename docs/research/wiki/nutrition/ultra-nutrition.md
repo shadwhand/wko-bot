@@ -348,7 +348,19 @@ Source: nutrition-ultra.md [R][E]
 
 ---
 
-## 10. Common Mistakes
+## 10. Pre-Event Nutrition & Taper-Week Pitfalls
+
+### Under-Fueling Threshold Sessions Before an Event
+
+- **Under-fueling threshold sessions during the build phase sabotages multi-day adaptation** -- this applies directly to taper week. Athletes reducing volume often also unconsciously reduce food intake, creating an energy deficit that impairs glycogen supercompensation and hormonal recovery. Maintain caloric intake even as training load drops [E] (TMT-74)
+
+### Morning Pre-Hydration for Race Day
+
+- **Morning pre-hydration is a requirement for race-day starts** -- begin hydrating 2-3 hours before the start with 500-750 mL containing sodium (400-600 mg). This is especially critical for evening starts (like a 6 PM brevet start) where riders may not have been drinking deliberately during the day. Dehydration at the start line compounds every subsequent hour [E] (TMT-74)
+
+---
+
+## 11. Common Mistakes
 
 1. **Trying to match expenditure with intake** -- causes GI disaster in ultras [E]
 2. **All gels and drink mix beyond 12 hr** -- palatability fatigue and nausea; need real food [E]
@@ -363,7 +375,7 @@ Source: nutrition-ultra.md [R][E]
 
 ---
 
-## 11. Key Numbers for Computational Modeling
+## 12. Key Numbers for Computational Modeling
 
 | Parameter | Value | Source |
 |---|---|---|
