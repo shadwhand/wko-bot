@@ -15,3 +15,5 @@ tools/frechet-rs/target/
 docs/research/raw/
 .runtime.json
 .qmd/index.sqlite
+docs/research/wiki/entities/personal-ride-log.md
+docs/reports/2026-06-27-surf-city-600k.md
