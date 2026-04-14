@@ -22,6 +22,7 @@ podcast episodes, and nutrition research. Last compiled: 2026-04-12.
 
 ## Entities
 
+- [Personal Ride Log](entities/personal-ride-log.md) — 20 ultra-endurance rides (200km+), lessons learned, nutrition, equipment, pacing progression
 - [Pro Race Analyses](entities/pro-race-analyses.md) — Tour de France, Vuelta, Giro power data compiled by stage/year
 - [Ironman & Triathlon](entities/ironman-triathlon.md) — IM/70.3 power targets, pacing, Kona analysis
 - [Notable Coaches & Methods](entities/notable-coaches-methods.md) — Hunter Allen, Tim Cusick, Kolie Moore, Joe Friel approaches
