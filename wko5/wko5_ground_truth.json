@@ -1,0 +1,47 @@
+{
+  "source": "WKO5 .wko5athlete binary",
+  "athlete": "Jinuk_Shin",
+  "extracted_at": "2026-04-14",
+  "categories": {
+    "All Run": {
+      "frc": 10809.4531,
+      "mftp": 297.6042,
+      "pmax": 1302.1069,
+      "stamina": 0.7029,
+      "tte": 1972.131,
+      "vo2maxkg": 56.1893
+    },
+    "Day Off": {
+      "frc": 11076.521,
+      "mftp": 279.3402,
+      "pmax": 1299.6193,
+      "stamina": 0.6847,
+      "tte": 2000.6735,
+      "vo2maxkg": 53.4947
+    },
+    "Other": {
+      "frc": 10455.2397,
+      "mftp": 292.5293,
+      "pmax": 1221.4214,
+      "stamina": 0.7037,
+      "tte": 1967.2088,
+      "vo2maxkg": 55.3305
+    },
+    "current_ui": {
+      "mftp": 298.0,
+      "pmax": 1302.0,
+      "frc": 10800.0,
+      "stamina": 0.7,
+      "tte": 1972.0,
+      "vo2maxkg": 55.3,
+      "phenotype": "All-rounder"
+    }
+  },
+  "notes": {
+    "Other": "Cycling aggregate \u2014 mFTP 292.5 matches manual FTP 292.0",
+    "All Run": "Possibly combined multi-sport or all-activity aggregate",
+    "Day Off": "Alternate date range or detraining model",
+    "sentinel": "DBL_MAX (1.798e308) = no data for that sport",
+    "current_ui": "From WKO5 UI screenshots 2026-04-14. Most reliable source."
+  }
+}

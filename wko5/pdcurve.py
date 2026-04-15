@@ -188,8 +188,81 @@ def _pd_model_legacy(t, pmax, tau, frc_kj, t0, mftp):
     return pmax * np.exp(-t / tau) + frc_kj * 1000 / (t + t0) + mftp
 
 
-def fit_pd_model(mmp):
+def _estimate_initial_params(mmp, ftp_prior=None):
+    """Estimate PD model parameters from MMP curve shape.
+
+    Derives Pmax, FRC, tau from MMP data to break the FRC/TTE degeneracy
+    that plagues unconstrained fitting. Works for any athlete.
+
+    Strategy:
+        1. Pmax from 1s MMP (+ 10% for extrapolation headroom)
+        2. mFTP from FTP test, or estimated from long-duration MMP
+        3. FRC from area between MMP and mFTP for durations < 300s
+        4. tau = FRC*1000 / Pmax (phosphocreatine time constant)
+        5. tau2 from the aerobic crossover point (~50% aerobic at 60-90s)
+    """
+    # Pmax: extrapolate slightly above 1s MMP
+    pmax_est = float(mmp[0]) * 1.10
+
+    # mFTP: from prior or long-duration MMP
+    if ftp_prior and ftp_prior > 100:
+        mftp_est = ftp_prior
+    elif len(mmp) >= 3600:
+        mftp_est = float(mmp[3599]) * 1.05
+    elif len(mmp) >= 1200:
+        mftp_est = float(mmp[1199]) * 0.95
+    else:
+        mftp_est = float(mmp[min(len(mmp) - 1, 299)]) * 0.80
+
+    # FRC: anaerobic work capacity above mFTP.
+    # In the PT model: FRC = integral of (anaerobic_term) over all time
+    # Approximate from MMP: area between MMP curve and mFTP for t=1..120s
+    # (beyond 120s, anaerobic contribution is negligible)
+    max_t = min(120, len(mmp))
+    excess_power = np.maximum(mmp[:max_t] - mftp_est, 0)
+    frc_est = float(np.sum(excess_power)) / 1000  # joules → kJ
+    # The integral overestimates because it includes aerobic ramp-up energy.
+    # In the PT model, the anaerobic term at time t is FRC*1000/t*(1-exp(-t/tau)).
+    # The area integral includes both anaerobic and the rising aerobic component.
+    # Empirically, the raw area is ~3-4x the true FRC. Scale by 0.3.
+    frc_est *= 0.30
+    frc_est = np.clip(frc_est, 3, 30)
+
+    # tau from Pmax and FRC
+    tau_est = frc_est * 1000 / pmax_est if pmax_est > 0 else 10.0
+    tau_est = np.clip(tau_est, 3, 30)
+
+    # tau2: aerobic crossover. At t=tau2*ln(2), aerobic term is 50% of mFTP.
+    # Typically 60-90s for the 50% point → tau2 ≈ 25-40s
+    tau2_est = 30.0
+
+    # TTE: rough estimate from where MMP drops below mFTP + 10W
+    tte_est = 2400.0
+    for t in range(300, min(len(mmp), 5400)):
+        if mmp[t - 1] < mftp_est + 10:
+            tte_est = float(t)
+            break
+
+    return pmax_est, frc_est, mftp_est, tau_est, tau2_est, tte_est
+
+
+def fit_pd_model(mmp, ftp_prior=None, tte_prior=None):
     """Fit the Peronnet-Thibault / WKO4 PD model to an MMP array.
+
+    Two-stage fitting:
+        1. Estimate Pmax, FRC, tau from MMP shape (breaks FRC/TTE degeneracy)
+        2. Fix Pmax, fit remaining params with anchor-weighted optimization
+
+    Coach test protocol (recommended for accurate decomposition):
+        - Sprint test → constrains Pmax (automatic from 1s MMP)
+        - 1min max → constrains FRC decay shape (automatic from MMP)
+        - 3-5min max → constrains FVO2max (automatic from MMP)
+        - FTP test to exhaustion → provides ftp_prior AND tte_prior
+
+    Args:
+        mmp: numpy array where mmp[d-1] = best average power over d seconds
+        ftp_prior: FTP test value in watts to anchor mFTP
+        tte_prior: time to exhaustion in minutes from FTP test (breaks FRC/TTE degeneracy)
 
     Returns dict with {Pmax, FRC, mFTP, TTE, mVO2max, tau, tau2, a} or None on failure.
     """
@@ -197,54 +270,78 @@ def fit_pd_model(mmp):
         logger.warning("MMP too short for model fitting (need >= 60s)")
         return None
 
-    max_dur = min(len(mmp), 28800)  # up to 8 hours — P&T model handles long durations
-    durations = np.arange(5, max_dur + 1, dtype=float)
-    powers = mmp[4:max_dur].astype(float)
-
-    if len(durations) != len(powers):
-        durations = durations[:len(powers)]
-
     cfg = get_config()
+    if ftp_prior is None:
+        ftp_prior = cfg.get("ftp_manual")
+    if tte_prior is None:
+        tte_prior = cfg.get("tte_minutes")  # from baseline test, if available
 
-    # Parameters: frc_kj, mftp, tau, tau2, tte, a
-    # Initial guesses
-    p0 = [20, 280, 15, 20, 2400, 20]
+    # Stage 1: estimate initial parameters from MMP shape
+    pmax_est, frc_est, mftp_est, tau_est, tau2_est, tte_est = (
+        _estimate_initial_params(mmp, ftp_prior)
+    )
+    logger.info(
+        f"PD initial estimates: Pmax={pmax_est:.0f} FRC={frc_est:.1f}kJ "
+        f"mFTP={mftp_est:.0f} tau={tau_est:.1f} TTE={tte_est:.0f}s"
+    )
 
-    # Bounds
-    bounds_low = [
-        cfg["pd_frc_low"],     # frc_kj
-        cfg["pd_mftp_low"],    # mftp
-        cfg["pd_tau_low"],     # tau (anaerobic onset)
-        5,                      # tau2 (aerobic onset) — at least 5s
-        600,                    # tte — at least 10 min
-        1,                      # a — decline slope, at least 1
-    ]
-    bounds_high = [
-        cfg["pd_frc_high"],    # frc_kj
-        cfg["pd_mftp_high"],   # mftp
-        cfg["pd_tau_high"],    # tau
-        120,                    # tau2 — up to 120s
-        5400,                   # tte — up to 90 min
-        100,                    # a — decline slope
+    # Stage 2: fit with Pmax fixed and FRC+mFTP priors
+    # Uses differential evolution (global optimizer) to avoid local minima
+    # that plague the FRC/TTE degeneracy.
+    from scipy.optimize import differential_evolution
+
+    max_dur = min(len(mmp), 28800)
+    all_durations = np.arange(5, max_dur + 1, dtype=float)
+    all_powers = mmp[4:max_dur].astype(float)
+    if len(all_durations) > len(all_powers):
+        all_durations = all_durations[:len(all_powers)]
+
+    # Log-spaced sample points
+    log_idx = np.unique(np.geomspace(1, len(all_durations) - 1, 200).astype(int))
+    log_idx = log_idx[log_idx < len(all_durations)]
+    fit_d = all_durations[log_idx]
+    fit_p = all_powers[log_idx]
+
+    def objective(params):
+        frc_kj, mftp, tau2, tte_s, a = params
+        tau = frc_kj * 1000 / pmax_est
+        pred = _pd_model(fit_d, frc_kj, mftp, tau, tau2, tte_s, a)
+        sse = np.sum((fit_p - pred) ** 2)
+        # Priors to break FRC/TTE degeneracy
+        frc_prior_cost = (frc_kj - frc_est) ** 2 * 20
+        mftp_prior_cost = (mftp - mftp_est) ** 2 * 30
+        # TTE prior from baseline test (strongest degeneracy breaker)
+        tte_prior_cost = 0
+        if tte_prior:
+            tte_prior_cost = (tte_s - tte_prior * 60) ** 2 * 0.1
+        return sse + frc_prior_cost + mftp_prior_cost + tte_prior_cost
+
+    frc_lo = max(3, frc_est * 0.4)
+    frc_hi = min(40, frc_est * 2.5)
+    mftp_lo = max(100, mftp_est * 0.85)
+    mftp_hi = min(500, mftp_est * 1.15)
+
+    bounds = [
+        (frc_lo, frc_hi),
+        (mftp_lo, mftp_hi),
+        (15, 80),       # tau2
+        (900, 5400),    # tte
+        (5, 80),        # a
     ]
 
     try:
-        popt, _ = curve_fit(
-            _pd_model, durations, powers,
-            p0=p0, bounds=(bounds_low, bounds_high),
-            maxfev=20000,
+        result = differential_evolution(
+            objective, bounds, maxiter=5000, seed=42, tol=1e-12, popsize=40,
         )
-    except (RuntimeError, ValueError) as e:
-        logger.warning(f"PD model fitting failed: {e}")
-        return None
+        frc_kj, mftp, tau2, tte, a = result.x
+    except Exception as e:
+        logger.warning(f"PD model stage-2 fit failed: {e}, falling back to unconstrained")
+        return _fit_pd_model_unconstrained(mmp, cfg)
 
-    frc_kj, mftp, tau, tau2, tte, a = popt
-
-    # Derived: Pmax ≈ FRC*1000 / tau
-    pmax = frc_kj * 1000 / tau
+    tau = frc_kj * 1000 / pmax_est
+    pmax = pmax_est
 
     # mVO2max estimation
-    cfg = get_config()
     weight_kg = cfg["weight_kg"]
     if len(mmp) >= 300:
         p_vo2max = float(mmp[299])
@@ -266,8 +363,50 @@ def fit_pd_model(mmp):
         "tau2": round(float(tau2), 1),
         "a": round(float(a), 1),
         "model": "peronnet_thibault",
-        "note": "Based on Peronnet & Thibault (1989), modified per WKO4 implementation. "
-                "Pmax is derived (FRC*1000/tau). Post-TTE decline modeled as -a*ln(t/TTE).",
+    }
+
+
+def _fit_pd_model_unconstrained(mmp, cfg):
+    """Fallback: unconstrained 6-parameter fit (original approach)."""
+    max_dur = min(len(mmp), 28800)
+    durations = np.arange(5, max_dur + 1, dtype=float)
+    powers = mmp[4:max_dur].astype(float)
+    if len(durations) != len(powers):
+        durations = durations[:len(powers)]
+
+    p0 = [20, 280, 15, 20, 2400, 20]
+    bounds_low = [cfg["pd_frc_low"], cfg["pd_mftp_low"], cfg["pd_tau_low"], 5, 600, 1]
+    bounds_high = [cfg["pd_frc_high"], cfg["pd_mftp_high"], cfg["pd_tau_high"], 120, 5400, 100]
+
+    try:
+        popt, _ = curve_fit(
+            _pd_model, durations, powers,
+            p0=p0, bounds=(bounds_low, bounds_high),
+            maxfev=20000,
+        )
+    except (RuntimeError, ValueError) as e:
+        logger.warning(f"PD model unconstrained fit failed: {e}")
+        return None
+
+    frc_kj, mftp, tau, tau2, tte, a = popt
+    pmax = frc_kj * 1000 / tau
+
+    weight_kg = cfg["weight_kg"]
+    p_vo2max = float(mmp[299]) if len(mmp) >= 300 else mftp * 1.15
+    gross_efficiency = 0.23
+    vo2max_ml_min = p_vo2max * 60 * 1000 / (gross_efficiency * 20900)
+
+    return {
+        "Pmax": round(float(pmax), 1),
+        "FRC": round(float(frc_kj), 2),
+        "mFTP": round(float(mftp), 1),
+        "TTE": round(float(tte) / 60, 1),
+        "mVO2max_L_min": round(vo2max_ml_min / 1000, 2),
+        "mVO2max_ml_min_kg": round(vo2max_ml_min / weight_kg, 1),
+        "tau": round(float(tau), 1),
+        "tau2": round(float(tau2), 1),
+        "a": round(float(a), 1),
+        "model": "peronnet_thibault",
     }
 
 
