@@ -1,41 +1,82 @@
 #!/usr/bin/env python3
 """Compare our PD model output against WKO5 ground truth.
 
-Loads WKO5's model metrics from wko5_ground_truth.json and compares
-against our Bayesian PD model fitted parameters.
+Default mode (--mode fit, the reproducible path):
+    Runs wko5.pdcurve.fit_pd_model() against an envelope MMP computed from
+    the athlete's ride history for the date range WKO5 used. If an FTP test
+    is present in the `ftp_tests` table, its ftp_watts and tte_minutes are
+    passed as priors (breaks the FRC/TTE degeneracy).
+
+Legacy mode (--mode posterior):
+    Reads pre-computed posterior samples from the `posterior_samples` table.
+    Only works if a Stan PD model has been fit and stored there.
 
 Usage:
-    python3 wko5/compare_models.py
-    python3 wko5/compare_models.py --category Other   # cycling aggregate
+    python3 wko5/compare_models.py                    # default: fit mode, 'current_ui' category
+    python3 wko5/compare_models.py current_ui
+    python3 wko5/compare_models.py Other --mode posterior
+    python3 wko5/compare_models.py current_ui --start 2026-01-01 --end 2026-04-14
 """
 
+import argparse
 import json
+import os
 import struct
 import sqlite3
-import numpy as np
+import sys
 from pathlib import Path
+
+import numpy as np
+
+# Allow running as a script: add repo root to path
+REPO_ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(REPO_ROOT))
+
+from wko5.pdcurve import compute_envelope_mmp, fit_pd_model, _pd_model  # noqa: E402
+
+
+# Category → (start_date, end_date) used by WKO5 to compute ground-truth values.
+# 'current_ui' matches the UI screenshots taken 2026-04-14.
+CATEGORY_DATE_RANGES = {
+    "current_ui": ("2026-01-01", "2026-04-14 23:59:59"),
+    "Other": ("2026-01-01", "2026-04-14 23:59:59"),
+    "All Run": ("2026-01-01", "2026-04-14 23:59:59"),
+    "Day Off": ("2026-01-01", "2026-04-14 23:59:59"),
+}
 
 
 def load_wko5_ground_truth():
-    """Load WKO5 model metrics extracted from .wko5athlete file."""
+    """Load WKO5 model metrics extracted from .wko5athlete + UI screenshots."""
     path = Path(__file__).parent / "wko5_ground_truth.json"
     with open(path) as f:
         return json.load(f)
 
 
-def load_our_model(db_path=None):
-    """Load our Bayesian PD model posterior samples."""
-    if db_path is None:
-        db_path = Path(__file__).parent / "cycling_power.db"
-
+def load_athlete_config(db_path):
+    """Load athlete config (weight, ftp, etc.) from DB."""
     conn = sqlite3.connect(str(db_path))
-
-    # Athlete config
     cols = [d[0] for d in conn.execute("SELECT * FROM athlete_config LIMIT 1").description]
     row = conn.execute("SELECT * FROM athlete_config LIMIT 1").fetchone()
-    config = dict(zip(cols, row))
+    conn.close()
+    return dict(zip(cols, row))
 
-    # Posterior samples from PD model (Peronnet-Thibault: Pmax, FRC, mFTP, tau)
+
+def load_latest_ftp_test(db_path):
+    """Return (ftp_watts, tte_minutes, test_date) from most recent FTP test, or None."""
+    conn = sqlite3.connect(str(db_path))
+    row = conn.execute(
+        "SELECT ftp_watts, tte_minutes, test_date FROM ftp_tests "
+        "ORDER BY test_date DESC LIMIT 1"
+    ).fetchone()
+    conn.close()
+    if row and row[0]:
+        return float(row[0]), float(row[1]) if row[1] else None, row[2]
+    return None
+
+
+def load_pd_posterior_samples(db_path):
+    """Load posterior samples from the Stan pd_model (legacy comparison path)."""
+    conn = sqlite3.connect(str(db_path))
     params = {}
     for row in conn.execute(
         "SELECT param_name, samples FROM posterior_samples "
@@ -44,175 +85,204 @@ def load_our_model(db_path=None):
         pname, blob = row
         n = len(blob) // 8
         vals = [struct.unpack('<d', blob[i*8:(i+1)*8])[0] for i in range(n)]
-        params[pname] = np.array(vals)
-
+        params[pname.lower()] = np.array(vals)
     conn.close()
-    return config, params
+    return params
 
 
-def peronnet_thibault_power(t, pmax, mftp, frc, tau):
-    """Peronnet-Thibault / WKO4 power-duration model.
+def derive_metrics_from_fit(model, mmp, weight_kg):
+    """Convert fit_pd_model() output dict into WKO5-comparable metric values.
 
-    P(t) = pmax * exp(-t/tau) + mftp + frc/t * (1 - exp(-t/tau))
-
-    For t in seconds, returns power in watts.
+    fit_pd_model returns {Pmax, FRC (kJ), mFTP, TTE (min), tau, tau2, a, ...}.
+    WKO5 stores FRC in joules and TTE in seconds, so we convert.
     """
-    exp_term = np.exp(-t / tau)
-    return pmax * exp_term + mftp + (frc / t) * (1 - exp_term)
+    frc_kj = model["FRC"]
+    mftp = model["mFTP"]
+    tau = model["tau"]
+    tau2 = model["tau2"]
+    tte_s = model["TTE"] * 60.0
+    a = model["a"]
+
+    p3600 = float(_pd_model(3600.0, frc_kj, mftp, tau, tau2, tte_s, a))
+    p300 = float(_pd_model(300.0, frc_kj, mftp, tau, tau2, tte_s, a))
+
+    return {
+        "pmax": model["Pmax"],
+        "mftp": mftp,
+        "frc": frc_kj * 1000.0,       # kJ → J
+        "tte": tte_s,                  # min → s
+        "stamina": p3600 / mftp,
+        "vo2maxkg": model.get("mVO2max_ml_min_kg", 10.8 * p300 / weight_kg + 7),
+        "fvo2max": p300,
+    }
 
 
 def derive_metrics_from_posterior(params, weight_kg):
-    """Derive WKO5-equivalent metrics from our model parameters.
-
-    Our durability model uses params: a, b, c, sigma
-    These map to the Peronnet-Thibault model differently depending
-    on the parameterization.
-
-    Returns dict with median and 90% CI for each metric.
-    """
-    # Check what parameters we have
-    if not params:
+    """Legacy: derive metrics from Stan posterior samples (pd_model)."""
+    required = {"pmax", "mftp", "frc", "tau"}
+    if not required <= set(params.keys()):
         return None
 
-    available = set(params.keys())
-    print(f"  Available posterior params: {available}")
+    pmax = params["pmax"]
+    mftp = params["mftp"]
+    frc_kj = params["frc"]
+    tau = params["tau"]
 
-    # Map parameter names (DB may use uppercase from Stan model)
-    param_map = {}
-    for key in available:
-        param_map[key.lower()] = params[key]
+    # Simple PT model (no tau2/TTE/decline) — legacy path, less accurate
+    def pt(t, pm, mf, fj, tu):
+        return pm * np.exp(-t / tu) + mf + (fj * 1000 / t) * (1 - np.exp(-t / tu))
 
-    if {'pmax', 'mftp', 'frc', 'tau'} <= set(param_map.keys()) or \
-       {'Pmax', 'mFTP', 'FRC', 'tau'} <= available:
-        pmax = param_map.get('pmax', params.get('Pmax'))
-        mftp = param_map.get('mftp', params.get('mFTP'))
-        frc = param_map.get('frc', params.get('FRC'))
-        tau = param_map.get('tau', params.get('tau'))
-    elif {'a', 'b', 'c'} <= set(param_map.keys()):
-        # Our durability model parameterization
-        # Need to know the mapping from a,b,c to pmax,mftp,frc,tau
-        # This depends on our Stan model definition
-        print("  Note: a,b,c params — need Stan model mapping")
-        a = params['a']
-        b = params['b']
-        c = params['c']
-        # TODO: implement the actual mapping from our Stan model
-        # For now, report raw params
-        return {
-            'raw_params': {
-                'a': (np.median(a), np.percentile(a, 5), np.percentile(a, 95)),
-                'b': (np.median(b), np.percentile(b, 5), np.percentile(b, 95)),
-                'c': (np.median(c), np.percentile(c, 5), np.percentile(c, 95)),
-            }
-        }
-    else:
-        print(f"  Unknown parameter set: {available}")
-        return None
+    p3600 = pt(3600, pmax, mftp, frc_kj, tau)
+    p300 = pt(300, pmax, mftp, frc_kj, tau)
 
-    # Derive WKO5-equivalent metrics
-    metrics = {}
-
-    # mFTP — directly from model
-    metrics['mftp'] = (np.median(mftp), np.percentile(mftp, 5), np.percentile(mftp, 95))
-
-    # Pmax — directly from model
-    metrics['pmax'] = (np.median(pmax), np.percentile(pmax, 5), np.percentile(pmax, 95))
-
-    # FRC — our Stan model stores in kJ, WKO5 stores in joules
-    frc_j = frc * 1000  # kJ → J
-    metrics['frc'] = (np.median(frc_j), np.percentile(frc_j, 5), np.percentile(frc_j, 95))
-
-    # TTE — time to exhaustion at FTP
-    # TTE = time where P(t) first drops to mFTP on the PD curve
-    # Approximate: solve pmax*exp(-t/tau) + frc/t*(1-exp(-t/tau)) ≈ 0
-    # In practice, TTE ≈ frc / (threshold_power - mftp) for W'-based models
-    # Or compute numerically
-    tte_samples = []
-    for i in range(len(mftp)):
-        t_range = np.arange(60, 7200, 1)
-        power = peronnet_thibault_power(t_range, pmax[i], mftp[i], frc_j[i], tau[i])
-        # TTE is where power first drops below mFTP
-        below = np.where(power <= mftp[i])[0]
-        tte_samples.append(t_range[below[0]] if len(below) > 0 else 7200)
-    tte_arr = np.array(tte_samples)
-    metrics['tte'] = (np.median(tte_arr), np.percentile(tte_arr, 5), np.percentile(tte_arr, 95))
-
-    # Stamina — ratio of 60min power to FTP
-    # stamina = P(3600) / mFTP
-    stam = peronnet_thibault_power(3600, pmax, mftp, frc_j, tau) / mftp
-    metrics['stamina'] = (np.median(stam), np.percentile(stam, 5), np.percentile(stam, 95))
-
-    # VO2max — estimated from power
-    # WKO5 formula: vo2max(meanmax(power)) / weight * 1000
-    # Rough: VO2max ≈ (P_5min * 10.8 + 7 * weight) / weight
-    # Or: VO2max ≈ P_5min / weight * some_factor
-    p5min = peronnet_thibault_power(300, pmax, mftp, frc_j, tau)
-    # Using Hawley & Noakes (1992): VO2max = 10.8 * P/W + 7
-    vo2 = (10.8 * p5min / weight_kg + 7)
-    metrics['vo2maxkg'] = (np.median(vo2), np.percentile(vo2, 5), np.percentile(vo2, 95))
-
-    return metrics
+    return {
+        "pmax": (np.median(pmax), np.percentile(pmax, 5), np.percentile(pmax, 95)),
+        "mftp": (np.median(mftp), np.percentile(mftp, 5), np.percentile(mftp, 95)),
+        "frc": (np.median(frc_kj * 1000), np.percentile(frc_kj * 1000, 5), np.percentile(frc_kj * 1000, 95)),
+        "stamina": (np.median(p3600 / mftp), np.percentile(p3600 / mftp, 5), np.percentile(p3600 / mftp, 95)),
+        "fvo2max": (np.median(p300), np.percentile(p300, 5), np.percentile(p300, 95)),
+        "vo2maxkg": (np.median(10.8 * p300 / weight_kg + 7),) * 3,
+    }
 
 
-def compare(category="Other"):
-    """Run the comparison."""
+def print_comparison(category, wko5_vals, our_vals, mode):
+    """Render the side-by-side comparison table."""
+    print("=" * 70)
+    print(f"Mode: {mode}    Category: {category}")
+    print("=" * 70)
+    print(f"{'Metric':<12} {'WKO5':>12} {'Ours':>14} {'Delta':>8} {'Grade':>6}")
+    print("-" * 55)
+
+    for metric in ["pmax", "mftp", "frc", "tte", "fvo2max", "stamina", "vo2maxkg"]:
+        if metric not in wko5_vals or metric not in our_vals:
+            continue
+
+        w = wko5_vals[metric]
+
+        # Posterior mode returns tuples (median, lo, hi); fit mode returns scalars
+        if isinstance(our_vals[metric], tuple):
+            o = our_vals[metric][0]
+        else:
+            o = our_vals[metric]
+
+        unit = ""
+        if metric in ("pmax", "mftp", "fvo2max"):
+            unit = "W"
+        elif metric == "frc":
+            unit = "J"
+        elif metric == "tte":
+            unit = "s"
+        elif metric == "vo2maxkg":
+            unit = ""
+
+        delta_pct = (o - w) / w * 100 if w else 0
+        grade = "✓" if abs(delta_pct) < 5 else "~" if abs(delta_pct) < 15 else "✗"
+        print(f"  {metric:<10} {w:>11.1f}{unit} {o:>13.1f}{unit} {delta_pct:>+7.1f}% {grade:>6}")
+
+    print("=" * 70)
+
+
+def compare_fit_mode(category, start, end, db_path):
+    """Primary reproducible path: fit PD model from MMP and compare with WKO5."""
     gt = load_wko5_ground_truth()
-    config, params = load_our_model()
-
-    wko5 = gt["categories"].get(category, {})
+    wko5 = gt["categories"].get(category)
     if not wko5:
-        print(f"No WKO5 data for category '{category}'")
+        print(f"No WKO5 ground truth for category '{category}'")
         print(f"Available: {list(gt['categories'].keys())}")
         return
 
-    print(f"Weight: {config['weight_kg']} kg")
-    print(f"Manual FTP: {config['ftp_manual']} W")
-    print()
+    config = load_athlete_config(db_path)
+    weight_kg = config["weight_kg"]
+    ftp_manual = config.get("ftp_manual")
 
-    our = derive_metrics_from_posterior(params, config['weight_kg'])
-
-    print()
-    print("=" * 72)
-    print(f"{'Metric':<12} {'WKO5':>12} {'Ours (median)':>14} {'Delta':>8} {'90% CI':>20}")
-    print("=" * 72)
-
-    if our and 'raw_params' in our:
-        # Can't compare directly — different parameterization
-        for metric in ['mftp', 'pmax', 'frc', 'stamina', 'tte', 'vo2maxkg']:
-            wval = wko5.get(metric, 0)
-            unit = 'W' if metric in ('mftp', 'pmax') else 'J' if metric == 'frc' else 's' if metric == 'tte' else ''
-            print(f"  {metric:<10} {wval:>11.1f}{unit} {'—':>14} {'—':>8} {'need PT params':>20}")
-        print()
-        print("Raw model params (a, b, c parameterization):")
-        for p, (med, lo, hi) in our['raw_params'].items():
-            print(f"  {p}: {med:.4f} [{lo:.4f}, {hi:.4f}]")
-        print()
-        print("ACTION: Map a,b,c → Pmax,mFTP,FRC,tau to enable comparison.")
-        print("Check wko5/stan_models/ for the parameterization.")
-    elif our:
-        for metric in ['mftp', 'pmax', 'frc', 'stamina', 'tte', 'vo2maxkg']:
-            wval = wko5.get(metric, 0)
-            if metric in our:
-                med, lo, hi = our[metric]
-                delta_pct = (med - wval) / wval * 100 if wval else 0
-                unit = 'W' if metric in ('mftp', 'pmax') else 'J' if metric == 'frc' else 's' if metric == 'tte' else ''
-                print(f"  {metric:<10} {wval:>11.1f}{unit} {med:>13.1f}{unit} {delta_pct:>+7.1f}% [{lo:.0f}-{hi:.0f}]")
-            else:
-                print(f"  {metric:<10} {wval:>11.1f} {'—':>14}")
+    # Use DB FTP test if available; else fall back to ftp_manual, no TTE prior
+    test = load_latest_ftp_test(db_path)
+    if test:
+        ftp_prior, tte_prior, test_date = test
+        print(f"Using FTP test from {test_date}: FTP={ftp_prior}W, TTE={tte_prior}min")
     else:
-        print("No model parameters found in DB.")
-        print("Run the Stan PD model first, then re-run this comparison.")
+        ftp_prior = ftp_manual
+        tte_prior = None
+        print(f"No FTP test in DB; using ftp_manual={ftp_prior}W (no TTE prior)")
 
-    print("=" * 72)
-    print(f"\nWKO5 category: '{category}' — {gt['notes'].get(category, '')}")
+    print(f"Athlete: weight={weight_kg}kg")
+    print(f"MMP envelope: {start} to {end}")
+
+    mmp = compute_envelope_mmp(start=start, end=end)
+    if len(mmp) < 60:
+        print(f"Insufficient MMP data ({len(mmp)}s) — need at least 60 seconds.")
+        return
+
+    print(f"MMP: {len(mmp)} durations, 1s={mmp[0]:.0f}W, 60min={mmp[3599] if len(mmp) >= 3600 else 'N/A'}")
+
+    model = fit_pd_model(mmp, ftp_prior=ftp_prior, tte_prior=tte_prior)
+    if model is None:
+        print("PD model fit failed.")
+        return
+
+    print(f"\nFitted: Pmax={model['Pmax']:.0f}W FRC={model['FRC']:.1f}kJ "
+          f"mFTP={model['mFTP']:.0f}W tau={model['tau']:.1f}s "
+          f"tau2={model['tau2']:.0f}s TTE={model['TTE']:.1f}min a={model['a']:.1f}")
+
+    our_vals = derive_metrics_from_fit(model, mmp, weight_kg)
+    print()
+    print_comparison(category, wko5, our_vals, mode="fit")
+
+    print(f"\nNotes for category '{category}': {gt['notes'].get(category, '—')}")
+
+
+def compare_posterior_mode(category, db_path):
+    """Legacy path: compare against stored Stan posterior samples."""
+    gt = load_wko5_ground_truth()
+    wko5 = gt["categories"].get(category)
+    if not wko5:
+        print(f"No WKO5 ground truth for category '{category}'")
+        return
+
+    config = load_athlete_config(db_path)
+    params = load_pd_posterior_samples(db_path)
+
+    if not params:
+        print("No pd_model posterior samples in DB.")
+        print("Hint: fit the Stan pd_model first, or use the default --mode fit.")
+        return
+
+    our_vals = derive_metrics_from_posterior(params, config["weight_kg"])
+    if our_vals is None:
+        print(f"Posterior samples missing required params. Found: {list(params.keys())}")
+        return
+
+    print_comparison(category, wko5, our_vals, mode="posterior (legacy)")
+
+
+def main():
+    parser = argparse.ArgumentParser(description="Compare our PD model output against WKO5.")
+    parser.add_argument("category", nargs="?", default="current_ui",
+                        help="Ground-truth category (default: current_ui)")
+    parser.add_argument("--mode", choices=["fit", "posterior"], default="fit",
+                        help="fit (default): run fit_pd_model on MMP. "
+                             "posterior: read Stan posterior samples (legacy).")
+    parser.add_argument("--start", default=None, help="MMP envelope start date (YYYY-MM-DD)")
+    parser.add_argument("--end", default=None, help="MMP envelope end date")
+    parser.add_argument("--db", default=None, help="Path to cycling_power.db")
+    args = parser.parse_args()
+
+    db_path = args.db or str(Path(__file__).parent / "cycling_power.db")
+
+    if args.mode == "fit":
+        start = args.start
+        end = args.end
+        if not start or not end:
+            rng = CATEGORY_DATE_RANGES.get(args.category)
+            if rng is None:
+                print(f"No default date range for category '{args.category}'. "
+                      f"Provide --start and --end.")
+                sys.exit(1)
+            start, end = rng
+        compare_fit_mode(args.category, start, end, db_path)
+    else:
+        compare_posterior_mode(args.category, db_path)
 
 
 if __name__ == "__main__":
-    import sys
-    category = "Other"
-    for arg in sys.argv[1:]:
-        if arg.startswith("--category"):
-            category = sys.argv[sys.argv.index(arg) + 1]
-        elif not arg.startswith("--"):
-            category = arg
-    compare(category)
+    main()

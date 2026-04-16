@@ -1,7 +1,7 @@
 # WKO5 Reverse Engineering
 
-**Date:** 2026-04-14  
-**Status:** Binary format cracked, PD model validated within 2% of WKO5
+**Date:** 2026-04-14 (updated 2026-04-16)
+**Status:** Binary format cracked (WKO4 decoder <1% error vs FIT). PD model fitter matches WKO5 on Pmax, mFTP, and TTE within 2%; FRC and derived stamina remain off by ~25% due to a known FRC/tau decomposition degeneracy that a fresh sprint test would resolve.
 
 ## Summary
 
@@ -93,7 +93,7 @@ WKO5 identifies undertested durations where the model predicts above MMP:
 | Medium | 34s | >523W |
 | Long | 22:48 | >305W |
 
-These were used as calibration anchor points for model fitting.
+**Note:** these targets were used during interactive analysis to validate that our fitted curve matches WKO5's curve at those durations. They are **not** inputs to `fit_pd_model()` in the committed code — the fitter uses `ftp_prior` and `tte_prior` (from the `ftp_tests` table) plus heuristic Pmax/FRC estimates derived from the MMP curve shape. Treat the targets as a cross-check against WKO5, not as calibration anchors baked into the fitting procedure.
 
 ## PD Model Comparison
 
@@ -159,12 +159,29 @@ The expressions are stored as plain text strings inside the binary `.wko5chart` 
 
 ## Files Created
 
+### Committed tooling (reproducible)
+
 | File | Purpose |
 |------|---------|
-| `tools/wko4_decoder.py` | Deterministic WKO4 activity file decoder |
-| `wko5/compare_models.py` | Model comparison harness (our model vs WKO5) |
-| `wko5/wko5_ground_truth.json` | WKO5 exact metric values for validation |
-| `wko5/pdcurve.py` | Updated PD model with two-stage Pmax-constrained fitting |
+| `tools/wko4_decoder.py` | Deterministic WKO4 activity file decoder (magic `wko4` only — rejects `wko5athlete`, `wko5cache`, `wko5chart`) |
+| `wko5/pdcurve.py` | PD model fitter with two-stage Pmax-constrained fitting; accepts `ftp_prior` and `tte_prior` |
+| `wko5/compare_models.py` | Comparison harness — default `--mode fit` runs `fit_pd_model` against MMP; `--mode posterior` reads Stan posterior samples (legacy) |
+
+### Derived artifacts (one-off extraction)
+
+| File | Purpose |
+|------|---------|
+| `wko5/wko5_ground_truth.json` | WKO5 metric values extracted from the athlete's `.wko5athlete` file + UI screenshots. Captured as a fixture; no checked-in extractor regenerates it. |
+
+### Session-only analysis (not committed)
+
+The following were performed interactively during the 2026-04-14 session and are **not** reproducible from committed tools:
+
+- **`.wko5athlete` metric extraction** — ad-hoc Python scanning for metric names (`mftp`, `pmax`, etc.) + nearby IEEE 754 doubles. The JSON output was captured; the extractor was not.
+- **`.wko5chart` expression corpus** — 18,406 expressions extracted from 182 chart files via one-off Python. The chart files themselves live in `~/Library/Application Support/WKO4/Cloud Library 5/` and are not committed. Repo-wide `find . -name '*.wko5chart'` returns 0 by design.
+- **`PKExpressionParser` symbol enumeration** — `nm` dump of `PowerKitOSX.framework/PowerKitOSX`. The framework is proprietary and not in the repo; re-run against a local WKO5 install if needed.
+
+Re-running any of the above requires a working WKO5 install on macOS and re-authoring the extraction scripts, which remain in the session transcript rather than in the repository.
 
 ## Next Steps
 
