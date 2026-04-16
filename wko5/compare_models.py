@@ -16,6 +16,18 @@ Usage:
     python3 wko5/compare_models.py current_ui
     python3 wko5/compare_models.py Other --mode posterior
     python3 wko5/compare_models.py current_ui --start 2026-01-01 --end 2026-04-14
+
+Database layout (not currently overridable — see the note on DB paths below):
+    wko5/cycling_power.duckdb  -> rides/records, used by compute_envelope_mmp
+    wko5/cycling_power.db      -> athlete_config + ftp_tests (SQLite)
+Both are expected to be in sync. The CLI does not currently accept an
+alternate DB path because the DuckDB + SQLite split would require threading
+overrides through wko5.db as well.
+
+FTP-prior causality:
+    For historical comparisons (--start/--end before today), the harness
+    uses only the most recent FTP test whose test_date is <= end, so a
+    2025-03 window is not fit with a September 2025 test result.
 """
 
 import argparse
@@ -52,8 +64,14 @@ def load_wko5_ground_truth():
         return json.load(f)
 
 
-def load_athlete_config(db_path):
-    """Load athlete config (weight, ftp, etc.) from DB."""
+def _default_sqlite_path():
+    """Return the canonical SQLite DB path (athlete_config + ftp_tests)."""
+    return str(Path(__file__).parent / "cycling_power.db")
+
+
+def load_athlete_config(db_path=None):
+    """Load athlete config (weight, ftp, etc.) from the SQLite companion DB."""
+    db_path = db_path or _default_sqlite_path()
     conn = sqlite3.connect(str(db_path))
     cols = [d[0] for d in conn.execute("SELECT * FROM athlete_config LIMIT 1").description]
     row = conn.execute("SELECT * FROM athlete_config LIMIT 1").fetchone()
@@ -61,21 +79,37 @@ def load_athlete_config(db_path):
     return dict(zip(cols, row))
 
 
-def load_latest_ftp_test(db_path):
-    """Return (ftp_watts, tte_minutes, test_date) from most recent FTP test, or None."""
+def load_latest_ftp_test(db_path=None, as_of=None):
+    """Return (ftp_watts, tte_minutes, test_date) from the most recent FTP test.
+
+    If `as_of` (ISO date string or date-time) is provided, restricts to tests
+    with test_date <= as_of. This prevents leaking future priors into
+    historical comparisons.
+    """
+    db_path = db_path or _default_sqlite_path()
     conn = sqlite3.connect(str(db_path))
-    row = conn.execute(
-        "SELECT ftp_watts, tte_minutes, test_date FROM ftp_tests "
-        "ORDER BY test_date DESC LIMIT 1"
-    ).fetchone()
+    if as_of:
+        as_of_date = str(as_of)[:10]  # truncate to YYYY-MM-DD
+        row = conn.execute(
+            "SELECT ftp_watts, tte_minutes, test_date FROM ftp_tests "
+            "WHERE test_date <= ? "
+            "ORDER BY test_date DESC LIMIT 1",
+            (as_of_date,),
+        ).fetchone()
+    else:
+        row = conn.execute(
+            "SELECT ftp_watts, tte_minutes, test_date FROM ftp_tests "
+            "ORDER BY test_date DESC LIMIT 1"
+        ).fetchone()
     conn.close()
     if row and row[0]:
         return float(row[0]), float(row[1]) if row[1] else None, row[2]
     return None
 
 
-def load_pd_posterior_samples(db_path):
+def load_pd_posterior_samples(db_path=None):
     """Load posterior samples from the Stan pd_model (legacy comparison path)."""
+    db_path = db_path or _default_sqlite_path()
     conn = sqlite3.connect(str(db_path))
     params = {}
     for row in conn.execute(
@@ -182,7 +216,7 @@ def print_comparison(category, wko5_vals, our_vals, mode):
     print("=" * 70)
 
 
-def compare_fit_mode(category, start, end, db_path):
+def compare_fit_mode(category, start, end):
     """Primary reproducible path: fit PD model from MMP and compare with WKO5."""
     gt = load_wko5_ground_truth()
     wko5 = gt["categories"].get(category)
@@ -191,19 +225,22 @@ def compare_fit_mode(category, start, end, db_path):
         print(f"Available: {list(gt['categories'].keys())}")
         return
 
-    config = load_athlete_config(db_path)
+    config = load_athlete_config()
     weight_kg = config["weight_kg"]
     ftp_manual = config.get("ftp_manual")
 
-    # Use DB FTP test if available; else fall back to ftp_manual, no TTE prior
-    test = load_latest_ftp_test(db_path)
+    # Causal FTP prior: only use tests whose date <= end of comparison window.
+    # Prevents leaking future FTP/TTE into historical backtests.
+    test = load_latest_ftp_test(as_of=end)
     if test:
         ftp_prior, tte_prior, test_date = test
-        print(f"Using FTP test from {test_date}: FTP={ftp_prior}W, TTE={tte_prior}min")
+        print(f"Using FTP test from {test_date} (as_of {end[:10]}): "
+              f"FTP={ftp_prior}W, TTE={tte_prior}min")
     else:
         ftp_prior = ftp_manual
         tte_prior = None
-        print(f"No FTP test in DB; using ftp_manual={ftp_prior}W (no TTE prior)")
+        print(f"No FTP test on or before {end[:10]}; "
+              f"using ftp_manual={ftp_prior}W (no TTE prior)")
 
     print(f"Athlete: weight={weight_kg}kg")
     print(f"MMP envelope: {start} to {end}")
@@ -231,7 +268,7 @@ def compare_fit_mode(category, start, end, db_path):
     print(f"\nNotes for category '{category}': {gt['notes'].get(category, '—')}")
 
 
-def compare_posterior_mode(category, db_path):
+def compare_posterior_mode(category):
     """Legacy path: compare against stored Stan posterior samples."""
     gt = load_wko5_ground_truth()
     wko5 = gt["categories"].get(category)
@@ -239,8 +276,8 @@ def compare_posterior_mode(category, db_path):
         print(f"No WKO5 ground truth for category '{category}'")
         return
 
-    config = load_athlete_config(db_path)
-    params = load_pd_posterior_samples(db_path)
+    config = load_athlete_config()
+    params = load_pd_posterior_samples()
 
     if not params:
         print("No pd_model posterior samples in DB.")
@@ -264,10 +301,13 @@ def main():
                              "posterior: read Stan posterior samples (legacy).")
     parser.add_argument("--start", default=None, help="MMP envelope start date (YYYY-MM-DD)")
     parser.add_argument("--end", default=None, help="MMP envelope end date")
-    parser.add_argument("--db", default=None, help="Path to cycling_power.db")
     args = parser.parse_args()
 
-    db_path = args.db or str(Path(__file__).parent / "cycling_power.db")
+    # NOTE: --db was considered but removed. The rides DB (DuckDB) and the
+    # config DB (SQLite) live in separate files under wko5/, and threading
+    # an override through both paths (compute_envelope_mmp -> wko5.db +
+    # load_athlete_config/load_latest_ftp_test) is more surgery than this
+    # harness warrants. Both files are expected at their canonical paths.
 
     if args.mode == "fit":
         start = args.start
@@ -279,9 +319,9 @@ def main():
                       f"Provide --start and --end.")
                 sys.exit(1)
             start, end = rng
-        compare_fit_mode(args.category, start, end, db_path)
+        compare_fit_mode(args.category, start, end)
     else:
-        compare_posterior_mode(args.category, db_path)
+        compare_posterior_mode(args.category)
 
 
 if __name__ == "__main__":

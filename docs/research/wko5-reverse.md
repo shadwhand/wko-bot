@@ -112,6 +112,36 @@ Key insights from screenshots and binary analysis:
 
 3. **Aerobic/anaerobic decomposition** (from Image 2): The anaerobic (FRC) term drops steeply and is near zero by ~3 minutes. The aerobic (mFTP) term rises as a sigmoid, crossing 50% around 60-90s.
 
+### Reproducing the comparison
+
+```bash
+# From repo root. Picks the most recent ftp_tests row whose test_date <= end
+# of the comparison window (prevents leaking future FTP priors into
+# historical backtests). Defaults to the 2026-01-01..2026-04-14 window that
+# matches the WKO5 UI screenshots.
+python3 wko5/compare_models.py current_ui
+
+# Custom date range (e.g. backtest against an earlier WKO5 state):
+python3 wko5/compare_models.py current_ui --start 2025-10-01 --end 2025-12-31
+
+# Legacy mode: compare against stored Stan pd_model posterior samples.
+# Will report large deltas unless a fresh Stan fit has been run.
+python3 wko5/compare_models.py current_ui --mode posterior
+```
+
+**DB paths (not configurable):** rides live in `wko5/cycling_power.duckdb`
+(read by `compute_envelope_mmp`) and athlete config + FTP tests live in
+`wko5/cycling_power.db` (SQLite). The harness reads both from their
+canonical paths; there is no `--db` override because threading one through
+both code paths was out of scope.
+
+The fitter is deterministic (`differential_evolution` with `seed=42`).
+Regression tests in `tests/test_compare_models.py` cover:
+
+- the headline Pmax/mFTP/TTE tolerances,
+- the known FRC gap band (so the degeneracy doesn't silently move),
+- causal FTP-test lookup (historical windows can't pull in future priors).
+
 ### Our Model vs WKO5 (with Sept 2025 FTP test prior)
 
 | Param | WKO5 | Ours | Delta | Grade |

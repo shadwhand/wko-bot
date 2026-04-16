@@ -363,6 +363,10 @@ def fit_pd_model(mmp, ftp_prior=None, tte_prior=None):
         "tau2": round(float(tau2), 1),
         "a": round(float(a), 1),
         "model": "peronnet_thibault",
+        "sub_cp_note": (
+            "CP model may overestimate sustainable power at durations >TTE. "
+            "Use durability model for efforts beyond TTE."
+        ),
     }
 
 
@@ -407,6 +411,10 @@ def _fit_pd_model_unconstrained(mmp, cfg):
         "tau2": round(float(tau2), 1),
         "a": round(float(a), 1),
         "model": "peronnet_thibault",
+        "sub_cp_note": (
+            "CP model may overestimate sustainable power at durations >TTE. "
+            "Use durability model for efforts beyond TTE."
+        ),
     }
 
 
